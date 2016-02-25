@@ -1,7 +1,7 @@
 package com.eaglesakura.android.framework.ui;
 
-import com.eaglesakura.android.framework.R;
 import com.eaglesakura.android.framework.FrameworkCentral;
+import com.eaglesakura.android.framework.R;
 import com.eaglesakura.android.framework.ui.state.IStateful;
 import com.eaglesakura.android.framework.util.AppSupportUtil;
 import com.eaglesakura.android.oari.ActivityResult;
@@ -111,8 +111,8 @@ public abstract class BaseActivity extends AppCompatActivity implements IStatefu
         }
 
         try {
-            TypedArray typedArray = getTheme().obtainStyledAttributes(R.styleable.Theme);
-            int id = typedArray.getResourceId(R.styleable.Theme_colorPrimaryDark, 0);
+            TypedArray typedArray = getTheme().obtainStyledAttributes(R.styleable.AppCompatTheme);
+            int id = typedArray.getResourceId(R.styleable.AppCompatTheme_colorPrimaryDark, 0);
             int brandColor = getResources().getColor(id);
 
             //glow
