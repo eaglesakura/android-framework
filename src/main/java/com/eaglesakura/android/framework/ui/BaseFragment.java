@@ -295,6 +295,13 @@ public abstract class BaseFragment extends Fragment {
     }
 
     /**
+     * タスクコントローラを取得する
+     */
+    public SubscriptionController getSubscription() {
+        return mSubscription;
+    }
+
+    /**
      * UIに関わる処理を非同期で実行する。
      *
      * 処理順を整列するため、非同期・直列処理されたあと、アプリがフォアグラウンドのタイミングでコールバックされる。
