@@ -10,4 +10,6 @@
     <string name="Common.App.Finish">アプリを終了する</string>
     <string name="Common.App.File.Load">読み込み中</string>
 
+    <string name="EsDebug.Dump.Local">Dump local datas...</string>
+    <string name="EsDebug.DebugMode.Switch">Debug Enable</string>
 </resources>

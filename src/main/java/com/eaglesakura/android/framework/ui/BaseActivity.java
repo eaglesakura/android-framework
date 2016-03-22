@@ -2,6 +2,7 @@ package com.eaglesakura.android.framework.ui;
 
 import com.eaglesakura.android.framework.R;
 import com.eaglesakura.android.framework.util.AppSupportUtil;
+import com.eaglesakura.android.margarine.MargarineKnife;
 import com.eaglesakura.android.oari.ActivityResult;
 import com.eaglesakura.android.rx.LifecycleState;
 import com.eaglesakura.android.rx.ObserveTarget;
@@ -28,7 +29,6 @@ import android.view.View;
 
 import java.util.List;
 
-import butterknife.ButterKnife;
 import icepick.State;
 import rx.subjects.BehaviorSubject;
 
@@ -125,7 +125,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected void requestInjection(@LayoutRes int layoutId) {
         setContentView(layoutId);
-        ButterKnife.bind(this);
+        MargarineKnife.bind(this);
     }
 
     public <T extends View> T findViewById(Class<T> clazz, int id) {

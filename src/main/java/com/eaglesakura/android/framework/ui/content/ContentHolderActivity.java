@@ -3,7 +3,7 @@ package com.eaglesakura.android.framework.ui.content;
 import com.eaglesakura.android.framework.R;
 import com.eaglesakura.android.framework.ui.BaseActivity;
 import com.eaglesakura.android.framework.ui.BaseFragment;
-import com.eaglesakura.util.Util;
+import com.eaglesakura.util.ReflectionUtil;
 
 import android.content.Context;
 import android.content.Intent;
@@ -49,7 +49,7 @@ public abstract class ContentHolderActivity extends BaseActivity {
                     String className = getIntent().getStringExtra(EXTRA_CONTENT_FRAGMENT_CLASS);
                     BaseFragment fragment = null;
                     if (className != null) {
-                        fragment = Util.newInstanceOrNull(className);
+                        fragment = ReflectionUtil.newInstanceOrNull(className);
                     }
 
                     if (fragment == null) {

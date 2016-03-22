@@ -1,38 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="EsMaterial.Button.Base" parent="EsMaterial.Base">
+    <style name="EsMaterial.Theme.Widget" parent="EsMaterial.Base">
+        <item name="android:layout_marginTop">@dimen/EsMaterial.Button.ExternalMarginVertical</item>
+        <item name="android:layout_marginBottom">@dimen/EsMaterial.Button.ExternalMarginVertical
+        </item>
+        <item name="android:layout_marginLeft">@dimen/EsMaterial.Button.ExternalMarginHorizontal
+        </item>
+        <item name="android:layout_marginRight">@dimen/EsMaterial.Button.ExternalMarginHorizontal
+        </item>
+        <item name="android:padding">@dimen/EsMaterial.Button.Margin</item>
+    </style>
+
+    <style name="EsMaterial.Theme.Switch" parent="EsMaterial.Theme.Widget">
+    </style>
+
+    <style name="EsMaterial.Theme.TextInfo" parent="EsMaterial.Theme.Widget">
+    </style>
+
+    <style name="EsMaterial.Button.Base" parent="EsMaterial.Theme.Widget">
         <item name="android:height">@dimen/EsMaterial.Button.MinHeight</item>
         <item name="android:minWidth">@dimen/EsMaterial.Button.MinWidth</item>
         <item name="android:gravity">center</item>
     </style>
 
-    <style name="EsMaterial.Theme.Button.Grey" parent="EsMaterial.Base">
+    <!-- ProjectのThemeをそのまま適用する -->
+    <style name="EsMaterial.Theme.Button" parent="EsMaterial.Button.Base">
+    </style>
+
+    <style name="EsMaterial.Theme.Button.Grey" parent="EsMaterial.Button.Base">
         <item name="colorButtonNormal">@color/EsMaterial.Grey.Theme</item>
         <item name="esmButtonBaseColor">@color/EsMaterial.Grey.Theme</item>
         <item name="esmButtonTextColorMode">light</item>
     </style>
 
-    <style name="EsMaterial.Theme.Button.Red" parent="EsMaterial.Base">
+    <style name="EsMaterial.Theme.Button.Red" parent="EsMaterial.Button.Base">
         <item name="colorButtonNormal">@color/EsMaterial.Red.Theme</item>
         <item name="esmButtonBaseColor">@color/EsMaterial.Red.Theme</item>
         <item name="esmButtonTextColorMode">light</item>
     </style>
 
-    <style name="EsMaterial.Theme.Button.LightGreen" parent="EsMaterial.Base">
+    <style name="EsMaterial.Theme.Button.LightGreen" parent="EsMaterial.Button.Base">
         <item name="colorButtonNormal">@color/EsMaterial.LightGreen.Theme</item>
         <item name="esmButtonBaseColor">@color/EsMaterial.LightGreen.Theme</item>
         <item name="esmButtonTextColorMode">light</item>
     </style>
 
 
-    <style name="EsMaterial.Theme.Button.Green" parent="EsMaterial.Base">
+    <style name="EsMaterial.Theme.Button.Green" parent="EsMaterial.Button.Base">
         <item name="colorButtonNormal">@color/EsMaterial.Green.Theme</item>
         <item name="esmButtonBaseColor">@color/EsMaterial.Green.Theme</item>
         <item name="esmButtonTextColorMode">light</item>
     </style>
 
-    <style name="EsMaterial.Theme.Button.Blue" parent="EsMaterial.Base">
+    <style name="EsMaterial.Theme.Button.Blue" parent="EsMaterial.Button.Base">
         <item name="colorButtonNormal">@color/EsMaterial.Blue.Theme</item>
         <item name="esmButtonBaseColor">@color/EsMaterial.Blue.Theme</item>
         <item name="esmButtonTextColorMode">light</item>

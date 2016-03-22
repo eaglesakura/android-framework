@@ -8,6 +8,7 @@ import com.eaglesakura.android.thread.ui.UIHandler;
 import com.eaglesakura.android.util.ViewUtil;
 import com.eaglesakura.material.widget.MaterialLicenseDialog;
 import com.eaglesakura.material.widget.support.SupportRecyclerView;
+import com.eaglesakura.util.CollectionUtil;
 import com.eaglesakura.util.IOUtil;
 import com.eaglesakura.util.LogUtil;
 import com.eaglesakura.util.Util;
@@ -59,8 +60,8 @@ public class LicenseViewActivity extends BaseActivity {
 
 
         String[] ignoreFiles = getResources().getStringArray(R.array.eglibrary_Licence_IgnoreFiles);
-        if (!Util.isEmpty(ignoreFiles)) {
-            this.ignoreFiles = Util.convert(ignoreFiles);
+        if (!CollectionUtil.isEmpty(ignoreFiles)) {
+            this.ignoreFiles = CollectionUtil.asList(ignoreFiles);
         }
         setSupportActionBar((Toolbar) findViewById(R.id.EsMaterial_Toolbar));
         setTitle(R.string.eglibrary_License_Activity_Title);

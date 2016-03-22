@@ -2,7 +2,7 @@ package com.eaglesakura.android.framework.util;
 
 import com.eaglesakura.android.framework.ui.message.LocalMessageReceiver;
 import com.eaglesakura.android.util.PermissionUtil;
-import com.eaglesakura.util.Util;
+import com.eaglesakura.util.CollectionUtil;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -44,8 +44,8 @@ public class AppSupportUtil {
                 }
             }
 
-            intent.putExtra(LocalMessageReceiver.EXTRA_RUNTIMEPERMISSION_GRANTED_LIST, Util.convert(granted, new String[granted.size()]));
-            intent.putExtra(LocalMessageReceiver.EXTRA_RUNTIMEPERMISSION_DENIED_LIST, Util.convert(denied, new String[denied.size()]));
+            intent.putExtra(LocalMessageReceiver.EXTRA_RUNTIMEPERMISSION_GRANTED_LIST, CollectionUtil.asArray(granted, new String[granted.size()]));
+            intent.putExtra(LocalMessageReceiver.EXTRA_RUNTIMEPERMISSION_DENIED_LIST, CollectionUtil.asArray(denied, new String[denied.size()]));
 
             LocalBroadcastManager.getInstance(activity).sendBroadcast(intent);
         }

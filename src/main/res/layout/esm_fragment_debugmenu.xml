@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <android.support.v7.widget.CardView
+            style="@style/EsMaterial.CardView.Light"
+            android:layout_marginTop="@dimen/EsMaterial.Margin.KeyLine1Vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <LinearLayout android:layout_width="match_parent"
+                      android:orientation="vertical"
+                      android:layout_height="match_parent">
+
+            <!-- パッケージ名 -->
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:id="@+id/EsDebug.Info.PackageName"
+                      style="@style/EsMaterial.Theme.TextInfo"
+                      android:layout_marginTop="@dimen/EsMaterial.Button.Margin"/>
+
+            <include layout="@layout/esm_material_separator" android:layout_width="match_parent"
+                     android:layout_height="wrap_content"/>
+
+            <!-- バージョン名 -->
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:id="@+id/EsDebug.Info.AppVersionName"
+                      style="@style/EsMaterial.Theme.TextInfo"
+                      android:layout_marginTop="@dimen/EsMaterial.Button.Margin"/>
+
+            <include layout="@layout/esm_material_separator" android:layout_width="match_parent"
+                     android:layout_height="wrap_content"/>
+
+            <!-- バージョンコード -->
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:id="@+id/EsDebug.Info.AppVersionCode"
+                      style="@style/EsMaterial.Theme.TextInfo"
+                      android:layout_marginTop="@dimen/EsMaterial.Button.Margin"/>
+
+            <include layout="@layout/esm_material_separator" android:layout_width="match_parent"
+                     android:layout_height="wrap_content"/>
+
+            <!-- ローカルストレージのデータをバックアップする -->
+            <com.eaglesakura.material.widget.TransparentButton
+                    android:id="@+id/EsDebug.Dump.Local"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                <TextView android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          style="@style/EsMaterial.Theme.TextInfo"
+                          android:text="@string/EsDebug.Dump.Local"/>
+
+            </com.eaglesakura.material.widget.TransparentButton>
+
+            <include layout="@layout/esm_material_separator" android:layout_width="match_parent"
+                     android:layout_height="wrap_content"/>
+
+            <!-- デバッグモードをONにする -->
+            <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/EsDebug.DebugMode.Switch"
+                    android:layout_width="match_parent"
+                    style="@style/EsMaterial.Theme.Switch"
+                    android:text="@string/EsDebug.DebugMode.Switch"
+                    android:layout_height="wrap_content"/>
+
+            <include layout="@layout/esm_material_separator" android:layout_width="match_parent"
+                     android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+</LinearLayout>

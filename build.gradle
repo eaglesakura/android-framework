@@ -13,7 +13,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.5.0'
+        classpath "com.android.tools.build:gradle:2.1.+"
         classpath 'me.tatarka:gradle-retrolambda:3.2.5' // support Lambda
     }
 }
@@ -52,7 +52,7 @@ android {
 
 // check env
 if (!hasProperty("ANDROID_SUPPORT_LIB_VERSION")) {
-    ext.ANDROID_SUPPORT_LIB_VERSION = "+"
+    ext.ANDROID_SUPPORT_LIB_VERSION = "23.+"
 }
 if (!hasProperty("ANDROID_PLAYSERVICE_LIB_VERSION")) {
     ext.ANDROID_PLAYSERVICE_LIB_VERSION = "+"
@@ -60,6 +60,10 @@ if (!hasProperty("ANDROID_PLAYSERVICE_LIB_VERSION")) {
 // Local or maven
 if (!hasProperty("EGLIBRARY_COMPILE_LOCAL")) {
     ext.EGLIBRARY_COMPILE_LOCAL = false
+}
+
+configurations {
+    all*.exclude group: "org.apache.httpcomponents", module: "httpclient"
 }
 
 dependencies {
@@ -73,6 +77,7 @@ dependencies {
         compile project(':eglibrary:onactivityresult-invoke')
         compile project(':eglibrary:small-aquery')
         compile project(':eglibrary:rxandroid-support')
+        compile project(':eglibrary:margarineknife')
     } else {
         compile 'com.eaglesakura:simple-utils:1.+'
         compile 'com.eaglesakura:android-simple-utils:1.+'
@@ -83,6 +88,7 @@ dependencies {
         compile 'com.eaglesakura:rxandroid-support:1.+'
         compile 'com.eaglesakura:onactivityresult-invoke:1.+'
         compile 'com.eaglesakura:small-aquery:+'
+        compile 'com.eaglesakura:margarineknife:1.+'
     }
 
     /**
@@ -105,7 +111,7 @@ dependencies {
     /**
      * Injection / State
      */
-    compile "com.jakewharton:butterknife:+"
+//    compile "com.jakewharton:butterknife:+"
     compile 'frankiesardo:icepick:+'
     provided 'frankiesardo:icepick-processor:+'
 
@@ -149,7 +155,7 @@ void findAAR(FileCollection collection, String path) {
 
     def dir = file(path);
     for (def file : dir.listFiles()) {
-        if(file.directory) {
+        if (file.directory) {
             findAAR(collection, "${path}/${file.name}")
         }
     }
@@ -222,21 +228,21 @@ uploadArchives {
         }
         dependencies {
             dependency {
-                groupId = 'com.jakewharton'
-                artifactId = 'butterknife'
-                version = '7.0.+'
+                groupId = 'com.eaglesakura'
+                artifactId = 'margarineknife'
+                version = dependenceisVersion("com.eaglesakura:margarineknife", "1.0.+")
                 scope = 'compile'
             }
             dependency {
                 groupId = 'frankiesardo'
                 artifactId = 'icepick'
-                version = '3.1.+'
+                version = dependenceisVersion("frankiesardo:icepick", "3.1.+")
                 scope = 'compile'
             }
             dependency {
                 groupId = 'frankiesardo'
                 artifactId = 'icepick-processor'
-                version = '3.1.+'
+                version = dependenceisVersion("frankiesardo:icepick-processor", "3.1.+")
                 scope = 'provided'
             }
         }
@@ -250,6 +256,37 @@ task uploadJavadoc << {
     dst.mkdirs();
 
     ["/usr/bin/rsync", "-a", src.absolutePath, dst.absolutePath].execute().text;
+}
+
+/**
+ * 依存している固定ライブラリバージョンを取得する
+ */
+String dependenceisVersion(String libName, String defVersion) {
+    def lines = [];
+    def target = file("dependencies.txt");
+    if (!target.file) {
+        return defVersion;
+    }
+
+    target.text.eachLine {
+        if (!it.contains(libName) || it.contains("(")) {
+            return;
+        }
+
+        def tokens = it.split(" ");
+        if (tokens == null || tokens.length == 0) {
+            return;
+        }
+
+        lines += tokens[tokens.length - 1];
+    }
+    if (lines.empty) {
+        println("${libName} -> ${defVersion}")
+        return defVersion;
+    } else {
+        println("${libName} -> ${lines[0]}")
+        return lines[0];
+    }
 }
 
 /**

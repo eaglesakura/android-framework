@@ -10,6 +10,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.AppCompatButton;
@@ -43,6 +44,7 @@ public class MaterialButton extends AppCompatButton {
         initMaterialButton(context, attrs, defStyleAttr);
     }
 
+    @SuppressWarnings("ResourceType")
     private void initMaterialButton(Context context, AttributeSet attrs, int defStyleAttr) {
         if (isInEditMode()) {
             setGravity(Gravity.CENTER);
@@ -51,6 +53,7 @@ public class MaterialButton extends AppCompatButton {
 
         if (attrs != null) {
 
+
             Resources res = getResources();
             LogUtil.log("has attribute");
             TypedArray typedArray = context.obtainStyledAttributes(attrs, new int[]{
@@ -58,7 +61,7 @@ public class MaterialButton extends AppCompatButton {
                     R.attr.buttonHighlightWeight,
                     R.attr.buttonTextColorMode,
             });
-            int baseColor = typedArray.getColor(0, res.getColor(R.color.EsMaterial_Grey_500));
+            int baseColor = typedArray.getColor(0, ResourcesCompat.getColor(res, R.color.EsMaterial_Grey_500, context.getTheme()));
             this.styleBaseColor = baseColor;
             {
                 final float weight = typedArray.getFloat(1, 0.9f);
@@ -113,17 +116,17 @@ public class MaterialButton extends AppCompatButton {
         }
     }
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        if (isInEditMode()) {
-            Graphics g = new Graphics(canvas);
-            g.setColorARGB(0xFF00FFFF);
-            g.fillRoundRect(0, 0, getWidth(), getHeight(), (float) Math.min(getWidth(), getHeight()) / 10.0f);
-            g.setColorARGB(0xFFFF0000);
-            g.drawRoundRect(0, 0, getWidth(), getHeight(), (float) Math.min(getWidth(), getHeight()) / 10.0f);
-        }
-        super.onDraw(canvas);
-    }
+//    @Override
+//    protected void onDraw(Canvas canvas) {
+//        if (isInEditMode()) {
+//            Graphics g = new Graphics(canvas);
+//            g.setColorARGB(0xFF00FFFF);
+//            g.fillRoundRect(0, 0, getWidth(), getHeight(), (float) Math.min(getWidth(), getHeight()) / 10.0f);
+//            g.setColorARGB(0xFFFF0000);
+//            g.drawRoundRect(0, 0, getWidth(), getHeight(), (float) Math.min(getWidth(), getHeight()) / 10.0f);
+//        }
+//        super.onDraw(canvas);
+//    }
 
     static final int[] DISABLED_STATE_SET = new int[]{-android.R.attr.state_enabled};
     static final int[] FOCUSED_STATE_SET = new int[]{android.R.attr.state_focused};

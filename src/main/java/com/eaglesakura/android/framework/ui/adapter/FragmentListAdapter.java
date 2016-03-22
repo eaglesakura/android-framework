@@ -2,6 +2,7 @@ package com.eaglesakura.android.framework.ui.adapter;
 
 import com.eaglesakura.android.framework.ui.FragmentChooser;
 import com.eaglesakura.util.LogUtil;
+import com.eaglesakura.util.ReflectionUtil;
 import com.eaglesakura.util.Util;
 
 import android.support.v4.app.Fragment;
@@ -150,7 +151,7 @@ public class FragmentListAdapter extends FragmentPagerAdapter {
 
         @Override
         public Fragment newFragment(FragmentListAdapter adapter, int index) {
-            return initialize(Util.newInstanceOrNull(clazz));
+            return initialize(ReflectionUtil.newInstanceOrNull(clazz));
         }
     }
 

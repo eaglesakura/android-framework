@@ -16,8 +16,8 @@
         <item name="color">@color/EsMaterial.Grey.800</item>
     </style>
 
-    <style name="EsMaterial.Button.Grey" parent="EsMaterial.Button.Base">
-        <item name="android:background">@drawable/esm_button_grey</item>
-    </style>
+    <!--<style name="EsMaterial.Button.Grey" parent="EsMaterial.Button.Base">-->
+        <!--<item name="android:background">@drawable/esm_button_grey</item>-->
+    <!--</style>-->
 
 </resources>

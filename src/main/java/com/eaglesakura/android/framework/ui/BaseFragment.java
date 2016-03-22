@@ -1,6 +1,7 @@
 package com.eaglesakura.android.framework.ui;
 
 import com.eaglesakura.android.framework.util.AppSupportUtil;
+import com.eaglesakura.android.margarine.MargarineKnife;
 import com.eaglesakura.android.oari.ActivityResult;
 import com.eaglesakura.android.rx.LifecycleState;
 import com.eaglesakura.android.rx.ObserveTarget;
@@ -26,7 +27,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import butterknife.ButterKnife;
 import icepick.Icepick;
 import icepick.State;
 import rx.subjects.BehaviorSubject;
@@ -76,7 +76,7 @@ public abstract class BaseFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (mInjectionViews) {
             View result = inflater.inflate(mInjectionLayoutId, container, false);
-            ButterKnife.bind(this, result);
+            MargarineKnife.bind(this, result);
             // getView対策で、１クッション置いて実行する
             UIHandler.postUI(() -> {
                 onAfterViews();
@@ -84,14 +84,6 @@ public abstract class BaseFragment extends Fragment {
             return result;
         } else {
             return null;
-        }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (mInjectionViews) {
-            ButterKnife.unbind(this);
         }
     }
 
