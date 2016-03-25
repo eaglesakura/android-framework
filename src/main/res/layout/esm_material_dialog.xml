@@ -13,23 +13,6 @@
             android:orientation="vertical">
 
         <LinearLayout
-                android:id="@+id/EsMaterial.Dialog.Title.Root"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/EsMaterial.Margin.KeyLine1Horizontal"
-                android:layout_marginRight="@dimen/EsMaterial.Margin.KeyLine1Horizontal"
-                android:minHeight="@dimen/EsMaterial.Dialog.Button.Height"
-                android:orientation="horizontal"
-                android:paddingTop="@dimen/EsMaterial.Margin.KeyLine1Vertical">
-
-            <TextView
-                    android:id="@+id/EsMaterial.Dialog.Title"
-                    style="@style/EsMaterial.Font.Title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-        </LinearLayout>
-
-        <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/EsMaterial.Margin.KeyLine1Horizontal"
