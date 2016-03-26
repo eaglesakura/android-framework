@@ -1,5 +1,11 @@
 package com.eaglesakura.android.framework.service;
 
+import com.eaglesakura.android.rx.LifecycleState;
+import com.eaglesakura.android.rx.ObserveTarget;
+import com.eaglesakura.android.rx.RxTask;
+import com.eaglesakura.android.rx.RxTaskBuilder;
+import com.eaglesakura.android.rx.SubscribeTarget;
+import com.eaglesakura.android.rx.SubscriptionController;
 import com.eaglesakura.android.thread.ui.UIHandler;
 
 import android.annotation.SuppressLint;
@@ -14,8 +20,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
+
+import rx.subjects.BehaviorSubject;
 
 /**
  * 便利系メソッドを固めたUtilクラス
@@ -42,21 +51,39 @@ public abstract class BaseService extends Service {
     /**
      * CPU稼働保証を行うカウント
      */
-    int wakeUpRef;
+    int mWakeUpRef;
 
-    AlarmManager alarmManager;
-    PowerManager powerManager;
+    @NonNull
+    AlarmManager mAlarmManager;
+
+    @NonNull
+    PowerManager mPowerManager;
+
+    @NonNull
     PowerManager.WakeLock wakeLock;
 
-    boolean destroyed = false;
+    private BehaviorSubject<LifecycleState> mLifecycleSubject = BehaviorSubject.create(LifecycleState.NewObject);
+
+    @NonNull
+    private SubscriptionController mSubscriptionController = new SubscriptionController();
+
+    public BaseService() {
+        mSubscriptionController.bind(mLifecycleSubject);
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+
+        mAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        mPowerManager = (PowerManager) getSystemService(POWER_SERVICE);
+
         this.ACTION_SELF_WAKEUP_BROADCAST = getPackageName() + "/" + getClass().getName() + ".ACTION_SELF_WAKEUP_BROADCAST" + "/" + hashCode();
         registerReceiver(wakeupBroadcastReceiver, new IntentFilter(ACTION_SELF_WAKEUP_BROADCAST));
+
+        mLifecycleSubject.onNext(LifecycleState.OnCreated);
+        mLifecycleSubject.onNext(LifecycleState.OnStarted);
+        mLifecycleSubject.onNext(LifecycleState.OnResumed);
     }
 
     @Override
@@ -67,15 +94,35 @@ public abstract class BaseService extends Service {
             if (wakeLock != null) {
                 wakeLock.release();
                 wakeLock = null;
-                wakeUpRef = 0;
+                mWakeUpRef = 0;
             }
         }
         unregisterReceiver(wakeupBroadcastReceiver);
-        destroyed = true;
+        mLifecycleSubject.onNext(LifecycleState.OnPaused);
+        mLifecycleSubject.onNext(LifecycleState.OnStopped);
+        mLifecycleSubject.onNext(LifecycleState.OnDestroyed);
+    }
+
+    @NonNull
+    public SubscriptionController getSubscriptionController() {
+        return mSubscriptionController;
+    }
+
+    /**
+     * 新しい非同期タスクを実行する
+     *
+     * @param subscribeTarget 実行スレッド
+     * @param action          実行タスク
+     */
+    public <T> RxTaskBuilder<T> newTask(SubscribeTarget subscribeTarget, RxTask.Async<T> action) {
+        return new RxTaskBuilder<T>(getSubscriptionController())
+                .subscribeOn(subscribeTarget)
+                .observeOn(ObserveTarget.Alive)
+                .async(action);
     }
 
     public boolean isDestroyed() {
-        return destroyed;
+        return mLifecycleSubject.getValue() == LifecycleState.OnDestroyed;
     }
 
     /**
@@ -83,13 +130,13 @@ public abstract class BaseService extends Service {
      */
     public void popCpuWakeup() {
         synchronized (this) {
-            if (wakeUpRef <= 0) {
+            if (mWakeUpRef <= 0) {
                 // 強制停止がかかっている場合があるため、参照カウント0の場合は何もしない
                 return;
             }
 
-            --wakeUpRef;
-            if (wakeUpRef == 0) {
+            --mWakeUpRef;
+            if (mWakeUpRef == 0) {
                 wakeLock.release();
                 wakeLock = null;
             }
@@ -102,10 +149,10 @@ public abstract class BaseService extends Service {
     public void pushCpuWakeup() {
         synchronized (this) {
             if (wakeLock == null) {
-                wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, getClass().getSimpleName());
+                wakeLock = mPowerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, getClass().getSimpleName());
                 wakeLock.acquire();
             }
-            ++wakeUpRef;
+            ++mWakeUpRef;
         }
     }
 
@@ -147,9 +194,9 @@ public abstract class BaseService extends Service {
         );
 
         if (extract && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            alarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, current + delayTimeMs, pendingIntent);
+            mAlarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, current + delayTimeMs, pendingIntent);
         } else {
-            alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, current + delayTimeMs, pendingIntent);
+            mAlarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, current + delayTimeMs, pendingIntent);
         }
     }
 
@@ -161,7 +208,7 @@ public abstract class BaseService extends Service {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 this, requestCode, intent, PendingIntent.FLAG_CANCEL_CURRENT
         );
-        alarmManager.cancel(pendingIntent);
+        mAlarmManager.cancel(pendingIntent);
     }
 
     /**
