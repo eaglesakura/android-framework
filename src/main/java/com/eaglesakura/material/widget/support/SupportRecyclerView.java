@@ -1,5 +1,6 @@
 package com.eaglesakura.material.widget.support;
 
+import com.eaglesakura.android.framework.FwLog;
 import com.eaglesakura.android.framework.R;
 import com.eaglesakura.util.LogUtil;
 import com.eaglesakura.util.StringUtil;
@@ -8,6 +9,8 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.LayoutRes;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -55,6 +58,13 @@ public class SupportRecyclerView extends FrameLayout {
         View view = View.inflate(context, R.layout.esm_support_recyclerview, null);
 
         recyclerView = (RecyclerView) view.findViewById(R.id.EsMaterial_SupportRecyclerView_Content);
+        {
+            // RecyclerViewにデフォルト状態を指定する
+            recyclerView.setTag(R.id.SupportRecyclerView_RecyclerView, this);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            recyclerView.setHasFixedSize(false);
+        }
         emptyViewRoot = (FrameLayout) view.findViewById(R.id.EsMaterial_SupportRecyclerView_Empty);
         progress = view.findViewById(R.id.EsMaterial_SupportRecyclerView_Loading);
 
@@ -62,10 +72,9 @@ public class SupportRecyclerView extends FrameLayout {
         addView(view, layoutParams);
 
         if (attrs != null) {
-            LogUtil.log("has attribute");
             TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.SupportRecyclerView);
             String emptyText = typedArray.getString(R.styleable.SupportRecyclerView_emptyText);
-            LogUtil.log("SupportRecyclerView_emptyText(%s)", emptyText);
+            FwLog.widget("SupportRecyclerView_emptyText(%s)", emptyText);
 
             if (!StringUtil.isEmpty(emptyText)) {
                 // empty
@@ -108,6 +117,14 @@ public class SupportRecyclerView extends FrameLayout {
             return null;
         }
         return (T) emptyViewRoot.getChildAt(0);
+    }
+
+    /**
+     * アダプタを指定する
+     */
+    public void setAdapter(RecyclerView.Adapter adapter, boolean viewSizeFixed) {
+        recyclerView.setAdapter(adapter);
+        setProgressVisibly(adapter.getItemCount() == 0, adapter.getItemCount());
     }
 
     /**

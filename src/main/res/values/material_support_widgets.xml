@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <item name="SupportRecyclerView.RecyclerView" type="id"/>
     <declare-styleable name="SupportRecyclerView">
         <attr name="emptyText" format="string"/>
     </declare-styleable>
+
+    <integer name="CardAdapter.Insert.Duration">50</integer>
 
     <declare-styleable name="MaterialButton">
         <attr name="buttonBaseColor" format="color"/>

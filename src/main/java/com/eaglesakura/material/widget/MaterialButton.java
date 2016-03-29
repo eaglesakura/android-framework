@@ -52,10 +52,7 @@ public class MaterialButton extends AppCompatButton {
         }
 
         if (attrs != null) {
-
-
             Resources res = getResources();
-            LogUtil.log("has attribute");
             TypedArray typedArray = context.obtainStyledAttributes(attrs, new int[]{
                     R.attr.buttonBaseColor,
                     R.attr.buttonHighlightWeight,

@@ -49,8 +49,8 @@ public class FrameworkCentral {
             final int oldVersionCode = (int) settings.getLastBootedAppVersionCode();
             final int versionCode = ContextUtil.getVersionCode(application);
 
-            LogUtil.log("VersionCode [%d] -> [%d]", oldVersionCode, versionCode);
-            LogUtil.log("VersionName [%s] -> [%s]", oldVersionName, versionName);
+            FwLog.system("VersionCode [%d] -> [%d]", oldVersionCode, versionCode);
+            FwLog.system("VersionName [%s] -> [%s]", oldVersionName, versionName);
 
             settings.setLastBootedAppVersionCode(versionCode);
             settings.setLastBootedAppVersionName(versionName);
@@ -141,10 +141,10 @@ public class FrameworkCentral {
             Method installMethod = clazz.getMethod("install", Application.class);
 
             installMethod.invoke(clazz, getApplication());
-            LogUtil.log("install success Deploygate");
+            FwLog.system("install success Deploygate");
             return true;
         } catch (Exception e) {
-            LogUtil.log("not dependencies Deploygate");
+            FwLog.system("not dependencies Deploygate");
             return false;
         }
     }

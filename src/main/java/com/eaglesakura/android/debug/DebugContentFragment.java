@@ -1,6 +1,8 @@
 package com.eaglesakura.android.debug;
 
 import com.eaglesakura.android.aquery.AQuery;
+import com.eaglesakura.android.framework.FrameworkCentral;
+import com.eaglesakura.android.framework.FwLog;
 import com.eaglesakura.android.framework.R;
 import com.eaglesakura.android.framework.ui.BaseFragment;
 import com.eaglesakura.android.margarine.OnCheckedChanged;
@@ -28,11 +30,11 @@ public class DebugContentFragment extends BaseFragment {
 
     @OnClick(resName = "EsDebug.Dump.Local")
     void clickDumpLocal() {
-        LogUtil.log("clickDumpLocal()");
+        FwLog.system("clickDumpLocal()");
     }
 
     @OnCheckedChanged(resName = "EsDebug.DebugMode.Switch")
     void changeDebugModeEnable(boolean checked) {
-        LogUtil.log("changeDebugModeEnable(%s)", String.valueOf(checked));
+        FwLog.system("changeDebugModeEnable(%s)", String.valueOf(checked));
     }
 }

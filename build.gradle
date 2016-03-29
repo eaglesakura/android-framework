@@ -78,6 +78,9 @@ dependencies {
         compile project(':eglibrary:small-aquery')
         compile project(':eglibrary:rxandroid-support')
         compile project(':eglibrary:margarineknife')
+
+        androidTestCompile project(":eglibrary:android-devicetest-support")
+        testCompile project(":eglibrary:android-unittest-support")
     } else {
         compile 'com.eaglesakura:simple-utils:1.+'
         compile 'com.eaglesakura:android-simple-utils:1.+'
@@ -89,6 +92,9 @@ dependencies {
         compile 'com.eaglesakura:onactivityresult-invoke:1.+'
         compile 'com.eaglesakura:small-aquery:+'
         compile 'com.eaglesakura:margarineknife:1.+'
+
+        androidTestCompile 'com.eaglesakura:android-devicetest-support:1.+'
+        testCompile 'com.eaglesakura:android-unittest-support:1.+'
     }
 
     /**
@@ -105,21 +111,13 @@ dependencies {
      * Play Service
      */
     compile "com.google.android.gms:play-services-plus:${ANDROID_PLAYSERVICE_LIB_VERSION}"
-    compile "com.google.android.gms:play-services-gcm:${ANDROID_PLAYSERVICE_LIB_VERSION}"
     compile 'com.android.support:support-annotations:+'
 
     /**
      * Injection / State
      */
-//    compile "com.jakewharton:butterknife:+"
     compile 'frankiesardo:icepick:+'
     provided 'frankiesardo:icepick-processor:+'
-
-    /**
-     * Async
-     */
-    compile 'io.reactivex:rxandroid:1.1.+'
-    compile 'io.reactivex:rxjava:1.1.+'
 }
 
 /**

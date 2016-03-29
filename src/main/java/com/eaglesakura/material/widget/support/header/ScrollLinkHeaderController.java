@@ -1,5 +1,6 @@
 package com.eaglesakura.material.widget.support.header;
 
+import com.eaglesakura.android.framework.FwLog;
 import com.eaglesakura.android.util.ViewUtil;
 import com.eaglesakura.util.LogUtil;
 
@@ -149,7 +150,7 @@ public class ScrollLinkHeaderController {
         }
         currentY = (int) (headerScrollDelay * currentY);
 
-        LogUtil.log("onScrollY(%d)", currentY);
+        FwLog.widget("onScrollY(%d)", currentY);
         currentScrollPosition = currentY;
 
         // スクロール量に合わせてヘッダを透過する

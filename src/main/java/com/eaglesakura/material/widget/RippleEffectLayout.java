@@ -70,7 +70,6 @@ public class RippleEffectLayout extends FrameLayout {
     @SuppressLint("NewApi")
     protected void initializeEffectLayer(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            LogUtil.log("not supported LAYER_TYPE_HARDWARE clip");
             // not support hardware clip
             setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
