@@ -1,5 +1,6 @@
 package com.eaglesakura.android.framework.ui;
 
+import com.eaglesakura.android.framework.FwLog;
 import com.eaglesakura.util.LogUtil;
 
 import android.os.Parcel;
@@ -120,7 +121,7 @@ public final class FragmentChooser implements Parcelable {
             fragmentCaches.add(new FragmentCache(refType, tag));
         }
 
-        LogUtil.log("restore fragmentChooser(%d)", fragmentCaches.size());
+        FwLog.system("restore fragmentChooser(%d)", fragmentCaches.size());
     }
 
     /**

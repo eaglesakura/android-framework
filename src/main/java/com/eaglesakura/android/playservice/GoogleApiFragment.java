@@ -3,6 +3,7 @@ package com.eaglesakura.android.playservice;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
+import com.eaglesakura.android.framework.FwLog;
 import com.eaglesakura.android.framework.ui.BaseFragment;
 import com.eaglesakura.util.LogUtil;
 
@@ -40,7 +41,7 @@ public class GoogleApiFragment extends BaseFragment {
         if (statusCode != ConnectionResult.SUCCESS) {
             showGoogleErrorDialog(statusCode);
         } else {
-            LogUtil.log("Google Play Service OK!");
+            FwLog.google("Google Play Service OK!");
         }
     }
 

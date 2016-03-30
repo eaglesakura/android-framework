@@ -2,9 +2,9 @@ package com.eaglesakura.material.widget.support;
 
 import com.eaglesakura.android.framework.R;
 import com.eaglesakura.android.util.ViewUtil;
-import com.eaglesakura.util.CollectionUtil;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -133,10 +133,24 @@ public abstract class CardAdapter<T> extends RecyclerView.Adapter<CardAdapter.Ca
             addItem(index, item);
             return mCardModels.size() - 1;
         } else {
-            mCardModels.set(oldIndex, item);
-            notifyItemChanged(oldIndex);
+            T oldItem = mCardModels.get(oldIndex);
+            if (isNotifyItemChanged(oldItem, item)) {
+                // データに変動があったため交換する
+                mCardModels.set(oldIndex, item);
+                notifyItemChanged(oldIndex);
+            }
             return oldIndex;
         }
+    }
+
+    /**
+     * 2つのデータに変更があったかを確認する。
+     *
+     * @param oldItem 古いデータ
+     * @param newItem 新しいデータ
+     */
+    protected boolean isNotifyItemChanged(@Nullable T oldItem, @Nullable T newItem) {
+        return true;
     }
 
     /**

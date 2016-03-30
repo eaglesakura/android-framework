@@ -1,6 +1,7 @@
 package com.eaglesakura.android.framework.ui.license;
 
 import com.eaglesakura.android.aquery.AQuery;
+import com.eaglesakura.android.framework.FwLog;
 import com.eaglesakura.android.framework.R;
 import com.eaglesakura.android.framework.ui.BaseActivity;
 import com.eaglesakura.android.rx.RxTask;
@@ -90,7 +91,7 @@ public class LicenseViewActivity extends BaseActivity {
 
                 // 拡張子が一致して、かつignoreリストに含まれていなければ登録する
                 if (file.endsWith(".license") && ignoreFiles.indexOf(file) < 0) {
-                    LogUtil.log("load license(%s)", file);
+                    FwLog.widget("load license(%s)", file);
                     // １行目にOSSの表示名が格納されている
                     final LicenseItem item = newLicense(LICENSE_PATH + "/" + file);
                     if (item != null) {
@@ -118,12 +119,9 @@ public class LicenseViewActivity extends BaseActivity {
 
             @Override
             public void onBindViewHolder(final ItemViewHolder holder, final int position) {
-                LogUtil.log("onBindViewHolder pos(%d) title(%s) bind(%s)", position, licenseList.get(position).title, holder.toString());
-                UIHandler.postUI(new Runnable() {
-                    @Override
-                    public void run() {
-                        holder.bind(position);
-                    }
+                FwLog.widget("onBindViewHolder pos(%d) title(%s) bind(%s)", position, licenseList.get(position).title, holder.toString());
+                UIHandler.postUI(() -> {
+                    holder.bind(position);
                 });
                 ViewUtil.matchCardWidth(holder.itemView);
             }
@@ -150,7 +148,7 @@ public class LicenseViewActivity extends BaseActivity {
             is = getAssets().open(assetsPath);
             BufferedReader reader = new BufferedReader(new InputStreamReader(is));
             String line = reader.readLine();
-            LogUtil.log("OSS(%s)", line);
+            FwLog.widget("OSS(%s)", line);
 
             return new LicenseItem(line, assetsPath);
         } catch (Exception e) {

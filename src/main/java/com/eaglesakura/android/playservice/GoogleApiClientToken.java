@@ -3,6 +3,7 @@ package com.eaglesakura.android.playservice;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import com.eaglesakura.android.framework.FwLog;
 import com.eaglesakura.android.thread.ui.UIHandler;
 import com.eaglesakura.android.util.AndroidThreadUtil;
 import com.eaglesakura.util.LogUtil;
@@ -114,7 +115,7 @@ public class GoogleApiClientToken {
         timer.start();
 
         if (disconnected) {
-            LogUtil.log("Token disconnected Req ReConnecting");
+            FwLog.google("Token disconnected Req ReConnecting");
             connectionResult = null;
             client.connect();
         }
@@ -175,7 +176,7 @@ public class GoogleApiClientToken {
             synchronized (lock) {
                 --refs;
                 if (isAutoDisconnectTarget()) {
-                    LogUtil.log("req clean GoogleApiClient");
+                    FwLog.google("req clean GoogleApiClient");
                     UIHandler.postDelayedUI(disconnectChecker, disconnectPendingTime);
                 }
             }
@@ -207,7 +208,7 @@ public class GoogleApiClientToken {
                 public void run() {
                     synchronized (lock) {
                         if (isAutoDisconnectTarget()) {
-                            LogUtil.log("auto disconnect client");
+                            FwLog.google("auto disconnect client");
                             client.disconnect();
                             disconnected = true;
                             connectionResult = null;
@@ -221,20 +222,20 @@ public class GoogleApiClientToken {
     private class CallbackImpl implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
         @Override
         public void onConnected(Bundle bundle) {
-            LogUtil.log("onConnected bundle(%s)", "" + bundle);
+            FwLog.google("onConnected bundle(%s)", "" + bundle);
             connectedHint = bundle;
             connectionResult = null;
         }
 
         @Override
         public void onConnectionSuspended(int status) {
-            LogUtil.log("onConnectionSuspended status(%d)", status);
+            FwLog.google("onConnectionSuspended status(%d)", status);
             disconnected = true;
         }
 
         @Override
         public void onConnectionFailed(ConnectionResult result) {
-            LogUtil.log("onConnectionFailed connectionResult(%s)", "" + connectionResult);
+            FwLog.google("onConnectionFailed connectionResult(%s)", "" + connectionResult);
             connectionResult = result;
             disconnected = true;
 

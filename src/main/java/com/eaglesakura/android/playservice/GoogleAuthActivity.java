@@ -5,6 +5,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 
 import com.eaglesakura.android.framework.FrameworkCentral;
+import com.eaglesakura.android.framework.FwLog;
 import com.eaglesakura.android.framework.R;
 import com.eaglesakura.android.framework.db.BasicSettings;
 import com.eaglesakura.android.framework.ui.BaseActivity;
@@ -135,15 +136,14 @@ public abstract class GoogleAuthActivity extends BaseActivity implements GoogleA
                 @Override
                 public Object executeTask(GoogleApiClient client) throws Exception {
                     final BasicSettings basicSettings = FrameworkCentral.getSettings();
-                    LogUtil.log("login completed");
+                    FwLog.google("login completed");
                     basicSettings.setLoginGoogleClientApi(true);
                     // Emailを保存する
                     try {
                         basicSettings.setLoginGoogleAccount(Plus.AccountApi.getAccountName(client));
-                        LogUtil.log("email connected success");
+                        FwLog.google("email connected success");
                     } catch (Exception e) {
-
-                        LogUtil.log("email connected fail");
+                        FwLog.google("email connected fail");
                     }
                     basicSettings.commit();
                     onSuccess();
@@ -159,13 +159,13 @@ public abstract class GoogleAuthActivity extends BaseActivity implements GoogleA
                             onFailed(connectionResult.getErrorCode());
                         } else {
 
-                            LogUtil.log("connect retry");
+                            FwLog.google("connect retry");
 //                        getGoogleApiClientToken().reconnect();
                             mSleepTime *= BACKOFF_MULT;
                             loginOnBackground();
                         }
                     } else if (connectionResult.hasResolution()) {
-                        LogUtil.log("start auth dialog");
+                        FwLog.google("start auth dialog");
                         showLoginDialog(connectionResult);
                     } else {
                         onFailed(connectionResult.getErrorCode());
@@ -189,10 +189,10 @@ public abstract class GoogleAuthActivity extends BaseActivity implements GoogleA
     protected void showLoginDialog(final ConnectionResult connectionResult) {
         runOnUiThread(() -> {
             try {
-                LogUtil.log("Attempting to resolve failed connection");
+                FwLog.google("Attempting to resolve failed connection");
                 connectionResult.startResolutionForResult(GoogleAuthActivity.this, REQUEST_GOOGLE_CLIENT_AUTH);
             } catch (IntentSender.SendIntentException e) {
-                LogUtil.log("Exception while starting resolution activity", e);
+                FwLog.google("Exception while starting resolution activity", e);
             }
         });
     }

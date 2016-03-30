@@ -1,5 +1,6 @@
 package com.eaglesakura.android.framework.ui.message;
 
+import com.eaglesakura.android.framework.FwLog;
 import com.eaglesakura.util.LogUtil;
 import com.eaglesakura.util.StringUtil;
 
@@ -45,11 +46,11 @@ public class LocalMessageReceiver extends BroadcastReceiver {
             }
 
             for (String g : granted) {
-                LogUtil.log("RuntimePermission Granted / " + g);
+                FwLog.system("RuntimePermission Granted / " + g);
             }
 
             for (String d : denied) {
-                LogUtil.log("RuntimePermission Denied / " + d);
+                FwLog.system("RuntimePermission Denied / " + d);
             }
 
             onRuntimePermissionUpdated(granted, denied);

@@ -1,5 +1,6 @@
 package com.eaglesakura.android.framework.ui.adapter;
 
+import com.eaglesakura.android.framework.FwLog;
 import com.eaglesakura.android.framework.ui.FragmentChooser;
 import com.eaglesakura.util.LogUtil;
 import com.eaglesakura.util.ReflectionUtil;
@@ -98,9 +99,9 @@ public class FragmentListAdapter extends FragmentPagerAdapter {
         Fragment result = chooser.find(reqTag);
         if (result == null) {
             result = creater.newFragment(this, position);
-            LogUtil.log("adapter new fragment(%s)", reqTag);
+            FwLog.system("adapter new fragment(%s)", reqTag);
         } else {
-            LogUtil.log("adapter find fragment from chooser(%s)", reqTag);
+            FwLog.system("adapter find fragment from chooser(%s)", reqTag);
         }
         return result;
     }
