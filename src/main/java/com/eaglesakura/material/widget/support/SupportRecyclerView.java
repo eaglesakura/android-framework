@@ -90,8 +90,13 @@ public class SupportRecyclerView extends FrameLayout {
         return recyclerView;
     }
 
-    public void setEmptyView(@LayoutRes int layoutId) {
-        setEmptyView(View.inflate(getContext(), layoutId, null));
+    /**
+     * オブジェクトがカラになった場合のViewを追加する
+     */
+    public View setEmptyView(@LayoutRes int layoutId) {
+        View view = View.inflate(getContext(), layoutId, null);
+        setEmptyView(view);
+        return view;
     }
 
     public void setEmptyView(View view) {
@@ -124,6 +129,7 @@ public class SupportRecyclerView extends FrameLayout {
      */
     public void setAdapter(RecyclerView.Adapter adapter, boolean viewSizeFixed) {
         recyclerView.setAdapter(adapter);
+        recyclerView.setHasFixedSize(viewSizeFixed);
         setProgressVisibly(adapter.getItemCount() == 0, adapter.getItemCount());
     }
 

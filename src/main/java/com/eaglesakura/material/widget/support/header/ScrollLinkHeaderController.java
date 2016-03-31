@@ -16,7 +16,10 @@ import android.widget.FrameLayout;
  * スクロールにリンクしてヘッダ用のView位置や透過等を制御する
  * <br>
  * Scroll本体とヘッダはFrameLayoutの前後になるようにして、お互いの影響を与えないように注意する。
+ *
+ * Android Design Libraryでサポートされるようになったので、このクラスは不要である。
  */
+@Deprecated
 public class ScrollLinkHeaderController {
     /**
      * ScrollView等でスペーサーとして機能させる空のView
