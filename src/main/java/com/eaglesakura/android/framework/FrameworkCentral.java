@@ -1,6 +1,7 @@
 package com.eaglesakura.android.framework;
 
 import com.eaglesakura.android.framework.db.BasicSettings;
+import com.eaglesakura.android.framework.ui.message.LocalMessageReceiver;
 import com.eaglesakura.android.rx.LifecycleState;
 import com.eaglesakura.android.rx.ObserveTarget;
 import com.eaglesakura.android.rx.RxTask;
@@ -10,16 +11,16 @@ import com.eaglesakura.android.rx.SubscriptionController;
 import com.eaglesakura.android.thread.ui.UIHandler;
 import com.eaglesakura.android.util.ContextUtil;
 
-import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Application;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
 
 import java.lang.reflect.Method;
+import java.util.HashSet;
+import java.util.Set;
 
 import rx.subjects.BehaviorSubject;
 
@@ -45,7 +46,13 @@ public class FrameworkCentral {
         @NonNull
         final SubscriptionController mSubscriptionController = new SubscriptionController();
 
+        @NonNull
+        final Set<ApplicationStateListener> mStateListeners = new HashSet<>();
+
         int mForegroundActivities;
+
+        @NonNull
+        final LocalMessageReceiver mLocalMessageReceiver;
 
         public FrameworkCentralImpl(@NonNull Application application) {
             mApplication = application;
@@ -62,6 +69,21 @@ public class FrameworkCentral {
             mSubscriptionController.bind(mSubject);
             mSubject.onNext(LifecycleState.OnCreated);
             mSubject.onNext(LifecycleState.OnStarted);
+
+            mLocalMessageReceiver = new LocalMessageReceiver(mApplication) {
+                @Override
+                protected void onRuntimePermissionUpdated(String[] granted, String[] denied) {
+                    synchronized (mStateListeners) {
+                        for (ApplicationStateListener listener : mStateListeners) {
+                            listener.onRuntimePermissionUpdated(granted, denied);
+                        }
+                    }
+                }
+
+                @Override
+                protected void onGooglePlayLoginCompleted() {
+                }
+            };
         }
 
         void loadSettings() {
@@ -83,7 +105,6 @@ public class FrameworkCentral {
             if (mFrameworkApplication != null && ((versionCode != oldVersionCode) || (!oldVersionName.equals(versionName)))) {
                 mFrameworkApplication.onApplicationUpdated(oldVersionCode, versionCode, oldVersionName, versionName);
             }
-
         }
 
         @Override
@@ -101,8 +122,10 @@ public class FrameworkCentral {
                 mSubject.onNext(LifecycleState.OnResumed);
 
                 // フォアグラウンドに移動した
-                if (mFrameworkApplication != null) {
-                    mFrameworkApplication.onApplicationForeground(activity);
+                synchronized (mStateListeners) {
+                    for (ApplicationStateListener listener : mStateListeners) {
+                        listener.onApplicationForeground(activity);
+                    }
                 }
             }
             FwLog.system("onActivityResumed num[%d] (%s)", mForegroundActivities, activity.toString());
@@ -110,14 +133,19 @@ public class FrameworkCentral {
 
         @Override
         public void onActivityPaused(Activity activity) {
-            FwLog.system("onActivityPaused num[%d] (%s)", mForegroundActivities, activity.toString());
             UIHandler.postDelayedUI(() -> {
                 --mForegroundActivities;
                 // バックグラウンドに移動した
-                if (mForegroundActivities == 0 && mFrameworkApplication != null) {
-                    mFrameworkApplication.onApplicationBackground();
+                if (mForegroundActivities == 0) {
                     mSubject.onNext(LifecycleState.OnPaused);
+
+                    synchronized (mStateListeners) {
+                        for (ApplicationStateListener listener : mStateListeners) {
+                            listener.onApplicationBackground();
+                        }
+                    }
                 }
+                FwLog.system("onActivityPaused num[%d] (%s)", mForegroundActivities, activity.toString());
             }, 100);
         }
 
@@ -206,6 +234,26 @@ public class FrameworkCentral {
     }
 
     /**
+     * アプリのステート変更通知を行う
+     */
+    @UiThread
+    public static void registerListener(ApplicationStateListener listener) {
+        synchronized (sImpl.mStateListeners) {
+            sImpl.mStateListeners.add(listener);
+        }
+    }
+
+    /**
+     * アプリのステート変更通知を廃棄する
+     */
+    @UiThread
+    public static void unregisterListener(ApplicationStateListener listener) {
+        synchronized (sImpl.mStateListeners) {
+            sImpl.mStateListeners.remove(listener);
+        }
+    }
+
+    /**
      * Deploygateのインストールを行う。
      * <br>
      * dependenciesが設定されていない場合、このメソッドはfalseを返す
@@ -246,7 +294,12 @@ public class FrameworkCentral {
          * Class Unloadを防ぐため、Applicationのローカル変数としてCentralを保持する
          */
         void onRequestSaveCentral(Object central);
+    }
 
+    /**
+     * アプリの状態が更新された
+     */
+    public interface ApplicationStateListener {
         /**
          * アプリが前面に配置された
          */
@@ -256,5 +309,10 @@ public class FrameworkCentral {
          * アプリがバックグラウンドに戻された
          */
         void onApplicationBackground();
+
+        /**
+         * Runtime Permissionの状態が更新された
+         */
+        void onRuntimePermissionUpdated(String[] granted, String[] denied);
     }
 }

@@ -1,6 +1,11 @@
 package com.eaglesakura.material.widget.adapter;
 
+import com.eaglesakura.android.aquery.AQuery;
 import com.eaglesakura.android.framework.R;
+import com.eaglesakura.android.framework.ui.SupportAQuery;
+import com.eaglesakura.android.rx.RxTaskBuilder;
+import com.eaglesakura.android.rx.SubscribeTarget;
+import com.eaglesakura.android.rx.SubscriptionController;
 import com.eaglesakura.android.util.ViewUtil;
 import com.eaglesakura.material.widget.support.SupportRecyclerView;
 import com.eaglesakura.util.Util;
@@ -8,6 +13,7 @@ import com.eaglesakura.util.Util;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +54,7 @@ public abstract class CardAdapter<T> extends RecyclerView.Adapter<CardAdapter.Ca
     @Override
     public void onBindViewHolder(CardItem holder, int position) {
         ViewUtil.matchCardWidth(holder.itemView);
-        onBindCard(holder.itemView, position, mCollection.get(position));
+        onBindCard(new CardBind<>(holder.itemView, mCollection.get(position)), position);
     }
 
     @Override
@@ -84,7 +90,53 @@ public abstract class CardAdapter<T> extends RecyclerView.Adapter<CardAdapter.Ca
     /**
      * 表示用のViewを構築する
      */
-    protected abstract void onBindCard(View card, int position, T item);
+    protected abstract void onBindCard(CardBind<T> bind, int position);
+
+    public static class CardBind<T> {
+        @NonNull
+        private final View mCard;
+
+        @NonNull
+        private final T mItem;
+
+        CardBind(@NonNull View card, @NonNull T item) {
+            mCard = card;
+            mItem = item;
+
+            mCard.setTag(R.id.CardAdapter_Item, item);
+        }
+
+        /**
+         * 正しくバインドされたままであればtrueを返却する
+         */
+        public boolean isBinded() {
+            return mCard.getTag(R.id.CardAdapter_Item) == mItem;
+        }
+
+        @NonNull
+        public View getCard() {
+            if (!isBinded()) {
+                throw new IllegalStateException();
+            }
+
+            return mCard;
+        }
+
+        @NonNull
+        public T getItem() {
+            return mItem;
+        }
+
+        @UiThread
+        @NonNull
+        public SupportAQuery query() {
+            if (!isBinded()) {
+                throw new IllegalStateException();
+            }
+
+            return new SupportAQuery(mCard);
+        }
+    }
 
     /**
      * Adapter用のコールバックを設定する

@@ -12,6 +12,7 @@ import com.eaglesakura.android.rx.SubscriptionController;
 import com.eaglesakura.android.thread.ui.UIHandler;
 import com.eaglesakura.android.util.ContextUtil;
 import com.eaglesakura.android.util.PermissionUtil;
+import com.eaglesakura.util.ReflectionUtil;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -19,6 +20,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.MenuRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -114,6 +116,46 @@ public abstract class BaseFragment extends Fragment {
 
     public <T extends View> T findViewByIdFromActivity(Class<T> clazz, int id) {
         return (T) getActivity().findViewById(id);
+    }
+
+    /**
+     * 親クラスを特定のインターフェースに変換する
+     *
+     * 変換できない場合、このメソッドはnullを返却する
+     */
+    @Nullable
+    public <T> T getParent(@NonNull Class<T> clazz) {
+        Fragment fragment = getParentFragment();
+        Activity activity = getActivity();
+        if (ReflectionUtil.instanceOf(fragment, clazz)) {
+            return (T) fragment;
+        }
+
+        if (ReflectionUtil.instanceOf(activity, clazz)) {
+            return (T) activity;
+        }
+
+        return null;
+    }
+
+    /**
+     * 親クラスを特定のインターフェースに変換する
+     *
+     * 変換できない場合、このメソッドはnullを返却する
+     */
+    @NonNull
+    public <T> T getParentOrThrow(@NonNull Class<T> clazz) {
+        Fragment fragment = getParentFragment();
+        Activity activity = getActivity();
+        if (ReflectionUtil.instanceOf(fragment, clazz)) {
+            return (T) fragment;
+        }
+
+        if (ReflectionUtil.instanceOf(activity, clazz)) {
+            return (T) activity;
+        }
+
+        throw new IllegalStateException(clazz.getName());
     }
 
     /**
