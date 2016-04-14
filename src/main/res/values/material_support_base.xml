@@ -118,4 +118,16 @@
         <item name="android:textColorSecondary">@color/EsMaterial.Grey.50</item>
         <item name="colorAccent">@color/EsMaterial.LightGreen.300</item>
     </style>
+
+    <style name="EsMaterial.Theme.Blue.NoActionBar" parent="EsMaterial.Theme.Base">
+        <item name="drawerArrowStyle">@style/EsMaterial.Blue.DrawerArrow</item>
+        <item name="colorPrimary">@color/EsMaterial.Blue.500</item>
+        <item name="colorPrimaryDark">@color/EsMaterial.Blue.600</item>
+    </style>
+
+    <style name="EsMaterial.Blue.Toolbar" parent="EsMaterial.Theme.Red.NoActionBar">
+        <item name="android:textColorPrimary">@color/EsMaterial.Grey.50</item>
+        <item name="android:textColorSecondary">@color/EsMaterial.Grey.50</item>
+        <item name="colorAccent">@color/EsMaterial.LightGreen.300</item>
+    </style>
 </resources>

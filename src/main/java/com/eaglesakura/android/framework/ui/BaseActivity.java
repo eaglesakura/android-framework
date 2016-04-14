@@ -2,6 +2,7 @@ package com.eaglesakura.android.framework.ui;
 
 import com.eaglesakura.android.framework.R;
 import com.eaglesakura.android.framework.util.AppSupportUtil;
+import com.eaglesakura.android.garnet.Garnet;
 import com.eaglesakura.android.margarine.MargarineKnife;
 import com.eaglesakura.android.oari.ActivityResult;
 import com.eaglesakura.android.rx.LifecycleState;
@@ -10,10 +11,12 @@ import com.eaglesakura.android.rx.RxTask;
 import com.eaglesakura.android.rx.RxTaskBuilder;
 import com.eaglesakura.android.rx.SubscribeTarget;
 import com.eaglesakura.android.rx.SubscriptionController;
+import com.eaglesakura.android.thread.ui.UIHandler;
 import com.eaglesakura.android.util.ContextUtil;
 import com.eaglesakura.util.LogUtil;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.PorterDuff;
@@ -40,40 +43,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     private BehaviorSubject<LifecycleState> mLifecycleSubject = BehaviorSubject.create(LifecycleState.NewObject);
 
     private SubscriptionController mSubscription = new SubscriptionController();
-
-    /**
-     * Fragment管理のコールバックを受け付ける
-     */
-    private FragmentChooser.Callback mChooserCallbackImpl = new FragmentChooser.Callback() {
-        @Override
-        public FragmentManager getFragmentManager(FragmentChooser chooser) {
-            return getSupportFragmentManager();
-        }
-
-        @Override
-        public boolean isFragmentExist(FragmentChooser chooser, Fragment fragment) {
-            if (fragment == null) {
-                return false;
-            }
-
-            if (fragment instanceof BaseFragment) {
-                // 廃棄済みはさっさと排除する
-                if (((BaseFragment) fragment).getLifecycleState() == LifecycleState.OnDestroyed) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        @Override
-        public Fragment newFragment(FragmentChooser chooser, String requestTag) {
-            return null;
-        }
-    };
-
-    @State
-    FragmentChooser mFragmentChooser = new FragmentChooser(mChooserCallbackImpl);
 
     protected BaseActivity() {
         mSubscription.bind(mLifecycleSubject);
@@ -185,10 +154,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     public void onAttachFragment(Fragment fragment) {
         super.onAttachFragment(fragment);
-
-        // キャッシュに登録する
-        mFragmentChooser.compact();
-        mFragmentChooser.addFragment(FragmentChooser.ReferenceType.Weak, fragment, fragment.getTag(), 0);
     }
 
     /**
@@ -199,15 +164,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected boolean handleFragmentsKeyEvent(KeyEvent event) {
         if (!ContextUtil.isBackKeyEvent(event)) {
             return false;
-        }
-
-        List<Fragment> list = mFragmentChooser.listExistFragments();
-        for (Fragment frag : list) {
-            if (frag.isVisible() && frag instanceof BaseFragment) {
-                if (((BaseFragment) frag).handleBackButton()) {
-                    return true;
-                }
-            }
         }
         return false;
     }

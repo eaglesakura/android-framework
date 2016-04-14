@@ -39,7 +39,9 @@ public class TransparentButton extends FrameLayout {
         setClickable(true);
         setBackgroundResource(R.drawable.esm_button_transparent_fill);
 
-        int margin = context.getResources().getDimensionPixelSize(R.dimen.EsMaterial_Button_Margin);
-        setPadding(margin, margin, margin, margin);
+        if (!isInEditMode()) {
+            int margin = context.getResources().getDimensionPixelSize(R.dimen.EsMaterial_Button_Margin);
+            setPadding(margin, margin, margin, margin);
+        }
     }
 }

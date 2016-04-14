@@ -1,5 +1,6 @@
 package com.eaglesakura.android.framework.service;
 
+import com.eaglesakura.android.garnet.Garnet;
 import com.eaglesakura.android.rx.LifecycleState;
 import com.eaglesakura.android.rx.ObserveTarget;
 import com.eaglesakura.android.rx.RxTask;
@@ -84,6 +85,16 @@ public abstract class BaseService extends Service {
         mLifecycleSubject.onNext(LifecycleState.OnCreated);
         mLifecycleSubject.onNext(LifecycleState.OnStarted);
         mLifecycleSubject.onNext(LifecycleState.OnResumed);
+
+        createInjectionBuilder().inject();
+    }
+
+    /**
+     * Builderを構築する
+     */
+    @NonNull
+    protected Garnet.Builder createInjectionBuilder() {
+        return Garnet.create(this).depend(Context.class, getApplicationContext());
     }
 
     @Override

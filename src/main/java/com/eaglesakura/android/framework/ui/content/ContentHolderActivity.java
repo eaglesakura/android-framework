@@ -3,11 +3,17 @@ package com.eaglesakura.android.framework.ui.content;
 import com.eaglesakura.android.framework.R;
 import com.eaglesakura.android.framework.ui.BaseActivity;
 import com.eaglesakura.android.framework.ui.BaseFragment;
+import com.eaglesakura.android.framework.ui.ChildFragmentHolder;
 import com.eaglesakura.util.ReflectionUtil;
+import com.eaglesakura.util.StringUtil;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 
@@ -30,47 +36,55 @@ public abstract class ContentHolderActivity extends BaseActivity {
      */
     private static final String EXTRA_CONTENT_FRAGMENT_ARGMENTS = "EXTRA_CONTENT_FRAGMENT_ARGMENTS";
 
+    protected static final String TAG_CONTENT_FRAGMENT_MAIN = "fw.TAG_CONTENT_FRAGMENT_MAIN";
+
+    private ChildFragmentHolder<Fragment> mFragmentMain = new ChildFragmentHolder<Fragment>(this, Fragment.class, R.id.Content_Holder_Root, TAG_CONTENT_FRAGMENT_MAIN) {
+        @NonNull
+        @Override
+        protected Fragment newFragmentInstance(@Nullable Bundle savedInstanceState) throws Exception {
+            String className = getIntent().getStringExtra(EXTRA_CONTENT_FRAGMENT_CLASS);
+            if (!StringUtil.isEmpty(className)) {
+                Fragment result = (Fragment) Class.forName(className).newInstance();
+                Bundle argments = getIntent().getBundleExtra(EXTRA_CONTENT_FRAGMENT_ARGMENTS);
+                if (argments != null) {
+                    result.setArguments(argments);
+                }
+                return result;
+            } else {
+                return newDefaultContentFragment();
+            }
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         final int layoutId = getIntent().getIntExtra(EXTRA_ACTIVITY_LAYOUT, getDefaultLayoutId());
-        if (layoutId != 0) {
-            requestInjection(layoutId);
-            Toolbar toolbar = findViewById(Toolbar.class, R.id.EsMaterial_Toolbar);
-            if (toolbar != null) {
-                setSupportActionBar(toolbar);
-            }
-
-            if (savedInstanceState == null) {
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                {
-                    String className = getIntent().getStringExtra(EXTRA_CONTENT_FRAGMENT_CLASS);
-                    BaseFragment fragment = null;
-                    if (className != null) {
-                        fragment = ReflectionUtil.newInstanceOrNull(className);
-                    }
-
-                    if (fragment == null) {
-                        fragment = newDefaultContentFragment();
-                    } else {
-                        Bundle argments = getIntent().getBundleExtra(EXTRA_CONTENT_FRAGMENT_ARGMENTS);
-                        if (argments != null) {
-                            fragment.setArguments(argments);
-                        }
-                    }
-                    transaction.add(R.id.Content_Holder_Root, fragment, createTag(fragment));
-                }
-                transaction.commit();
-            }
+        if (layoutId == 0) {
+            throw new IllegalStateException();
         }
 
+        requestInjection(layoutId);
+        Toolbar toolbar = findViewById(Toolbar.class, R.id.EsMaterial_Toolbar);
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+        }
+
+        mFragmentMain.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mFragmentMain.onResume();
     }
 
     /**
      * デフォルトで使用されるレイアウトIDを取得する
      */
+    @LayoutRes
     protected int getDefaultLayoutId() {
         return R.layout.activity_content_holder;
     }
@@ -78,13 +92,14 @@ public abstract class ContentHolderActivity extends BaseActivity {
     /**
      * 表示するコンテンツが指定されない場合のデフォルトコンテンツを開く
      */
-    protected abstract BaseFragment newDefaultContentFragment();
+    @NonNull
+    protected abstract Fragment newDefaultContentFragment();
 
     /**
-     * 管理用のTagを生成する
+     * コンテンツコントロール用のFragmentを取得する
      */
-    protected String createTag(BaseFragment fragment) {
-        return fragment.createSimpleTag();
+    public Fragment getContentFragment() {
+        return mFragmentMain.get();
     }
 
     /**

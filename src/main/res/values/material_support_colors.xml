@@ -99,6 +99,10 @@
     <color name="EsMaterial.Blue.900">#0D47A1</color>
     <color name="EsMaterial.Blue.Theme">@color/EsMaterial.Blue.400</color>
 
+    <style name="EsMaterial.Blue.DrawerArrow" parent="Widget.AppCompat.DrawerArrowToggle">
+        <item name="color">@color/EsMaterial.Blue.50</item>
+    </style>
+
     <color name="EsMaterial.Blue.Button.Disabled">@color/EsMaterial.Blue.400</color>
     <color name="EsMaterial.Blue.Button.Normal">@color/EsMaterial.Blue.500</color>
     <color name="EsMaterial.Blue.Button.Focused">@color/EsMaterial.Blue.500</color>

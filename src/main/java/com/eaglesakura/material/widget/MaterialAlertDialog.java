@@ -31,7 +31,6 @@ public class MaterialAlertDialog extends MaterialDialogBase {
     }
 
     public void setPositiveButton(CharSequence button, final OnClickListener positiveListener) {
-
         new AQuery(root)
                 .id(R.id.EsMaterial_Dialog_BasicButtons_Positive).text(button).visible()
                 .clicked(new View.OnClickListener() {
@@ -54,14 +53,11 @@ public class MaterialAlertDialog extends MaterialDialogBase {
     public void setNegativeButton(CharSequence button, final OnClickListener negativeListener) {
         new AQuery(root)
                 .id(R.id.EsMaterial_Dialog_BasicButtons_Negative).text(button).visible()
-                .clicked(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (negativeListener != null) {
-                            negativeListener.onClick(MaterialAlertDialog.this, -1);
-                        }
-                        dismiss();
+                .clicked(v -> {
+                    if (negativeListener != null) {
+                        negativeListener.onClick(MaterialAlertDialog.this, -1);
                     }
+                    dismiss();
                 })
                 .id(R.id.EsMaterial_Dialog_BasicButtons_Root).visible();
     }
@@ -73,14 +69,11 @@ public class MaterialAlertDialog extends MaterialDialogBase {
     public void setNeutralButton(CharSequence button, final OnClickListener neutralListener) {
         new AQuery(root)
                 .id(R.id.EsMaterial_Dialog_BasicButtons_Neutral).text(button).visible()
-                .clicked(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (neutralListener != null) {
-                            neutralListener.onClick(MaterialAlertDialog.this, -1);
-                        }
-                        dismiss();
+                .clicked(v -> {
+                    if (neutralListener != null) {
+                        neutralListener.onClick(MaterialAlertDialog.this, -1);
                     }
+                    dismiss();
                 })
                 .id(R.id.EsMaterial_Dialog_BasicButtons_Root).visible();
     }

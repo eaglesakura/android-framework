@@ -1,6 +1,8 @@
 package com.eaglesakura.android.framework.ui;
 
+import com.eaglesakura.android.framework.FwLog;
 import com.eaglesakura.android.framework.util.AppSupportUtil;
+import com.eaglesakura.android.garnet.Garnet;
 import com.eaglesakura.android.margarine.MargarineKnife;
 import com.eaglesakura.android.oari.ActivityResult;
 import com.eaglesakura.android.rx.LifecycleState;
@@ -11,21 +13,35 @@ import com.eaglesakura.android.rx.SubscribeTarget;
 import com.eaglesakura.android.rx.SubscriptionController;
 import com.eaglesakura.android.thread.ui.UIHandler;
 import com.eaglesakura.android.util.ContextUtil;
+import com.eaglesakura.android.util.DialogUtil;
 import com.eaglesakura.android.util.PermissionUtil;
+import com.eaglesakura.util.ReflectionUtil;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.MenuRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 import icepick.Icepick;
 import icepick.State;
@@ -44,16 +60,30 @@ public abstract class BaseFragment extends Fragment {
 
     private int mBackStackIndex = BACKSTACK_NONE;
 
+    /**
+     * 既に依存構築済であればtrue
+     */
+    private boolean mInjectedInstance = false;
+
     @State
     boolean mInitializedViews = false;
 
     private boolean mInjectionViews = false;
 
+    @LayoutRes
     private int mInjectionLayoutId;
+
+    @MenuRes
+    private int mInjectionOptionMenuId;
 
     private BehaviorSubject<LifecycleState> mLifecycleSubject = BehaviorSubject.create(LifecycleState.NewObject);
 
     private SubscriptionController mSubscription = new SubscriptionController();
+
+    /**
+     * 監視対象とするDialog
+     */
+    private List<WeakReference<Dialog>> mAutoDismissDialogs = new LinkedList<>();
 
     public BaseFragment() {
         mSubscription.bind(mLifecycleSubject);
@@ -69,6 +99,11 @@ public abstract class BaseFragment extends Fragment {
     public void requestInjection(@LayoutRes int layoutId) {
         mInjectionLayoutId = layoutId;
         mInjectionViews = (mInjectionLayoutId != 0);
+    }
+
+    public void requestOptionMenu(@MenuRes int menuId) {
+        mInjectionOptionMenuId = menuId;
+        setHasOptionsMenu(true);
     }
 
     @Nullable
@@ -87,12 +122,73 @@ public abstract class BaseFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (mInjectionOptionMenuId != 0) {
+            inflater.inflate(mInjectionOptionMenuId, menu);
+            MargarineKnife.bindMenu(menu, this);
+            UIHandler.postUI(() -> {
+                onAfterBindMenu(menu);
+            });
+        }
+    }
+
+    /**
+     * メニュー構築が完了した
+     */
+    protected void onAfterBindMenu(Menu menu) {
+    }
+
+    public <T extends AppCompatActivity> T getActivity(Class<T> clazz) {
+        return (T) getActivity();
+    }
+
     public <T extends View> T findViewById(Class<T> clazz, int id) {
         return (T) getView().findViewById(id);
     }
 
     public <T extends View> T findViewByIdFromActivity(Class<T> clazz, int id) {
         return (T) getActivity().findViewById(id);
+    }
+
+    /**
+     * 親クラスを特定のインターフェースに変換する
+     *
+     * 変換できない場合、このメソッドはnullを返却する
+     */
+    @Nullable
+    public <T> T getParent(@NonNull Class<T> clazz) {
+        Fragment fragment = getParentFragment();
+        Activity activity = getActivity();
+        if (ReflectionUtil.instanceOf(fragment, clazz)) {
+            return (T) fragment;
+        }
+
+        if (ReflectionUtil.instanceOf(activity, clazz)) {
+            return (T) activity;
+        }
+
+        return null;
+    }
+
+    /**
+     * 親クラスを特定のインターフェースに変換する
+     *
+     * 変換できない場合、このメソッドはnullを返却する
+     */
+    @NonNull
+    public <T> T getParentOrThrow(@NonNull Class<T> clazz) {
+        Fragment fragment = getParentFragment();
+        Activity activity = getActivity();
+        if (ReflectionUtil.instanceOf(fragment, clazz)) {
+            return (T) fragment;
+        }
+
+        if (ReflectionUtil.instanceOf(activity, clazz)) {
+            return (T) activity;
+        }
+
+        throw new IllegalStateException(clazz.getName());
     }
 
     /**
@@ -139,6 +235,25 @@ public abstract class BaseFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (!mInjectedInstance) {
+            createInjectionBuilder(context).inject();
+            mInjectedInstance = true;
+            UIHandler.postUI(() -> {
+                onAfterInjected();
+            });
+        }
+    }
+
+    /**
+     * オブジェクトへのInjectが完了した
+     */
+    protected void onAfterInjected() {
+
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mLifecycleSubject.onNext(LifecycleState.OnCreated);
@@ -147,14 +262,36 @@ public abstract class BaseFragment extends Fragment {
         }
     }
 
+    /**
+     * Builderを構築する
+     */
+    @NonNull
+    protected Garnet.Builder createInjectionBuilder(Context context) {
+        return Garnet.create(this).depend(Context.class, context.getApplicationContext());
+    }
+
+
     @Override
     public void onStart() {
         super.onStart();
         mLifecycleSubject.onNext(LifecycleState.OnStarted);
     }
 
+    // 不要なメモリを破棄する
+    private void compactAutoDismissDialogs() {
+        Iterator<WeakReference<Dialog>> iterator = mAutoDismissDialogs.iterator();
+        while (iterator.hasNext()) {
+            WeakReference<Dialog> next = iterator.next();
+            Dialog dialog = next.get();
+            if (dialog == null) {
+                iterator.remove();
+            }
+        }
+    }
+
     @Override
     public void onResume() {
+        compactAutoDismissDialogs();
         super.onResume();
         mLifecycleSubject.onNext(LifecycleState.OnResumed);
     }
@@ -167,8 +304,27 @@ public abstract class BaseFragment extends Fragment {
 
     @Override
     public void onDestroy() {
+        {
+            Iterator<WeakReference<Dialog>> iterator = mAutoDismissDialogs.iterator();
+            while (iterator.hasNext()) {
+                Dialog dialog = iterator.next().get();
+                if (dialog != null) {
+                    FwLog.widget("AutoDismiss :: %s", dialog.getClass());
+                    DialogUtil.dismiss(dialog);
+                }
+            }
+            mAutoDismissDialogs.clear();
+        }
         super.onDestroy();
         mLifecycleSubject.onNext(LifecycleState.OnDestroyed);
+    }
+
+    public <T extends Dialog> T addAutoDismiss(T dialog) {
+        compactAutoDismissDialogs();
+        if (dialog != null) {
+            mAutoDismissDialogs.add(new WeakReference<>(dialog));
+        }
+        return dialog;
     }
 
     /**

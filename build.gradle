@@ -3,14 +3,17 @@
  * 1.0.1 : maven依存のtypo修正
  * 1.0.x : Circle CIに移行
  * 1.1.x : RxAndroid / ラムダを導入
+ * 1.2.x : コールバック用インターフェースを拡張
+ * 1.3.x : ContentHolder内部で不要だったクラスを保持しないように修正
  */
-def ARTIFACT_VERSION = "1.1"
+def ARTIFACT_VERSION = "1.3"
 def ARTIFACT_NAME = file(".").absoluteFile.name
 def ARTIFACT_INSTALL_TARGET = getArtifactInstallTarget()
 
 buildscript {
     repositories {
         jcenter()
+        mavenCentral()
     }
     dependencies {
         classpath "com.android.tools.build:gradle:2.1.+"
@@ -21,6 +24,7 @@ buildscript {
 repositories {
     maven { url "http://eaglesakura.github.io/maven/" }
     maven { url "https://clojars.org/repo/" }
+    jcenter()
     mavenCentral()
 }
 
@@ -37,7 +41,7 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 10
+        minSdkVersion 15      // 現実的な対応ラインとしてAndroid 4.0.4とする
         targetSdkVersion 23
     }
 
@@ -63,8 +67,13 @@ if (!hasProperty("EGLIBRARY_COMPILE_LOCAL")) {
 }
 
 configurations {
+    all*.exclude group: "com.google.code.findbugs", module: "jsr305"
     all*.exclude group: "org.apache.httpcomponents", module: "httpclient"
+
+    // not using okhttp
+    all*.exclude group: "com.squareup.okhttp3", module: "okhttp"
 }
+
 
 dependencies {
     if (EGLIBRARY_COMPILE_LOCAL) {
@@ -78,6 +87,7 @@ dependencies {
         compile project(':eglibrary:small-aquery')
         compile project(':eglibrary:rxandroid-support')
         compile project(':eglibrary:margarineknife')
+        compile project(':eglibrary:garnet')
 
         androidTestCompile project(":eglibrary:android-devicetest-support")
         testCompile project(":eglibrary:android-unittest-support")
@@ -92,6 +102,7 @@ dependencies {
         compile 'com.eaglesakura:onactivityresult-invoke:1.+'
         compile 'com.eaglesakura:small-aquery:+'
         compile 'com.eaglesakura:margarineknife:1.+'
+        compile 'com.eaglesakura:garnet:0.+'
 
         androidTestCompile 'com.eaglesakura:android-devicetest-support:1.+'
         testCompile 'com.eaglesakura:android-unittest-support:1.+'
@@ -118,6 +129,11 @@ dependencies {
      */
     compile 'frankiesardo:icepick:+'
     provided 'frankiesardo:icepick-processor:+'
+
+    /**
+     * Image Loading
+     */
+    compile "com.squareup.picasso:picasso:2.3.+"
 }
 
 /**
@@ -232,6 +248,12 @@ uploadArchives {
                 scope = 'compile'
             }
             dependency {
+                groupId = 'com.eaglesakura'
+                artifactId = 'garnet'
+                version = dependenceisVersion("com.eaglesakura:garnet", "0.+")
+                scope = 'compile'
+            }
+            dependency {
                 groupId = 'frankiesardo'
                 artifactId = 'icepick'
                 version = dependenceisVersion("frankiesardo:icepick", "3.1.+")
@@ -242,6 +264,12 @@ uploadArchives {
                 artifactId = 'icepick-processor'
                 version = dependenceisVersion("frankiesardo:icepick-processor", "3.1.+")
                 scope = 'provided'
+            }
+            dependency {
+                groupId = 'com.squareup.picasso'
+                artifactId = 'picasso'
+                version = dependenceisVersion("com.squareup.picasso:picasso", "2.3.+")
+                scope = 'compile'
             }
         }
     }
