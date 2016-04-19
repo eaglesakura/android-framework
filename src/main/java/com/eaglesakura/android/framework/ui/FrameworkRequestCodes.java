@@ -1,4 +1,4 @@
-package com.eaglesakura.android.framework.ui.delegate;
+package com.eaglesakura.android.framework.ui;
 
 public interface FrameworkRequestCodes {
     int GOOGLEPLAYSERVICE_RECOVER = 0x0900 + 0;

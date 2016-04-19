@@ -5,8 +5,8 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import com.eaglesakura.android.framework.FwLog;
 import com.eaglesakura.android.framework.ui.support.SupportFragment;
-import com.eaglesakura.android.framework.ui.delegate.FrameworkRequestCodes;
-import com.eaglesakura.android.framework.ui.delegate.SupportFragmentDelegate;
+import com.eaglesakura.android.framework.ui.FrameworkRequestCodes;
+import com.eaglesakura.android.framework.delegate.fragment.SupportFragmentDelegate;
 
 import android.content.Context;
 import android.os.Bundle;

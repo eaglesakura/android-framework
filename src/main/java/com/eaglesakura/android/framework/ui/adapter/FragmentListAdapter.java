@@ -2,9 +2,7 @@ package com.eaglesakura.android.framework.ui.adapter;
 
 import com.eaglesakura.android.framework.FwLog;
 import com.eaglesakura.android.framework.ui.FragmentChooser;
-import com.eaglesakura.util.LogUtil;
 import com.eaglesakura.util.ReflectionUtil;
-import com.eaglesakura.util.Util;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -20,7 +18,7 @@ import java.util.List;
  */
 public class FragmentListAdapter extends FragmentPagerAdapter {
     FragmentChooser chooser;
-    final List<FragmentCreater> creaters = new ArrayList<FragmentCreater>();
+    final List<FragmentCreator> creaters = new ArrayList<FragmentCreator>();
 
     final FragmentManager fragmentManager;
 
@@ -94,7 +92,7 @@ public class FragmentListAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        FragmentCreater creater = creaters.get(position);
+        FragmentCreator creater = creaters.get(position);
         final String reqTag = genFragmentId(position);
         Fragment result = chooser.find(reqTag);
         if (result == null) {
@@ -111,7 +109,7 @@ public class FragmentListAdapter extends FragmentPagerAdapter {
         return creaters.size();
     }
 
-    public void addFragmentCreater(FragmentCreater creater) {
+    public void addFragmentCreater(FragmentCreator creater) {
         creaters.add(creater);
     }
 
@@ -126,7 +124,7 @@ public class FragmentListAdapter extends FragmentPagerAdapter {
     /**
      * 指定した条件のFragmentを生成する
      */
-    public interface FragmentCreater {
+    public interface FragmentCreator {
         /**
          * Fragmentを生成させる
          */
@@ -136,10 +134,10 @@ public class FragmentListAdapter extends FragmentPagerAdapter {
     /**
      * 単純にClassを生成する
      */
-    public static class SimpleFragmentCreater implements FragmentCreater {
+    public static class SimpleFragmentCreator implements FragmentCreator {
         Class<? extends Fragment> clazz;
 
-        public SimpleFragmentCreater(Class<? extends Fragment> clazz) {
+        public SimpleFragmentCreator(Class<? extends Fragment> clazz) {
             this.clazz = clazz;
         }
 
@@ -157,7 +155,7 @@ public class FragmentListAdapter extends FragmentPagerAdapter {
     }
 
 
-    public static class SimpleFragmentCreater2 extends SimpleFragmentCreater {
+    public static class SimpleFragmentCreater2 extends SimpleFragmentCreator {
         /**
          * 登録先のセレクタ
          */

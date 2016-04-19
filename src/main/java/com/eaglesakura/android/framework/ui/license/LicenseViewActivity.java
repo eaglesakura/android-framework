@@ -3,7 +3,6 @@ package com.eaglesakura.android.framework.ui.license;
 import com.eaglesakura.android.aquery.AQuery;
 import com.eaglesakura.android.framework.FwLog;
 import com.eaglesakura.android.framework.R;
-import com.eaglesakura.android.framework.ui.delegate.SupportActivityDelegate;
 import com.eaglesakura.android.framework.ui.support.SupportActivity;
 import com.eaglesakura.android.rx.RxTask;
 import com.eaglesakura.android.thread.ui.UIHandler;

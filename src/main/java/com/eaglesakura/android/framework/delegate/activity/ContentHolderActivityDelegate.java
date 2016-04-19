@@ -1,9 +1,12 @@
-package com.eaglesakura.android.framework.ui.delegate;
+package com.eaglesakura.android.framework.delegate.activity;
 
 import com.eaglesakura.android.framework.R;
+import com.eaglesakura.android.framework.delegate.lifecycle.ActivityLifecycleDelegate;
+import com.eaglesakura.android.framework.delegate.lifecycle.LifecycleDelegate;
 import com.eaglesakura.android.framework.ui.ChildFragmentHolder;
 import com.eaglesakura.android.framework.ui.support.SupportFragment;
 import com.eaglesakura.android.rx.LifecycleState;
+import com.eaglesakura.android.rx.event.OnCreateEvent;
 import com.eaglesakura.util.StringUtil;
 
 import android.app.Activity;
@@ -52,7 +55,7 @@ public class ContentHolderActivityDelegate {
         Activity getActivity(@NonNull ContentHolderActivityDelegate self);
     }
 
-    public ContentHolderActivityDelegate(@NonNull ContentHolderActivityCompat compat) {
+    public ContentHolderActivityDelegate(@NonNull ContentHolderActivityCompat compat, @NonNull ActivityLifecycleDelegate lifecycle) {
         mHolderCompat = compat;
 
         mFragmentMain = new ChildFragmentHolder<Fragment>(compat.getActivity(this), Fragment.class, R.id.Content_Holder_Root, TAG_CONTENT_FRAGMENT_MAIN) {
@@ -74,17 +77,21 @@ public class ContentHolderActivityDelegate {
                 }
             }
         };
-    }
 
-    public void bind(@NonNull LifecycleDelegate lifecycle) {
         lifecycle.getSubscription().getObservable().subscribe(it -> {
-            if (it == LifecycleState.OnResumed) {
-                mFragmentMain.onResume();
+            LifecycleState state = it.getState();
+            switch (state) {
+                case OnCreated:
+                    onCreate((OnCreateEvent) it);
+                    break;
+                case OnResumed:
+                    mFragmentMain.onResume();
+                    break;
             }
         });
     }
 
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    void onCreate(OnCreateEvent event) {
         Activity activity = mHolderCompat.getActivity(this);
 
         @LayoutRes
@@ -100,7 +107,7 @@ public class ContentHolderActivityDelegate {
             mHolderCompat.setSupportActionBar(toolbar);
         }
 
-        mFragmentMain.onCreate(savedInstanceState);
+        mFragmentMain.onCreate(event.getBundle());
     }
 
 

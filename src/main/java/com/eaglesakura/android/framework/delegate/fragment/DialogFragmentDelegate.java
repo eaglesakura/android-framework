@@ -1,37 +1,41 @@
-package com.eaglesakura.android.framework.ui.delegate;
+package com.eaglesakura.android.framework.delegate.fragment;
 
 import com.eaglesakura.android.framework.FwLog;
-import com.eaglesakura.android.rx.LifecycleState;
+import com.eaglesakura.android.framework.delegate.lifecycle.FragmentLifecycleDelegate;
+import com.eaglesakura.android.framework.delegate.lifecycle.UiLifecycleDelegate;
+import com.eaglesakura.android.rx.event.OnCreateEvent;
 import com.eaglesakura.util.StringUtil;
 
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.UiThread;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
 /**
- * App側で継承したFragmentでDialogFramentを生成する場合に
+ * DialogFragment風の管理を行う場合に使用する
  */
 public class DialogFragmentDelegate {
     private Dialog mDialog;
 
     @NonNull
-    private SupportDialogFragmentCompat mCompat;
+    private final SupportDialogFragmentCompat mCompat;
 
-    private LifecycleDelegate mLifecycleDelegate;
+    @NonNull
+    private final UiLifecycleDelegate mLifecycleDelegate;
 
-    public DialogFragmentDelegate(@NonNull SupportDialogFragmentCompat compat) {
+    public DialogFragmentDelegate(@NonNull SupportDialogFragmentCompat compat, @NonNull FragmentLifecycleDelegate lifecycle) {
         mCompat = compat;
-    }
-
-    public void bind(LifecycleDelegate lifecycleDelegate) {
-        mLifecycleDelegate = lifecycleDelegate;
-        mLifecycleDelegate.getSubscription().getObservable().subscribe(it -> {
-            if (it == LifecycleState.OnDestroyed) {
-                onDestroy();
+        mLifecycleDelegate = lifecycle;
+        lifecycle.getSubscription().getObservable().subscribe(it -> {
+            switch (it.getState()) {
+                case OnCreated:
+                    onCreate((OnCreateEvent) it);
+                    break;
+                case OnDestroyed:
+                    onDestroy();
+                    break;
             }
         });
     }
@@ -41,9 +45,9 @@ public class DialogFragmentDelegate {
         return mDialog;
     }
 
-    public void onCreate(Bundle savedInstanceState) {
+    void onCreate(OnCreateEvent event) {
         FwLog.widget("show dialog");
-        mDialog = mLifecycleDelegate.addAutoDismiss(mCompat.onCreateDialog(this, savedInstanceState));
+        mDialog = mLifecycleDelegate.addAutoDismiss(mCompat.onCreateDialog(this, event.getBundle()));
         mDialog.setOnDismissListener(it -> {
             if (mDialog == null) {
                 return;

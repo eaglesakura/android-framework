@@ -1,7 +1,7 @@
 package com.eaglesakura.android.framework.ui.support;
 
-import com.eaglesakura.android.framework.ui.delegate.LifecycleDelegate;
-import com.eaglesakura.android.framework.ui.delegate.SupportActivityDelegate;
+import com.eaglesakura.android.framework.delegate.activity.SupportActivityDelegate;
+import com.eaglesakura.android.framework.delegate.lifecycle.ActivityLifecycleDelegate;
 import com.eaglesakura.android.margarine.MargarineKnife;
 import com.eaglesakura.android.rx.LifecycleState;
 import com.eaglesakura.android.rx.ObserveTarget;
@@ -14,9 +14,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.LayoutRes;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.view.KeyEvent;
 import android.view.View;
 
 /**
@@ -24,12 +22,11 @@ import android.view.View;
  */
 public abstract class SupportActivity extends AppCompatActivity implements SupportActivityDelegate.SupportActivityCompat {
 
-    protected final LifecycleDelegate mLifecycleDelegate = new LifecycleDelegate();
+    protected final ActivityLifecycleDelegate mLifecycleDelegate = new ActivityLifecycleDelegate();
 
-    protected final SupportActivityDelegate mActivityDelegate = new SupportActivityDelegate(this);
+    protected final SupportActivityDelegate mActivityDelegate = new SupportActivityDelegate(this, mLifecycleDelegate);
 
     protected SupportActivity() {
-        mActivityDelegate.bind(mLifecycleDelegate);
     }
 
     /**
@@ -41,6 +38,7 @@ public abstract class SupportActivity extends AppCompatActivity implements Suppo
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        mLifecycleDelegate.onRestoreInstanceState(savedInstanceState);
         super.onRestoreInstanceState(savedInstanceState);
     }
 
@@ -48,7 +46,6 @@ public abstract class SupportActivity extends AppCompatActivity implements Suppo
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mLifecycleDelegate.onCreate(savedInstanceState);
-        mActivityDelegate.onCreate(savedInstanceState);
     }
 
     @Override
@@ -71,7 +68,7 @@ public abstract class SupportActivity extends AppCompatActivity implements Suppo
 
     @Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        mActivityDelegate.onSaveInstanceState(outState, outPersistentState);
+        mLifecycleDelegate.onSaveInstanceState(outState, outPersistentState);
         super.onSaveInstanceState(outState, outPersistentState);
     }
 
@@ -109,24 +106,6 @@ public abstract class SupportActivity extends AppCompatActivity implements Suppo
             return;
         }
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    /**
-     * Fragmentがアタッチされたタイミングで呼び出される。
-     * <br>
-     * このFragmentは最上位階層のみが扱われる。
-     */
-    @Override
-    public void onAttachFragment(Fragment fragment) {
-        mActivityDelegate.onAttachFragment(fragment);
-    }
-
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        if (mActivityDelegate.dispatchKeyEvent(event)) {
-            return true;
-        }
-        return super.dispatchKeyEvent(event);
     }
 
     /**

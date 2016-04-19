@@ -1,11 +1,12 @@
-package com.eaglesakura.android.framework.ui.delegate;
+package com.eaglesakura.android.framework.delegate.activity;
 
 import com.eaglesakura.android.framework.R;
+import com.eaglesakura.android.framework.delegate.lifecycle.ActivityLifecycleDelegate;
 import com.eaglesakura.android.framework.util.AppSupportUtil;
 import com.eaglesakura.android.oari.ActivityResult;
-import com.eaglesakura.android.rx.LifecycleState;
+import com.eaglesakura.android.rx.event.OnRestoreEvent;
+import com.eaglesakura.android.rx.event.OnSaveEvent;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -38,29 +39,41 @@ public class SupportActivityDelegate {
         Activity getActivity(SupportActivityDelegate self);
     }
 
-    public SupportActivityDelegate(@NonNull SupportActivityCompat compat) {
+    public SupportActivityDelegate(@NonNull SupportActivityCompat compat, @NonNull ActivityLifecycleDelegate lifecycle) {
         mCompat = compat;
+        lifecycle.getSubscription().getObservable().subscribe(it -> {
+            switch (it.getState()) {
+                case OnCreated:
+                    onCreate();
+                    break;
+                case OnSaveInstanceState:
+                    onSaveInstanceState((OnSaveEvent) it);
+                    break;
+                case OnRestoreInstanceState:
+                    onRestoreInstanceState((OnRestoreEvent) it);
+                    break;
+            }
+        });
     }
 
-    public void bind(@NonNull LifecycleDelegate lifecycle) {
-    }
-
-    public void onCreate(Bundle instanceState) {
+    @CallSuper
+    @UiThread
+    protected void onCreate() {
         edgeColorToPrimaryColor();
     }
 
     @CallSuper
     @UiThread
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        Icepick.restoreInstanceState(getActivity(), savedInstanceState);
-        Icepick.restoreInstanceState(this, savedInstanceState);
+    protected void onRestoreInstanceState(OnRestoreEvent event) {
+        Icepick.restoreInstanceState(getActivity(), event.getBundle());
+        Icepick.restoreInstanceState(this, event.getBundle());
     }
 
     @CallSuper
     @UiThread
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        Icepick.saveInstanceState(getActivity(), outState);
-        Icepick.saveInstanceState(this, outState);
+    protected void onSaveInstanceState(OnSaveEvent event) {
+        Icepick.saveInstanceState(getActivity(), event.getBundle());
+        Icepick.saveInstanceState(this, event.getBundle());
     }
 
     public <T extends View> T findViewById(@NonNull Class<T> clazz, @IdRes int id) {
@@ -134,27 +147,6 @@ public class SupportActivityDelegate {
     @UiThread
     public boolean onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         return ActivityResult.invoke(getActivity(), requestCode, resultCode, data);
-    }
-
-    /**
-     * Fragmentがアタッチされたタイミングで呼び出される。
-     * <br>
-     * このFragmentは最上位階層のみが扱われる。
-     */
-    @CallSuper
-    @UiThread
-    public void onAttachFragment(@NonNull Fragment fragment) {
-    }
-
-    /**
-     * キーイベントのハンドリングを行う
-     *
-     * @return ハンドリングを行った場合true
-     */
-    @CallSuper
-    @UiThread
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        return false;
     }
 
     /**

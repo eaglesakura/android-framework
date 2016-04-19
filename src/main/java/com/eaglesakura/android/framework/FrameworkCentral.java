@@ -2,12 +2,14 @@ package com.eaglesakura.android.framework;
 
 import com.eaglesakura.android.framework.db.BasicSettings;
 import com.eaglesakura.android.framework.ui.message.LocalMessageReceiver;
+import com.eaglesakura.android.rx.LifecycleEvent;
 import com.eaglesakura.android.rx.LifecycleState;
 import com.eaglesakura.android.rx.ObserveTarget;
 import com.eaglesakura.android.rx.RxTask;
 import com.eaglesakura.android.rx.RxTaskBuilder;
 import com.eaglesakura.android.rx.SubscribeTarget;
 import com.eaglesakura.android.rx.SubscriptionController;
+import com.eaglesakura.android.rx.event.LifecycleEventImpl;
 import com.eaglesakura.android.thread.ui.UIHandler;
 import com.eaglesakura.android.util.ContextUtil;
 
@@ -41,7 +43,7 @@ public class FrameworkCentral {
 
 
         @NonNull
-        final BehaviorSubject<LifecycleState> mSubject = BehaviorSubject.create(LifecycleState.NewObject);
+        final BehaviorSubject<LifecycleEvent> mSubject = BehaviorSubject.create(new LifecycleEventImpl(LifecycleState.NewObject));
 
         @NonNull
         final SubscriptionController mSubscriptionController = new SubscriptionController();
@@ -67,8 +69,8 @@ public class FrameworkCentral {
             loadSettings();
 
             mSubscriptionController.bind(mSubject);
-            mSubject.onNext(LifecycleState.OnCreated);
-            mSubject.onNext(LifecycleState.OnStarted);
+            mSubject.onNext(new LifecycleEventImpl(LifecycleState.OnCreated));
+            mSubject.onNext(new LifecycleEventImpl(LifecycleState.OnStarted));
 
             mLocalMessageReceiver = new LocalMessageReceiver(mApplication) {
                 @Override
@@ -119,7 +121,7 @@ public class FrameworkCentral {
         public void onActivityResumed(Activity activity) {
             ++mForegroundActivities;
             if (mForegroundActivities == 1) {
-                mSubject.onNext(LifecycleState.OnResumed);
+                mSubject.onNext(new LifecycleEventImpl(LifecycleState.OnResumed));
 
                 // フォアグラウンドに移動した
                 synchronized (mStateListeners) {
@@ -137,7 +139,7 @@ public class FrameworkCentral {
                 --mForegroundActivities;
                 // バックグラウンドに移動した
                 if (mForegroundActivities == 0) {
-                    mSubject.onNext(LifecycleState.OnPaused);
+                    mSubject.onNext(new LifecycleEventImpl(LifecycleState.OnPaused));
 
                     synchronized (mStateListeners) {
                         for (ApplicationStateListener listener : mStateListeners) {

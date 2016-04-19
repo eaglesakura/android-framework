@@ -1,9 +1,14 @@
-package com.eaglesakura.android.framework.ui.delegate;
+package com.eaglesakura.android.framework.delegate.fragment;
 
+import com.eaglesakura.android.framework.delegate.lifecycle.FragmentLifecycleDelegate;
 import com.eaglesakura.android.framework.util.AppSupportUtil;
 import com.eaglesakura.android.garnet.Garnet;
 import com.eaglesakura.android.margarine.MargarineKnife;
 import com.eaglesakura.android.oari.ActivityResult;
+import com.eaglesakura.android.rx.event.OnAttachEvent;
+import com.eaglesakura.android.rx.event.OnCreateEvent;
+import com.eaglesakura.android.rx.event.OnSaveEvent;
+import com.eaglesakura.android.rx.event.OnViewCreateEvent;
 import com.eaglesakura.android.thread.ui.UIHandler;
 import com.eaglesakura.android.util.PermissionUtil;
 import com.eaglesakura.util.ReflectionUtil;
@@ -51,8 +56,6 @@ public class SupportFragmentDelegate {
 
         @NonNull
         ActionBar getActionBar();
-
-        void setHasOptionsMenu(boolean set);
 
         /**
          * BackstackIndexが確定した
@@ -108,12 +111,33 @@ public class SupportFragmentDelegate {
     @MenuRes
     int mInjectionOptionMenuId;
 
-    public SupportFragmentDelegate(@NonNull SupportFragmentCompat compat) {
+    /**
+     * Fragment用のView
+     */
+    View mView;
+
+    public SupportFragmentDelegate(@NonNull SupportFragmentCompat compat, @NonNull FragmentLifecycleDelegate lifecycle) {
         mCompat = compat;
-    }
 
-    public void bind(LifecycleDelegate lifecycleDelegate) {
-
+        lifecycle.getSubscription().getObservable().subscribe(it -> {
+            switch (it.getState()) {
+                case OnCreated:
+                    onCreate((OnCreateEvent) it);
+                    break;
+                case OnAttach:
+                    onAttach((OnAttachEvent) it);
+                    break;
+                case OnViewCreated:
+                    onCreateView((OnViewCreateEvent) it);
+                    break;
+                case OnSaveInstanceState:
+                    onSaveInstanceState((OnSaveEvent) it);
+                    break;
+                case OnViewDestroyed:
+                    onDestroyedView();
+                    break;
+            }
+        });
     }
 
     /**
@@ -131,24 +155,31 @@ public class SupportFragmentDelegate {
         getFragment().setHasOptionsMenu(true);
     }
 
-    @Nullable
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    @CallSuper
+    protected void onCreateView(OnViewCreateEvent event) {
+        if (mView != null) {
+            return;
+        }
+
         if (mInjectionLayoutId != 0) {
-            View result = inflater.inflate(mInjectionLayoutId, container, false);
-            MargarineKnife.from(result).to(mCompat).bind();
+            mView = event.getInflater().inflate(mInjectionLayoutId, event.getContainer(), false);
+            MargarineKnife.from(mView).to(mCompat).bind();
             // getView対策で、１クッション置いて実行する
             UIHandler.postUI(() -> {
                 onAfterViews();
             });
-            return result;
-        } else {
-            return null;
         }
+    }
+
+    @CallSuper
+    protected void onDestroyedView() {
+        mView = null;
     }
 
     /**
      * Created Menu
      */
+    @CallSuper
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         if (mInjectionOptionMenuId != 0) {
             inflater.inflate(mInjectionOptionMenuId, menu);
@@ -191,7 +222,7 @@ public class SupportFragmentDelegate {
     @CallSuper
     @Nullable
     public View getView() {
-        return getFragment().getView();
+        return mView;
     }
 
     @CallSuper
@@ -252,13 +283,9 @@ public class SupportFragmentDelegate {
     /**
      * ActionBarを取得する
      */
+    @Nullable
     public ActionBar getActionBar() {
-        Activity activity = getActivity();
-        if (activity instanceof AppCompatActivity) {
-            return ((AppCompatActivity) activity).getSupportActionBar();
-        } else {
-            return null;
-        }
+        return mCompat.getActionBar();
     }
 
     /**
@@ -277,20 +304,20 @@ public class SupportFragmentDelegate {
 
     @CallSuper
     @UiThread
-    public void onSaveInstanceState(Bundle outState) {
-        Icepick.saveInstanceState(mCompat, outState);
-        Icepick.saveInstanceState(this, outState);
+    protected void onSaveInstanceState(OnSaveEvent event) {
+        Icepick.saveInstanceState(mCompat, event.getBundle());
+        Icepick.saveInstanceState(this, event.getBundle());
     }
 
     @CallSuper
     @UiThread
-    public void onAttach(Context context) {
+    protected void onAttach(OnAttachEvent event) {
         if (!mInjectedInstance) {
-            Garnet.Builder builder = mCompat.newInjectionBuilder(this, context);
+            Garnet.Builder builder = mCompat.newInjectionBuilder(this, event.getContext());
             if (builder == null) {
                 builder = Garnet.create(mCompat);
             }
-            builder.depend(Context.class, context).inject();
+            builder.depend(Context.class, event.getContext()).inject();
             mInjectedInstance = true;
             UIHandler.postUI(() -> {
                 mCompat.onAfterInjection(this);
@@ -300,9 +327,9 @@ public class SupportFragmentDelegate {
 
     @CallSuper
     @UiThread
-    public void onCreate(Bundle savedInstanceState) {
-        Icepick.restoreInstanceState(mCompat, savedInstanceState);
-        Icepick.restoreInstanceState(this, savedInstanceState);
+    protected void onCreate(OnCreateEvent event) {
+        Icepick.restoreInstanceState(mCompat, event.getBundle());
+        Icepick.restoreInstanceState(this, event.getBundle());
     }
 
     /**
@@ -352,10 +379,6 @@ public class SupportFragmentDelegate {
 
     protected boolean hasChildBackStack() {
         return getChildFragmentManager().getBackStackEntryCount() > 0;
-    }
-
-    public final String createSimpleTag() {
-        return ((Object) this).getClass().getSimpleName();
     }
 
     /**

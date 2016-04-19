@@ -1,8 +1,7 @@
 package com.eaglesakura.android.debug;
 
 import com.eaglesakura.android.framework.R;
-import com.eaglesakura.android.framework.ui.delegate.ContentHolderActivityDelegate;
-import com.eaglesakura.android.framework.ui.support.SupportFragment;
+import com.eaglesakura.android.framework.delegate.activity.ContentHolderActivityDelegate;
 import com.eaglesakura.android.framework.ui.support.ContentHolderActivity;
 
 import android.support.annotation.NonNull;
