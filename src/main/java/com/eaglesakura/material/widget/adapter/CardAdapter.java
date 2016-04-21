@@ -54,8 +54,6 @@ public abstract class CardAdapter<T> extends RecyclerView.Adapter<CardAdapter.Ca
         mCollection.setCallback(newAdapterCallback());
         mCollection.setComparator(newAdapterComparator());
 
-        super.onAttachedToRecyclerView(recyclerView);
-
         Object tag = recyclerView.getTag(R.id.SupportRecyclerView_RecyclerView);
         if (tag instanceof SupportRecyclerView) {
             mSupportRecyclerView = (SupportRecyclerView) tag;

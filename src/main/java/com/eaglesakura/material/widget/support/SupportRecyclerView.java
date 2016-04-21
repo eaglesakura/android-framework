@@ -61,9 +61,9 @@ public class SupportRecyclerView extends FrameLayout {
         {
             // RecyclerViewにデフォルト状態を指定する
             recyclerView.setTag(R.id.SupportRecyclerView_RecyclerView, this);
+            recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             recyclerView.setItemAnimator(new DefaultItemAnimator());
-            recyclerView.setHasFixedSize(false);
         }
         emptyViewRoot = (FrameLayout) view.findViewById(R.id.EsMaterial_SupportRecyclerView_Empty);
         progress = view.findViewById(R.id.EsMaterial_SupportRecyclerView_Loading);

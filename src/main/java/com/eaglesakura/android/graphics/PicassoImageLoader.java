@@ -18,7 +18,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-public class ImageLoader {
+/**
+ * スクロール等で大量にタスクを積むとOOMの原因となるため一旦非推奨とする
+ */
+@Deprecated
+public class PicassoImageLoader {
     @NonNull
     final RequestCreator mRequestCreator;
 
@@ -30,7 +34,7 @@ public class ImageLoader {
     @DrawableRes
     int mErrorDrawableId;
 
-    ImageLoader(Context context, RequestCreator requestCreator) {
+    PicassoImageLoader(Context context, RequestCreator requestCreator) {
         mRequestCreator = requestCreator;
         mContext = context;
     }
@@ -59,75 +63,75 @@ public class ImageLoader {
         throw new FileNotFoundException();
     }
 
-    public ImageLoader error(@DrawableRes int errorResId) {
+    public PicassoImageLoader error(@DrawableRes int errorResId) {
         mRequestCreator.error(errorResId);
         mErrorDrawableId = errorResId;
         return this;
     }
 
-    public ImageLoader error(Drawable errorDrawable) {
+    public PicassoImageLoader error(Drawable errorDrawable) {
         mRequestCreator.error(errorDrawable);
         mErrorDrawable = errorDrawable;
         return this;
     }
 
-    public ImageLoader fit() {
+    public PicassoImageLoader fit() {
         mRequestCreator.fit();
         return this;
     }
 
-    public ImageLoader resize(int targetWidth, int targetHeight) {
+    public PicassoImageLoader resize(int targetWidth, int targetHeight) {
         mRequestCreator.resize(targetWidth, targetHeight);
         return this;
     }
 
-    public ImageLoader resizeDimen(int targetWidthResId, int targetHeightResId) {
+    public PicassoImageLoader resizeDimen(int targetWidthResId, int targetHeightResId) {
         mRequestCreator.resizeDimen(targetWidthResId, targetHeightResId);
         return this;
     }
 
-    public ImageLoader centerInside() {
+    public PicassoImageLoader centerInside() {
         mRequestCreator.centerInside();
         return this;
     }
 
-    public ImageLoader centerCrop() {
+    public PicassoImageLoader centerCrop() {
         mRequestCreator.centerCrop();
         return this;
     }
 
-    public ImageLoader rotate(float degrees, float pivotX, float pivotY) {
+    public PicassoImageLoader rotate(float degrees, float pivotX, float pivotY) {
         mRequestCreator.rotate(degrees, pivotX, pivotY);
         return this;
     }
 
-    public ImageLoader rotate(float degrees) {
+    public PicassoImageLoader rotate(float degrees) {
         mRequestCreator.rotate(degrees);
         return this;
     }
 
-    public ImageLoader transform(Transformation transformation) {
+    public PicassoImageLoader transform(Transformation transformation) {
         mRequestCreator.transform(transformation);
         return this;
     }
 
-    public ImageLoader config(Bitmap.Config config) {
+    public PicassoImageLoader config(Bitmap.Config config) {
         mRequestCreator.config(config);
         return this;
     }
 
-    public ImageLoader noFade() {
+    public PicassoImageLoader noFade() {
         mRequestCreator.noFade();
         return this;
     }
 
-    public ImageLoader skipMemoryCache() {
+    public PicassoImageLoader skipMemoryCache() {
         mRequestCreator.skipMemoryCache();
         return this;
     }
 
-    public static ImageLoader create(Context context, File file) {
+    public static PicassoImageLoader create(Context context, File file) {
         RequestCreator load = Picasso.with(context.getApplicationContext()).load(file);
-        return new ImageLoader(context.getApplicationContext(), load);
+        return new PicassoImageLoader(context.getApplicationContext(), load);
     }
 }

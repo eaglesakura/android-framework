@@ -304,13 +304,6 @@ public class SupportFragmentDelegate {
 
     @CallSuper
     @UiThread
-    protected void onSaveInstanceState(OnSaveEvent event) {
-        Icepick.saveInstanceState(mCompat, event.getBundle());
-        Icepick.saveInstanceState(this, event.getBundle());
-    }
-
-    @CallSuper
-    @UiThread
     protected void onAttach(OnAttachEvent event) {
         if (!mInjectedInstance) {
             Garnet.Builder builder = mCompat.newInjectionBuilder(this, event.getContext());
@@ -330,6 +323,13 @@ public class SupportFragmentDelegate {
     protected void onCreate(OnCreateEvent event) {
         Icepick.restoreInstanceState(mCompat, event.getBundle());
         Icepick.restoreInstanceState(this, event.getBundle());
+    }
+
+    @CallSuper
+    @UiThread
+    protected void onSaveInstanceState(OnSaveEvent event) {
+        Icepick.saveInstanceState(mCompat, event.getBundle());
+        Icepick.saveInstanceState(this, event.getBundle());
     }
 
     /**
