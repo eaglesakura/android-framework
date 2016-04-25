@@ -17,7 +17,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:2.1.+"
+        classpath 'com.android.tools.build:gradle:2.1.+'
         classpath 'me.tatarka:gradle-retrolambda:3.2.5' // support Lambda
     }
 }
@@ -82,7 +82,7 @@ dependencies {
         compile project(':eglibrary:android-simple-utils')
         compile project(':eglibrary:android-text-kvs')
         compile project(':eglibrary:android-thread')
-        compile project(':eglibrary:android-canvas-graphics')
+//        compile project(':eglibrary:android-canvas-graphics')
         compile project(':eglibrary:android-net')
         compile project(':eglibrary:onactivityresult-invoke')
         compile project(':eglibrary:small-aquery')
@@ -97,7 +97,7 @@ dependencies {
         compile 'com.eaglesakura:android-simple-utils:1.+'
         compile 'com.eaglesakura:android-text-kvs:1.+'
         compile 'com.eaglesakura:android-thread:1.+'
-        compile 'com.eaglesakura:android-canvas-graphics:1.+'
+//        compile 'com.eaglesakura:android-canvas-graphics:1.+'
         compile 'com.eaglesakura:android-net:1.+'
         compile 'com.eaglesakura:rxandroid-support:1.+'
         compile 'com.eaglesakura:onactivityresult-invoke:1.+'

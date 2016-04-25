@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 
 /**
  * 親となるFragmentを指定して起動するActivityの雛形
@@ -21,6 +22,12 @@ public abstract class ContentHolderActivity extends SupportActivity implements C
 
     public Fragment getContentFragment() {
         return mContentHolderDelegate.getContentFragment();
+    }
+
+    @NonNull
+    @Override
+    public FragmentManager getFragmentManager(@NonNull ContentHolderActivityDelegate self) {
+        return getSupportFragmentManager();
     }
 
     @NonNull

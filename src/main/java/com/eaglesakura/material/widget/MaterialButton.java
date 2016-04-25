@@ -1,14 +1,11 @@
 package com.eaglesakura.material.widget;
 
 import com.eaglesakura.android.framework.R;
-import com.eaglesakura.android.graphics.Graphics;
-import com.eaglesakura.util.LogUtil;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.graphics.ColorUtils;

@@ -17,6 +17,7 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.Toolbar;
 
 public class ContentHolderActivityDelegate {
@@ -53,6 +54,9 @@ public class ContentHolderActivityDelegate {
 
         @NonNull
         Activity getActivity(@NonNull ContentHolderActivityDelegate self);
+
+        @NonNull
+        FragmentManager getFragmentManager(@NonNull ContentHolderActivityDelegate self);
     }
 
     public ContentHolderActivityDelegate(@NonNull ContentHolderActivityCompat compat, @NonNull ActivityLifecycleDelegate lifecycle) {
@@ -75,6 +79,12 @@ public class ContentHolderActivityDelegate {
                 } else {
                     return mHolderCompat.newDefaultContentFragment(ContentHolderActivityDelegate.this);
                 }
+            }
+
+            @NonNull
+            @Override
+            public Fragment get() {
+                return mHolderCompat.getFragmentManager(ContentHolderActivityDelegate.this).findFragmentByTag(TAG_CONTENT_FRAGMENT_MAIN);
             }
         };
 
