@@ -17,7 +17,7 @@ public class BackStackManagerTest extends UnitTestCase {
         BackStackManager manager = new BackStackManager();
         manager.push("TEST_TAG");
         assertEquals(manager.mStackTags.size(), 1);
-        manager.pop();
+        manager.pop("TEST_TAG");
         assertEquals(manager.mStackTags.size(), 0);
     }
 

@@ -31,7 +31,7 @@ public class BackStackManager implements Parcelable {
     public void push(Fragment fragment) {
         if (fragment instanceof BackStackFragment) {
             push(fragment.getTag());
-        }else {
+        } else {
             throw new IllegalArgumentException("!(fragment instanceof BackStackFragment)");
         }
     }
@@ -44,12 +44,27 @@ public class BackStackManager implements Parcelable {
      * ハンドリング対象を一つ取り出す
      */
     @UiThread
-    public void pop() {
+    public void pop(Fragment fragment) {
+        if (fragment instanceof BackStackFragment) {
+            pop(fragment.getTag());
+        } else {
+            throw new IllegalArgumentException("!(fragment instanceof BackStackFragment)");
+        }
+    }
+
+    void pop(String tag) {
         if (mStackTags.isEmpty()) {
             throw new IllegalStateException();
         }
 
-        mStackTags.remove(0);
+        Iterator<String> iterator = mStackTags.iterator();
+        while (iterator.hasNext()) {
+            String next = iterator.next();
+            if (next.equals(tag)) {
+                iterator.remove();
+                return;
+            }
+        }
     }
 
     protected Fragment findFragmentByTag(FragmentManager fragmentManager, String tag) {
