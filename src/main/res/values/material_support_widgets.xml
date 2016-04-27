@@ -2,6 +2,7 @@
 <resources>
     <item name="SupportRecyclerView.RecyclerView" type="id"/>
     <item name="CardAdapter.Item" type="id"/>
+    <item name="CardAdapter.DataBinding" type="id"/>
     <declare-styleable name="SupportRecyclerView">
         <attr name="emptyText" format="string"/>
     </declare-styleable>

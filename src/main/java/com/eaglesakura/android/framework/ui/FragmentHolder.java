@@ -10,7 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
-public class ChildFragmentHolder<T extends Fragment> {
+public abstract class FragmentHolder<T extends Fragment> {
     @Nullable
     T mFragment;
 
@@ -18,28 +18,19 @@ public class ChildFragmentHolder<T extends Fragment> {
     String mFragmentTag;
 
     @NonNull
-    final Class<? extends T> mClass;
-
-    @NonNull
     final Object mParent;
 
     @IdRes
     final int mHolderId;
 
-    public ChildFragmentHolder(@NonNull Fragment parent, @NonNull Class<? extends T> aClass, @IdRes int holderId) {
-        this(parent, aClass, holderId, aClass.getName());
-    }
-
-    public ChildFragmentHolder(@NonNull Activity parent, @NonNull Class<? extends T> aClass, @IdRes int holderId, @NonNull String tag) {
+    public FragmentHolder(@NonNull Activity parent, @IdRes int holderId, @NonNull String tag) {
         mParent = parent;
-        mClass = aClass;
         mHolderId = holderId;
         mFragmentTag = tag;
     }
 
-    public ChildFragmentHolder(@NonNull Fragment parent, @NonNull Class<? extends T> aClass, @IdRes int holderId, @NonNull String tag) {
+    public FragmentHolder(@NonNull Fragment parent, @IdRes int holderId, @NonNull String tag) {
         mParent = parent;
-        mClass = aClass;
         mHolderId = holderId;
         mFragmentTag = tag;
     }
@@ -54,9 +45,7 @@ public class ChildFragmentHolder<T extends Fragment> {
     }
 
     @NonNull
-    protected T newFragmentInstance(@Nullable Bundle savedInstanceState) throws Exception {
-        return mClass.newInstance();
-    }
+    protected abstract T newFragmentInstance(@Nullable Bundle savedInstanceState) throws Exception;
 
     public void onCreate(@Nullable Bundle savedInstanceState) {
         if (savedInstanceState == null) {
@@ -78,15 +67,21 @@ public class ChildFragmentHolder<T extends Fragment> {
     }
 
     /**
+     * 生成済みである場合はtrue
+     */
+    public boolean isCreated() {
+        return mFragment != null;
+    }
+
+    /**
      * コンテンツを切り替える
      */
     public <T2 extends T> void replace(@NonNull T2 fragment) {
-        get(); // assert
-
         getFragmentManager()
                 .beginTransaction()
                 .replace(mHolderId, fragment, mFragmentTag)
                 .commit();
+        mFragment = fragment;
     }
 
     @NonNull
@@ -109,4 +104,27 @@ public class ChildFragmentHolder<T extends Fragment> {
 
         mFragment = null;
     }
+
+    public static <T extends Fragment> FragmentHolder<T> newInstance(@NonNull Fragment parent, @NonNull Class<? extends T> aClass, @IdRes int holderId) {
+        return new FragmentHolder<T>(parent, holderId, aClass.getName()) {
+            @NonNull
+            @Override
+            protected T newFragmentInstance(@Nullable Bundle savedInstanceState) throws Exception {
+                return aClass.newInstance();
+            }
+        };
+    }
+
+
+    public static <T extends Fragment> FragmentHolder<T> newInstance(@NonNull Activity parent, @NonNull Class<? extends T> aClass, @IdRes int holderId) {
+        return new FragmentHolder<T>(parent, holderId, aClass.getName()) {
+            @NonNull
+            @Override
+            protected T newFragmentInstance(@Nullable Bundle savedInstanceState) throws Exception {
+                return aClass.newInstance();
+            }
+        };
+    }
+
+
 }

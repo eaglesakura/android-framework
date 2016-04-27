@@ -2,8 +2,7 @@ package com.eaglesakura.android.framework.delegate.activity;
 
 import com.eaglesakura.android.framework.R;
 import com.eaglesakura.android.framework.delegate.lifecycle.ActivityLifecycleDelegate;
-import com.eaglesakura.android.framework.delegate.lifecycle.LifecycleDelegate;
-import com.eaglesakura.android.framework.ui.ChildFragmentHolder;
+import com.eaglesakura.android.framework.ui.FragmentHolder;
 import com.eaglesakura.android.framework.ui.support.SupportFragment;
 import com.eaglesakura.android.rx.LifecycleState;
 import com.eaglesakura.android.rx.event.OnCreateEvent;
@@ -35,7 +34,7 @@ public class ContentHolderActivityDelegate {
 
     public static final String TAG_CONTENT_FRAGMENT_MAIN = "fw.TAG_CONTENT_FRAGMENT_MAIN";
 
-    private ChildFragmentHolder<Fragment> mFragmentMain;
+    private FragmentHolder<Fragment> mFragmentMain;
 
     @NonNull
     private ContentHolderActivityCompat mHolderCompat;
@@ -62,7 +61,7 @@ public class ContentHolderActivityDelegate {
     public ContentHolderActivityDelegate(@NonNull ContentHolderActivityCompat compat, @NonNull ActivityLifecycleDelegate lifecycle) {
         mHolderCompat = compat;
 
-        mFragmentMain = new ChildFragmentHolder<Fragment>(compat.getActivity(this), Fragment.class, R.id.Content_Holder_Root, TAG_CONTENT_FRAGMENT_MAIN) {
+        mFragmentMain = new FragmentHolder<Fragment>(compat.getActivity(this), R.id.Content_Holder_Root, TAG_CONTENT_FRAGMENT_MAIN) {
             @NonNull
             @Override
             protected Fragment newFragmentInstance(@Nullable Bundle savedInstanceState) throws Exception {

@@ -46,6 +46,10 @@ android {
         targetSdkVersion 23
     }
 
+    dataBinding {
+        enabled = true
+    }
+
     sourceSets {
         main {
             java.srcDirs = [

@@ -44,12 +44,11 @@ public class MaterialButton extends AppCompatButton {
     @SuppressWarnings("ResourceType")
     private void initMaterialButton(Context context, AttributeSet attrs, int defStyleAttr) {
         if (isInEditMode()) {
-            setGravity(Gravity.CENTER);
             return;
         }
 
         if (attrs != null) {
-            Resources res = getResources();
+            Resources res = context.getResources();
             TypedArray typedArray = context.obtainStyledAttributes(attrs, new int[]{
                     R.attr.buttonBaseColor,
                     R.attr.buttonHighlightWeight,
