@@ -232,7 +232,7 @@ public class SupportFragmentDelegate {
 
     @Nullable
     public <T extends View> T findViewById(Class<T> clazz, int id) {
-        return (T) getView().findViewById(id);
+        return (T) getFragment().getView().findViewById(id);
     }
 
     @Nullable
