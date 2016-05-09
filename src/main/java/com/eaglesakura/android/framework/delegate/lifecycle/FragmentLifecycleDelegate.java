@@ -53,7 +53,7 @@ public class FragmentLifecycleDelegate extends UiLifecycleDelegate {
     @CallSuper
     @UiThread
     public void onSaveInstanceState(Bundle outState) {
-        mLifecycleSubject.onNext(new OnSaveEvent(outState, null));
+        mLifecycleSubject.onNext(new OnSaveEvent(outState));
     }
 
     @CallSuper

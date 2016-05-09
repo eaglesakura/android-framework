@@ -26,8 +26,8 @@ public class ActivityLifecycleDelegate extends UiLifecycleDelegate {
 
     @CallSuper
     @UiThread
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        mLifecycleSubject.onNext(new OnSaveEvent(outState, outPersistentState));
+    public void onSaveInstanceState(Bundle outState) {
+        mLifecycleSubject.onNext(new OnSaveEvent(outState));
     }
 
     @CallSuper

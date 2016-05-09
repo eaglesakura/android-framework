@@ -1,4 +1,4 @@
-package com.eaglesakura.android.framework.ui.adapter;
+package com.eaglesakura.android.framework.delegate.fragment;
 
 /**
  * Fragmentにタイトルをもたせる場合

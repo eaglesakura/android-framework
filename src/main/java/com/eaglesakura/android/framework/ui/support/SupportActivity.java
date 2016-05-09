@@ -67,9 +67,9 @@ public abstract class SupportActivity extends AppCompatActivity implements Suppo
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        mLifecycleDelegate.onSaveInstanceState(outState, outPersistentState);
-        super.onSaveInstanceState(outState, outPersistentState);
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mLifecycleDelegate.onSaveInstanceState(outState);
     }
 
     @Override

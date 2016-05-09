@@ -1,6 +1,7 @@
 package com.eaglesakura.android.framework.ui.adapter;
 
 import com.eaglesakura.android.framework.FwLog;
+import com.eaglesakura.android.framework.delegate.fragment.IFragmentPagerTitle;
 import com.eaglesakura.android.framework.ui.FragmentChooser;
 import com.eaglesakura.util.ReflectionUtil;
 
@@ -16,6 +17,7 @@ import java.util.List;
 /**
  * FragmentListAdapterをサポートする
  */
+@Deprecated
 public class FragmentListAdapter extends FragmentPagerAdapter {
     FragmentChooser chooser;
     final List<FragmentCreator> creaters = new ArrayList<FragmentCreator>();
