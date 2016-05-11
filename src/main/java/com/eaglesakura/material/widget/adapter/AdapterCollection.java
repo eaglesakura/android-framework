@@ -193,6 +193,12 @@ public class AdapterCollection<T> {
         mCallback.onItemRemoved(index);
     }
 
+    public void insertOrReplaceAll(Collection<T> items) {
+        for (T item : items) {
+            insertOrReplace(item);
+        }
+    }
+
     /**
      * アイテムを更新するか、指定位置に追加する
      *

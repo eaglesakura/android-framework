@@ -75,7 +75,10 @@ public class BackStackManager implements Parcelable {
         }
 
         for (Fragment fragment : fragments) {
-            if (fragment.getTag().equals(tag)) {
+            if (fragment == null) {
+                continue;
+            }
+            if (tag.equals(fragment.getTag())) {
                 // tagが一致した
                 return fragment;
             } else {

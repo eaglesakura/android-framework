@@ -62,8 +62,6 @@ public class FragmentTransactionBuilder {
      */
     protected List<Fragment> fragments = new ArrayList<Fragment>();
 
-    protected FragmentChooser chooser = null;
-
     public FragmentTransactionBuilder(Fragment currentFragment, FragmentManager fragmentManager) {
         this.fragment = currentFragment;
         this.activity = fragment.getActivity();
@@ -80,11 +78,6 @@ public class FragmentTransactionBuilder {
 
     public FragmentTransactionBuilder checkBackstackCount(boolean checkBackstackCount) {
         this.checkBackstackCount = checkBackstackCount;
-        return this;
-    }
-
-    public FragmentTransactionBuilder chooser(FragmentChooser chooser) {
-        this.chooser = chooser;
         return this;
     }
 
@@ -160,10 +153,17 @@ public class FragmentTransactionBuilder {
         }
 
         transaction.add(fragment, tag);
-        if (chooser != null) {
-            chooser.addFragment(fragment, tag);
+        return this;
+    }
+
+    public FragmentTransactionBuilder add(int container, Fragment fragment, String tag) {
+        if (StringUtil.isEmpty(tag)) {
+            transaction.add(container, fragment);
+        } else {
+            transaction.add(container, fragment, tag);
         }
 
+        fragments.add(fragment);
         return this;
     }
 
@@ -183,10 +183,6 @@ public class FragmentTransactionBuilder {
             transaction.replace(container, fragment);
         } else {
             transaction.replace(container, fragment, tag);
-        }
-
-        if (chooser != null) {
-            chooser.addFragment(fragment, tag);
         }
 
         fragments.add(fragment);
