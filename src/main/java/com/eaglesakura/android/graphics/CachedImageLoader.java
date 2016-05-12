@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InterruptedIOException;
 
 /**
  * キャッシュコントロールと割り込みに対応したイメージローダ
@@ -106,6 +107,8 @@ public class CachedImageLoader {
 
             try {
                 return mLoader.await();
+            } catch (InterruptedIOException e) {
+                throw e;
             } catch (IOException e) {
                 if (mErrorLoader != null) {
                     return mErrorLoader.await();
