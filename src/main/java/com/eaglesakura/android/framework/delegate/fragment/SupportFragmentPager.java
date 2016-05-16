@@ -2,19 +2,22 @@ package com.eaglesakura.android.framework.delegate.fragment;
 
 import android.support.annotation.IdRes;
 import android.support.annotation.IntRange;
-import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * ViewPager機能をサポートする
+ */
 public class SupportFragmentPager {
 
     @NonNull
-    protected final List<FragmentCreator> mFragments = new ArrayList<>();
+    protected final List<PagerFragmentHolder> mFragments = new ArrayList<>();
 
     @IdRes
     protected final int mContainerId;
@@ -27,7 +30,7 @@ public class SupportFragmentPager {
      * Fragment生成器を追加する
      */
     public void addFragment(FragmentCreator creator) {
-        mFragments.add(creator);
+        mFragments.add(new PagerFragmentHolder(creator));
     }
 
     /**
@@ -41,7 +44,7 @@ public class SupportFragmentPager {
         if (managedFragment != null) {
             return managedFragment;
         } else {
-            return mFragments.get(index).newInstance(this);
+            return mFragments.get(index).get(index, fragmentManager);
         }
     }
 
@@ -66,8 +69,8 @@ public class SupportFragmentPager {
      * Adapterを生成する
      */
     @NonNull
-    public FragmentPagerAdapter newAdapter(FragmentManager fragmentManager) {
-        return new FragmentPagerAdapter(fragmentManager) {
+    public PagerAdapter newAdapter(FragmentManager fragmentManager) {
+        return new FragmentStatePagerAdapter(fragmentManager) {
             @Override
             public Fragment getItem(int position) {
                 return getFragment(fragmentManager, position);
@@ -98,6 +101,43 @@ public class SupportFragmentPager {
 
     private String getPagerFragmentTag(int index) {
         return "android:switcher:" + mContainerId + ":" + index;
+    }
+
+    private class PagerFragmentHolder {
+        /**
+         * キャッシュが無い場合に生成させる
+         */
+        private final FragmentCreator mCreator;
+
+        /**
+         * Fragmentキャッシュ
+         */
+        private Fragment mCacheFragment;
+
+        PagerFragmentHolder(FragmentCreator creator) {
+            mCreator = creator;
+        }
+
+        /**
+         * ページ用Fragmentを取得する
+         */
+        Fragment get(int index, FragmentManager fragmentManager) {
+            String tag = getPagerFragmentTag(index);
+            // まずはFragmentManagerから探す
+            Fragment addedFragment = fragmentManager.findFragmentByTag(tag);
+            if (addedFragment != null) {
+                mCacheFragment = addedFragment;
+            }
+
+            if (mCacheFragment == null) {
+                // キャッシュにも無いならば、生成させる
+                mCacheFragment = mCreator.newInstance(SupportFragmentPager.this);
+                if (mCacheFragment == null) {
+                    throw new IllegalStateException();
+                }
+            }
+            return mCacheFragment;
+        }
     }
 
     public interface FragmentCreator {

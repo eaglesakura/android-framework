@@ -18,10 +18,13 @@
     <style name="EsMaterial.Theme.TextInfo" parent="EsMaterial.Theme.Widget">
     </style>
 
-    <style name="EsMaterial.Button.Base" parent="EsMaterial.Theme.Widget">
+    <style name="EsMaterial.Button" parent="EsMaterial.Theme.Widget">
         <item name="android:height">@dimen/EsMaterial.Button.MinHeight</item>
         <item name="android:minWidth">@dimen/EsMaterial.Button.MinWidth</item>
         <item name="android:gravity">center</item>
+    </style>
+
+    <style name="EsMaterial.Button.Base" parent="EsMaterial.Button">
     </style>
 
     <!-- ProjectのThemeをそのまま適用する -->

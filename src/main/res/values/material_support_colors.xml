@@ -110,6 +110,19 @@
     <color name="EsMaterial.Blue.Button.Ripple">@color/EsMaterial.Blue.900</color>
     <color name="EsMaterial.Blue.FlatButton.Normal">@color/EsMaterial.Grey.800</color>
 
+    <!-- Yellow -->
+    <color name="EsMaterial.Yellow.50">#FFFDE7</color>
+    <color name="EsMaterial.Yellow.100">#FFF9C4</color>
+    <color name="EsMaterial.Yellow.200">#FFF59D</color>
+    <color name="EsMaterial.Yellow.300">#FFF176</color>
+    <color name="EsMaterial.Yellow.400">#FFEE58</color>
+    <color name="EsMaterial.Yellow.500">#FFEB3B</color>
+    <color name="EsMaterial.Yellow.600">#FDD835</color>
+    <color name="EsMaterial.Yellow.700">#FBC02D</color>
+    <color name="EsMaterial.Yellow.800">#F9A825</color>
+    <color name="EsMaterial.Yellow.900">#F57F17</color>
+    <color name="EsMaterial.Yellow.Theme">@color/EsMaterial.Yellow.400</color>
+
     <style name="EsMaterial.Button.Blue" parent="EsMaterial.Button.Base">
         <item name="android:background">@drawable/esm_button_blue</item>
         <item name="android:textColor">@color/EsMaterial.Blue.50</item>
