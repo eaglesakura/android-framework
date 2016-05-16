@@ -6,7 +6,10 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
-public abstract class ProgressToken {
+import java.io.Closeable;
+import java.io.IOException;
+
+public abstract class ProgressToken implements Closeable {
     /**
      * 処理タグ
      */
@@ -18,12 +21,15 @@ public abstract class ProgressToken {
      */
     float mPriority;
 
-    public ProgressToken() {
-        this(RandomUtil.randShortString());
+    ProgressStackManager mStackManager;
+
+    public ProgressToken(ProgressStackManager stackManager) {
+        this(stackManager, RandomUtil.randShortString());
     }
 
-    public ProgressToken(final String tag) {
+    public ProgressToken(ProgressStackManager stackManager, final String tag) {
         mTag = tag;
+        mStackManager = stackManager;
     }
 
     public ProgressToken priority(float newPriority) {
@@ -43,18 +49,28 @@ public abstract class ProgressToken {
     @NonNull
     public abstract String getMessage();
 
-    /**
-     * メッセージからトークンを生成する
-     */
-    public static ProgressToken fromMessage(Context context, @StringRes int stringRes) {
-        return fromMessage(context.getString(stringRes));
+    @Override
+    public void close() throws IOException {
+        if (mStackManager == null) {
+            throw new IOException();
+        }
+
+        mStackManager.pop(this);
+        mStackManager = null;
     }
 
     /**
      * メッセージからトークンを生成する
      */
-    public static ProgressToken fromMessage(String message) {
-        return new ProgressToken() {
+    public static ProgressToken fromMessage(ProgressStackManager stackManager, Context context, @StringRes int stringRes) {
+        return fromMessage(stackManager, context.getString(stringRes));
+    }
+
+    /**
+     * メッセージからトークンを生成する
+     */
+    public static ProgressToken fromMessage(ProgressStackManager stackManager, String message) {
+        return new ProgressToken(stackManager) {
             @NonNull
             @Override
             public String getMessage() {

@@ -71,7 +71,7 @@ public class ProgressStackManager {
         }
     }
 
-    public void pop(@NonNull ProgressToken token) {
+    void pop(@NonNull ProgressToken token) {
         synchronized (mTokens) {
             ProgressToken topToken = getTopToken();
 
