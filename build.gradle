@@ -135,10 +135,10 @@ dependencies {
     compile 'frankiesardo:icepick:+'
     provided 'frankiesardo:icepick-processor:+'
 
-    /**
-     * Image Loading
-     */
-    compile "com.squareup.picasso:picasso:2.3.+"
+//    /**
+//     * Image Loading
+//     */
+//    compile "com.squareup.picasso:picasso:2.3.+"
 }
 
 /**

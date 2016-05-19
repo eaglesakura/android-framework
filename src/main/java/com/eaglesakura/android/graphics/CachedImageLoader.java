@@ -1,8 +1,13 @@
 package com.eaglesakura.android.graphics;
 
+import com.eaglesakura.android.framework.R;
 import com.eaglesakura.android.graphics.loader.DrawableImageLoader;
 import com.eaglesakura.android.graphics.loader.FileImageLoader;
 import com.eaglesakura.android.graphics.loader.ImageLoader;
+import com.eaglesakura.android.graphics.loader.NetworkImageLoader;
+import com.eaglesakura.android.net.NetworkConnector;
+import com.eaglesakura.android.net.request.ConnectRequest;
+import com.eaglesakura.android.net.request.SimpleHttpRequest;
 import com.eaglesakura.lambda.CancelCallback;
 
 import android.content.Context;
@@ -10,6 +15,7 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
+import android.widget.ImageView;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,12 +51,32 @@ public class CachedImageLoader {
     /**
      * ファイルからのローダーを生成する
      */
-    public Builder newImage(File src, boolean cache) {
+    public Builder newImage(File src, boolean onNemoryCache) {
         FileImageLoader loader = new FileImageLoader(mContext, mImageCache, src);
-        if (cache) {
+        if (onNemoryCache) {
             loader.cache();
         }
 
+        return new Builder(loader);
+    }
+
+    /**
+     * ネットワークダウンローダーを生成する
+     */
+    public Builder newImage(NetworkConnector connector, String url, boolean onMemoryCache) {
+        SimpleHttpRequest request = new SimpleHttpRequest(ConnectRequest.Method.GET);
+        request.setUrl(url, null);
+        return newImage(connector, request, onMemoryCache);
+    }
+
+    /**
+     * ネットワークダウンローダーを生成する
+     */
+    public Builder newImage(NetworkConnector connector, ConnectRequest request, boolean onMemoryCache) {
+        NetworkImageLoader loader = new NetworkImageLoader(mContext, mImageCache, connector, request);
+        if (onMemoryCache) {
+            loader.cache();
+        }
         return new Builder(loader);
     }
 
