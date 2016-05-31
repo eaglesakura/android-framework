@@ -1,6 +1,7 @@
 package com.eaglesakura.material.widget;
 
 import com.eaglesakura.android.framework.R;
+import com.eaglesakura.android.util.ResourceUtil;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -23,6 +24,7 @@ public class MaterialButton extends AppCompatButton {
     public static final int TEXTCOLOR_MODE_DARK = 1;
     public static final int TEXTCOLOR_MODE_PALETTE = 2;
     public static final int TEXTCOLOR_MODE_AUTO = 3;
+    public static final int TEXTCOLOR_MODE_IGNORE = 4;
 
     private int styleBaseColor;
 
@@ -93,18 +95,21 @@ public class MaterialButton extends AppCompatButton {
                     }
                 }
 
-                if (colorMode == TEXTCOLOR_MODE_LIGHT) {
-                    // フォントを明るくする
-                    textBaseColor = res.getColor(R.color.EsMaterial_Grey_50);
-                    textHighlightColor = res.getColor(R.color.EsMaterial_Grey_100);
-                } else if (colorMode == TEXTCOLOR_MODE_DARK) {
-                    // フォントを暗くする
-                    textBaseColor = res.getColor(R.color.EsMaterial_Grey_800);
-                    textHighlightColor = res.getColor(R.color.EsMaterial_Grey_900);
-                }
-
                 // TextColor
-                setTextColor(createButtonColorStateList(context, textBaseColor, textHighlightColor));
+                // ignoreの場合はsetTextColorを行わない
+                if (colorMode != TEXTCOLOR_MODE_IGNORE) {
+                    if (colorMode == TEXTCOLOR_MODE_LIGHT) {
+                        // フォントを明るくする
+                        textBaseColor = ResourceUtil.argb(context, R.color.EsMaterial_Grey_50);
+                        textHighlightColor = ResourceUtil.argb(context, R.color.EsMaterial_Grey_100);
+                    } else if (colorMode == TEXTCOLOR_MODE_DARK) {
+                        // フォントを暗くする
+                        textBaseColor = ResourceUtil.argb(context, R.color.EsMaterial_Grey_800);
+                        textHighlightColor = ResourceUtil.argb(context, R.color.EsMaterial_Grey_900);
+                    }
+
+                    setTextColor(createButtonColorStateList(context, textBaseColor, textHighlightColor));
+                }
             }
         }
     }

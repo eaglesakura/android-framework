@@ -17,6 +17,7 @@
             <enum name="dark" value="1"/>
             <enum name="palette" value="2"/>
             <enum name="auto" value="3"/>
+            <enum name="ignore" value="4"/>
         </attr>
     </declare-styleable>
 </resources>

@@ -30,6 +30,14 @@ public abstract class UiLifecycleDelegate extends LifecycleDelegate {
     }
 
     /**
+     * 監視対象のDialogを持っていたらtrue
+     */
+    public boolean hasDialogs() {
+        compactAutoDismissDialogs();
+        return !mAutoDismissDialogs.isEmpty();
+    }
+
+    /**
      * Dialogを全て開放する
      */
     @UiThread
