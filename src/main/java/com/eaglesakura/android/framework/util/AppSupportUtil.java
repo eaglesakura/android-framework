@@ -12,7 +12,9 @@ import android.os.Build;
 import android.support.v4.content.LocalBroadcastManager;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * アプリ開発でよく用いるUtil

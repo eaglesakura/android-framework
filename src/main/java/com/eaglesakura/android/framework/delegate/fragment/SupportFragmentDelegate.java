@@ -11,6 +11,7 @@ import com.eaglesakura.android.rx.event.OnSaveEvent;
 import com.eaglesakura.android.rx.event.OnViewCreateEvent;
 import com.eaglesakura.android.thread.ui.UIHandler;
 import com.eaglesakura.android.util.PermissionUtil;
+import com.eaglesakura.util.CollectionUtil;
 import com.eaglesakura.util.ReflectionUtil;
 
 import android.app.Activity;
@@ -33,6 +34,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import icepick.Icepick;
 import icepick.State;
@@ -428,7 +433,29 @@ public class SupportFragmentDelegate {
         AppSupportUtil.onRequestPermissionsResult(getActivity(), requestCode, permissions, grantResults);
     }
 
-    public boolean requestRuntimePermission(PermissionUtil.PermissionType type) {
-        return requestRuntimePermission(type.getPermissions());
+    /**
+     * 複数Permissionをリクエストする
+     */
+    public boolean requestRuntimePermission(PermissionUtil.PermissionType... types) {
+        Set<String> permissions = new HashSet<>();
+        for (PermissionUtil.PermissionType type : types) {
+            for (String pm : type.getPermissions()) {
+                permissions.add(pm);
+            }
+        }
+        return requestRuntimePermission(CollectionUtil.asArray(permissions, new String[permissions.size()]));
+    }
+
+    /**
+     * 複数Permissionをリクエストする
+     */
+    public boolean requestRuntimePermission(List<PermissionUtil.PermissionType> types) {
+        Set<String> permissions = new HashSet<>();
+        for (PermissionUtil.PermissionType type : types) {
+            for (String pm : type.getPermissions()) {
+                permissions.add(pm);
+            }
+        }
+        return requestRuntimePermission(CollectionUtil.asArray(permissions, new String[permissions.size()]));
     }
 }

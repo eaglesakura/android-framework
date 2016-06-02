@@ -28,6 +28,8 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.List;
+
 /**
  * startActivityForResultを行う場合、ParentFragmentが存在していたらそちらのstartActivityForResultを呼び出す。
  * <br>
@@ -186,10 +188,13 @@ public abstract class SupportFragment extends Fragment implements SupportFragmen
         mFragmentDelegate.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
-    public boolean requestRuntimePermission(PermissionUtil.PermissionType type) {
+    public boolean requestRuntimePermission(PermissionUtil.PermissionType... type) {
         return mFragmentDelegate.requestRuntimePermission(type);
     }
 
+    public boolean requestRuntimePermission(List<PermissionUtil.PermissionType> types) {
+        return mFragmentDelegate.requestRuntimePermission(types);
+    }
 
     /**
      * タスクコントローラを取得する
