@@ -6,6 +6,7 @@ import com.eaglesakura.util.LogUtil;
 import com.eaglesakura.util.StringUtil;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.LayoutRes;
@@ -14,6 +15,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -55,7 +57,13 @@ public class SupportRecyclerView extends FrameLayout {
             return;
         }
 
-        View view = View.inflate(context, R.layout.esm_support_recyclerview, null);
+        LayoutInflater inflater;
+        if (context instanceof Activity) {
+            inflater = ((Activity) context).getLayoutInflater();
+        } else {
+            inflater = LayoutInflater.from(context);
+        }
+        View view = inflater.inflate(R.layout.esm_support_recyclerview, null);
 
         recyclerView = (RecyclerView) view.findViewById(R.id.EsMaterial_SupportRecyclerView_Content);
         {
