@@ -11,12 +11,11 @@
             android:layout_height="match_parent">
 
         <android.support.v7.widget.Toolbar
-                app:theme="@style/EsMaterial.Theme.Grey.Toolbar"
+                android:theme="@style/EsMaterial.Theme.Grey.Toolbar"
                 android:id="@+id/EsMaterial_Toolbar"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:background="?attr/colorPrimary"
-                android:minHeight="?attr/actionBarSize"/>
+                android:background="?attr/colorPrimary"/>
 
         <com.eaglesakura.material.widget.support.SupportRecyclerView
                 android:id="@+id/eglibrary.License.List"
