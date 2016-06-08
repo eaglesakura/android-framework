@@ -128,17 +128,6 @@ dependencies {
      */
     compile "com.google.android.gms:play-services-plus:${ANDROID_PLAYSERVICE_LIB_VERSION}"
     compile 'com.android.support:support-annotations:+'
-
-    /**
-     * Injection / State
-     */
-    compile 'frankiesardo:icepick:+'
-    provided 'frankiesardo:icepick-processor:+'
-
-//    /**
-//     * Image Loading
-//     */
-//    compile "com.squareup.picasso:picasso:2.3.+"
 }
 
 /**

@@ -16,9 +16,7 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 
 
-/**
- *
- */
+@Deprecated
 public class MaterialButton extends AppCompatButton {
     public static final int TEXTCOLOR_MODE_LIGHT = 0;
     public static final int TEXTCOLOR_MODE_DARK = 1;

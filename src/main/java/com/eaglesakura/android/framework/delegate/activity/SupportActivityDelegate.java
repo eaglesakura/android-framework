@@ -6,6 +6,7 @@ import com.eaglesakura.android.framework.util.AppSupportUtil;
 import com.eaglesakura.android.oari.ActivityResult;
 import com.eaglesakura.android.rx.event.OnRestoreEvent;
 import com.eaglesakura.android.rx.event.OnSaveEvent;
+import com.eaglesakura.freezer.BundleFreezer;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -14,19 +15,13 @@ import android.content.res.TypedArray;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
-import android.view.KeyEvent;
 import android.view.View;
-
-import icepick.Icepick;
 
 /**
  *
@@ -65,15 +60,17 @@ public class SupportActivityDelegate {
     @CallSuper
     @UiThread
     protected void onRestoreInstanceState(OnRestoreEvent event) {
-        Icepick.restoreInstanceState(getActivity(), event.getBundle());
-        Icepick.restoreInstanceState(this, event.getBundle());
+        BundleFreezer.create(event.getBundle())
+                .target(getActivity()).restore()
+                .target(this).restore();
     }
 
     @CallSuper
     @UiThread
     protected void onSaveInstanceState(OnSaveEvent event) {
-        Icepick.saveInstanceState(getActivity(), event.getBundle());
-        Icepick.saveInstanceState(this, event.getBundle());
+        BundleFreezer.create(event.getBundle())
+                .target(getActivity()).save()
+                .target(this).save();
     }
 
     public <T extends View> T findViewById(@NonNull Class<T> clazz, @IdRes int id) {

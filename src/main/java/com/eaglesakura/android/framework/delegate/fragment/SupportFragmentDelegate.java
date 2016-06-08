@@ -11,6 +11,8 @@ import com.eaglesakura.android.rx.event.OnSaveEvent;
 import com.eaglesakura.android.rx.event.OnViewCreateEvent;
 import com.eaglesakura.android.thread.ui.UIHandler;
 import com.eaglesakura.android.util.PermissionUtil;
+import com.eaglesakura.freezer.BundleFreezer;
+import com.eaglesakura.freezer.BundleState;
 import com.eaglesakura.util.CollectionUtil;
 import com.eaglesakura.util.ReflectionUtil;
 
@@ -28,19 +30,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.InternalSupportFragmentUtil;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import icepick.Icepick;
-import icepick.State;
 
 /**
  * startActivityForResultを行う場合、ParentFragmentが存在していたらそちらのstartActivityForResultを呼び出す。
@@ -105,14 +101,14 @@ public class SupportFragmentDelegate {
      */
     private boolean mInjectedInstance = false;
 
-    @State
+    @BundleState
     boolean mInitializedViews = false;
 
-    @State
+    @BundleState
     @LayoutRes
     int mInjectionLayoutId;
 
-    @State
+    @BundleState
     @MenuRes
     int mInjectionOptionMenuId;
 
@@ -326,15 +322,17 @@ public class SupportFragmentDelegate {
     @CallSuper
     @UiThread
     protected void onCreate(OnCreateEvent event) {
-        Icepick.restoreInstanceState(mCompat, event.getBundle());
-        Icepick.restoreInstanceState(this, event.getBundle());
+        BundleFreezer.create(event.getBundle())
+                .target(mCompat).restore()
+                .target(this).restore();
     }
 
     @CallSuper
     @UiThread
     protected void onSaveInstanceState(OnSaveEvent event) {
-        Icepick.saveInstanceState(mCompat, event.getBundle());
-        Icepick.saveInstanceState(this, event.getBundle());
+        BundleFreezer.create(event.getBundle())
+                .target(mCompat).save()
+                .target(this).save();
     }
 
     /**
