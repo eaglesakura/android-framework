@@ -7,8 +7,11 @@ import android.content.Context;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Activityが表示されている間に使用される共通UIを定義する
+ * Activityが表示されている間に使用される共通UIを定義する]
+ *
+ * @see BackStackManager
  */
+@Deprecated
 public class UserNotificationController {
     protected AtomicInteger progressNum = new AtomicInteger(0);
 

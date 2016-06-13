@@ -2,7 +2,6 @@ package com.eaglesakura.material.widget.support;
 
 import com.eaglesakura.android.framework.FwLog;
 import com.eaglesakura.android.framework.R;
-import com.eaglesakura.util.LogUtil;
 import com.eaglesakura.util.StringUtil;
 
 import android.annotation.TargetApi;
@@ -10,6 +9,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.LayoutRes;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,17 +19,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
 /**
  * List Support
  */
 public class SupportRecyclerView extends FrameLayout {
-    RecyclerView recyclerView;
+    RecyclerView mRecyclerView;
 
-    FrameLayout emptyViewRoot;
+    FrameLayout mEmptyViewRoot;
 
-    View progress;
+    View mProgress;
 
     public SupportRecyclerView(Context context) {
         super(context);
@@ -65,16 +64,16 @@ public class SupportRecyclerView extends FrameLayout {
         }
         View view = inflater.inflate(R.layout.esm_support_recyclerview, null);
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.EsMaterial_SupportRecyclerView_Content);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.EsMaterial_SupportRecyclerView_Content);
         {
             // RecyclerViewにデフォルト状態を指定する
-            recyclerView.setTag(R.id.SupportRecyclerView_RecyclerView, this);
-            recyclerView.setHasFixedSize(true);
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            mRecyclerView.setTag(R.id.SupportRecyclerView_RecyclerView, this);
+            mRecyclerView.setHasFixedSize(true);
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         }
-        emptyViewRoot = (FrameLayout) view.findViewById(R.id.EsMaterial_SupportRecyclerView_Empty);
-        progress = view.findViewById(R.id.EsMaterial_SupportRecyclerView_Loading);
+        mEmptyViewRoot = (FrameLayout) view.findViewById(R.id.EsMaterial_SupportRecyclerView_Empty);
+        mProgress = view.findViewById(R.id.EsMaterial_SupportRecyclerView_Loading);
 
         LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         addView(view, layoutParams);
@@ -86,7 +85,7 @@ public class SupportRecyclerView extends FrameLayout {
 
             if (!StringUtil.isEmpty(emptyText)) {
                 // empty
-                TextView tv = new TextView(context, null, R.style.EsMaterial_Font_Normal);
+                AppCompatTextView tv = new AppCompatTextView(context, attrs, defStyleAttr);
                 tv.setText(emptyText);
                 tv.setGravity(Gravity.CENTER);
                 setEmptyView(tv);
@@ -95,7 +94,7 @@ public class SupportRecyclerView extends FrameLayout {
     }
 
     public RecyclerView getRecyclerView() {
-        return recyclerView;
+        return mRecyclerView;
     }
 
     /**
@@ -108,36 +107,36 @@ public class SupportRecyclerView extends FrameLayout {
     }
 
     public void setEmptyView(View view) {
-        if (emptyViewRoot == null) {
+        if (mEmptyViewRoot == null) {
             return;
         }
 
-        if (emptyViewRoot.getChildCount() != 0) {
+        if (mEmptyViewRoot.getChildCount() != 0) {
             // 子を殺す
-            emptyViewRoot.removeAllViews();
+            mEmptyViewRoot.removeAllViews();
         }
 
         LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         layoutParams.gravity = Gravity.CENTER;
-        emptyViewRoot.addView(view, layoutParams);
+        mEmptyViewRoot.addView(view, layoutParams);
     }
 
     /**
      * 空Viewを取得する
      */
     public <T extends View> T getEmptyView(Class<T> clazz) {
-        if (emptyViewRoot.getChildCount() == 0) {
+        if (mEmptyViewRoot.getChildCount() == 0) {
             return null;
         }
-        return (T) emptyViewRoot.getChildAt(0);
+        return (T) mEmptyViewRoot.getChildAt(0);
     }
 
     /**
      * アダプタを指定する
      */
     public void setAdapter(RecyclerView.Adapter adapter, boolean viewSizeFixed) {
-        recyclerView.setAdapter(adapter);
-        recyclerView.setHasFixedSize(viewSizeFixed);
+        mRecyclerView.setAdapter(adapter);
+        mRecyclerView.setHasFixedSize(viewSizeFixed);
         setProgressVisibly(adapter.getItemCount() == 0, adapter.getItemCount());
     }
 
@@ -146,16 +145,16 @@ public class SupportRecyclerView extends FrameLayout {
      */
     public void setProgressVisibly(boolean visible, int recyclerViewItemNum) {
         if (visible) {
-            progress.setVisibility(VISIBLE);
-            recyclerView.setVisibility(View.INVISIBLE);
-            emptyViewRoot.setVisibility(View.INVISIBLE);
+            mProgress.setVisibility(VISIBLE);
+            mRecyclerView.setVisibility(View.INVISIBLE);
+            mEmptyViewRoot.setVisibility(View.INVISIBLE);
         } else {
-            progress.setVisibility(INVISIBLE);
-            recyclerView.setVisibility(VISIBLE);
+            mProgress.setVisibility(INVISIBLE);
+            mRecyclerView.setVisibility(VISIBLE);
             if (recyclerViewItemNum > 0) {
-                emptyViewRoot.setVisibility(INVISIBLE);
+                mEmptyViewRoot.setVisibility(INVISIBLE);
             } else {
-                emptyViewRoot.setVisibility(VISIBLE);
+                mEmptyViewRoot.setVisibility(VISIBLE);
             }
         }
     }
