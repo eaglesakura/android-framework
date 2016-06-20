@@ -63,7 +63,7 @@ android {
 
 // check env
 if (!hasProperty("ANDROID_SUPPORT_LIB_VERSION")) {
-    ext.ANDROID_SUPPORT_LIB_VERSION = "+"
+    ext.ANDROID_SUPPORT_LIB_VERSION = "24.+"
 }
 if (!hasProperty("ANDROID_PLAYSERVICE_LIB_VERSION")) {
     ext.ANDROID_PLAYSERVICE_LIB_VERSION = "+"
@@ -88,13 +88,13 @@ dependencies {
         compile project(':eglibrary:android-simple-utils')
         compile project(':eglibrary:android-text-kvs')
         compile project(':eglibrary:android-thread')
-//        compile project(':eglibrary:android-canvas-graphics')
         compile project(':eglibrary:android-net')
         compile project(':eglibrary:onactivityresult-invoke')
         compile project(':eglibrary:small-aquery')
         compile project(':eglibrary:rxandroid-support')
         compile project(':eglibrary:margarineknife')
         compile project(':eglibrary:garnet')
+        compile project(':eglibrary:light-saver')
 
         androidTestCompile project(":eglibrary:android-devicetest-support")
         testCompile project(":eglibrary:android-unittest-support")
@@ -109,6 +109,7 @@ dependencies {
         compile 'com.eaglesakura:small-aquery:+'
         compile 'com.eaglesakura:margarineknife:1.+'
         compile 'com.eaglesakura:garnet:0.+'
+        compile 'com.eaglesakura:light-saver:1.+'
 
         androidTestCompile 'com.eaglesakura:android-devicetest-support:1.+'
         testCompile 'com.eaglesakura:android-unittest-support:1.+'

@@ -6,7 +6,7 @@ import com.eaglesakura.android.framework.util.AppSupportUtil;
 import com.eaglesakura.android.oari.ActivityResult;
 import com.eaglesakura.android.rx.event.OnRestoreEvent;
 import com.eaglesakura.android.rx.event.OnSaveEvent;
-import com.eaglesakura.bundle.BundleCollector;
+import com.eaglesakura.android.saver.LightSaver;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -60,7 +60,7 @@ public class SupportActivityDelegate {
     @CallSuper
     @UiThread
     protected void onRestoreInstanceState(OnRestoreEvent event) {
-        BundleCollector.create(event.getBundle())
+        LightSaver.create(event.getBundle())
                 .target(getActivity()).restore()
                 .target(this).restore();
     }
@@ -68,7 +68,7 @@ public class SupportActivityDelegate {
     @CallSuper
     @UiThread
     protected void onSaveInstanceState(OnSaveEvent event) {
-        BundleCollector.create(event.getBundle())
+        LightSaver.create(event.getBundle())
                 .target(getActivity()).save()
                 .target(this).save();
     }

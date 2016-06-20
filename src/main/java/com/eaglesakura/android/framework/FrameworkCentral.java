@@ -1,5 +1,6 @@
 package com.eaglesakura.android.framework;
 
+import com.eaglesakura.android.device.display.DisplayInfo;
 import com.eaglesakura.android.framework.db.BasicSettings;
 import com.eaglesakura.android.framework.ui.message.LocalMessageReceiver;
 import com.eaglesakura.android.rx.LifecycleEvent;
@@ -15,6 +16,7 @@ import com.eaglesakura.android.util.ContextUtil;
 
 import android.app.Activity;
 import android.app.Application;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -86,6 +88,22 @@ public class FrameworkCentral {
                 protected void onGooglePlayLoginCompleted() {
                 }
             };
+
+            if (ContextUtil.isDebug(mApplication)) {
+                FwLog.system("========= Runtime Information =========");
+                FwLog.system("== Device %s", Build.MODEL);
+                {
+                    DisplayInfo displayInfo = new DisplayInfo(mApplication);
+                    FwLog.system("== Display %d.%d inch = %s",
+                            displayInfo.getDiagonalInchRound().major, displayInfo.getDiagonalInchRound().minor,
+                            displayInfo.getDeviceType().name()
+                    );
+                    FwLog.system("==   Display [%d x %d] pix", displayInfo.getWidthPixel(), displayInfo.getHeightPixel());
+                    FwLog.system("==   Display [%.1f x %.1f] dp", displayInfo.getWidthDp(), displayInfo.getHeightDp());
+                    FwLog.system("==   res/values-sw%ddp", displayInfo.getSmallestWidthDp());
+                }
+                FwLog.system("========= Runtime Information =========");
+            }
         }
 
         void loadSettings() {
@@ -135,20 +153,18 @@ public class FrameworkCentral {
 
         @Override
         public void onActivityPaused(Activity activity) {
-            UIHandler.postDelayedUI(() -> {
-                --mForegroundActivities;
-                // バックグラウンドに移動した
-                if (mForegroundActivities == 0) {
-                    mSubject.onNext(new LifecycleEventImpl(LifecycleState.OnPaused));
+            --mForegroundActivities;
+            // バックグラウンドに移動した
+            if (mForegroundActivities == 0) {
+                mSubject.onNext(new LifecycleEventImpl(LifecycleState.OnPaused));
 
-                    synchronized (mStateListeners) {
-                        for (ApplicationStateListener listener : mStateListeners) {
-                            listener.onApplicationBackground();
-                        }
+                synchronized (mStateListeners) {
+                    for (ApplicationStateListener listener : mStateListeners) {
+                        listener.onApplicationBackground();
                     }
                 }
-                FwLog.system("onActivityPaused num[%d] (%s)", mForegroundActivities, activity.toString());
-            }, 100);
+            }
+            FwLog.system("onActivityPaused num[%d] (%s)", mForegroundActivities, activity.toString());
         }
 
         @Override

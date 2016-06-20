@@ -9,10 +9,10 @@ import com.eaglesakura.android.rx.event.OnAttachEvent;
 import com.eaglesakura.android.rx.event.OnCreateEvent;
 import com.eaglesakura.android.rx.event.OnSaveEvent;
 import com.eaglesakura.android.rx.event.OnViewCreateEvent;
+import com.eaglesakura.android.saver.BundleState;
+import com.eaglesakura.android.saver.LightSaver;
 import com.eaglesakura.android.thread.ui.UIHandler;
 import com.eaglesakura.android.util.PermissionUtil;
-import com.eaglesakura.bundle.BundleCollector;
-import com.eaglesakura.bundle.BundleState;
 import com.eaglesakura.util.CollectionUtil;
 import com.eaglesakura.util.ReflectionUtil;
 
@@ -322,7 +322,7 @@ public class SupportFragmentDelegate {
     @CallSuper
     @UiThread
     protected void onCreate(OnCreateEvent event) {
-        BundleCollector.create(event.getBundle())
+        LightSaver.create(event.getBundle())
                 .target(mCompat).restore()
                 .target(this).restore();
     }
@@ -330,7 +330,7 @@ public class SupportFragmentDelegate {
     @CallSuper
     @UiThread
     protected void onSaveInstanceState(OnSaveEvent event) {
-        BundleCollector.create(event.getBundle())
+        LightSaver.create(event.getBundle())
                 .target(mCompat).save()
                 .target(this).save();
     }
