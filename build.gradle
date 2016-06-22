@@ -214,12 +214,6 @@ uploadArchives {
     pom.project {
         inceptionYear '2016'
         packaging 'aar'
-        licenses {
-            license {
-                name 'MIT License'
-                url "https://raw.githubusercontent.com/eaglesakura/${ARTIFACT_NAME}/master/LICENSE.txt"
-            }
-        }
         dependencies {
             dependency {
                 groupId = 'com.eaglesakura'
@@ -240,16 +234,10 @@ uploadArchives {
                 scope = 'compile'
             }
             dependency {
-                groupId = 'frankiesardo'
-                artifactId = 'icepick'
-                version = dependenceisVersion("frankiesardo:icepick", "3.1.+")
+                groupId = 'com.eaglesakura'
+                artifactId = 'light-saver'
+                version = dependenceisVersion("com.eaglesakura:light-saver", "1.0.+")
                 scope = 'compile'
-            }
-            dependency {
-                groupId = 'frankiesardo'
-                artifactId = 'icepick-processor'
-                version = dependenceisVersion("frankiesardo:icepick-processor", "3.1.+")
-                scope = 'provided'
             }
         }
     }
