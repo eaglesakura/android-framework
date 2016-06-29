@@ -61,6 +61,10 @@ android {
             ]
         }
     }
+
+    lintOptions {
+        disable "NewApi"
+    }
 }
 
 // check env
@@ -213,6 +217,74 @@ uploadArchives {
         inceptionYear '2016'
         packaging 'aar'
         dependencies {
+            // Support Library
+            dependency {
+                groupId = 'com.android.support'
+                artifactId = 'support-v4'
+                version = dependenceisVersion("com.android.support:support-v4", "${ANDROID_SUPPORT_LIB_VERSION}")
+                scope = 'compile'
+            }
+            dependency {
+                groupId = 'com.android.support'
+                artifactId = 'appcompat-v7'
+                version = dependenceisVersion("com.android.support:appcompat-v7", "${ANDROID_SUPPORT_LIB_VERSION}")
+                scope = 'compile'
+            }
+            dependency {
+                groupId = 'com.android.support'
+                artifactId = 'cardview-v7'
+                version = dependenceisVersion("com.android.support:cardview-v7", "${ANDROID_SUPPORT_LIB_VERSION}")
+                scope = 'compile'
+            }
+            dependency {
+                groupId = 'com.android.support'
+                artifactId = 'cardview-v7'
+                version = dependenceisVersion("com.android.support:recyclerview-v7", "${ANDROID_SUPPORT_LIB_VERSION}")
+                scope = 'compile'
+            }
+            dependency {
+                groupId = 'com.android.support'
+                artifactId = 'palette-v7'
+                version = dependenceisVersion("com.android.support:palette-v7", "${ANDROID_SUPPORT_LIB_VERSION}")
+                scope = 'compile'
+            }
+            dependency {
+                groupId = 'com.android.support'
+                artifactId = 'palette-v7'
+                version = dependenceisVersion("com.android.support:design", "${ANDROID_SUPPORT_LIB_VERSION}")
+                scope = 'compile'
+            }
+
+            dependency {
+                groupId = 'com.eaglesakura'
+                artifactId = 'simple-utils'
+                version = dependenceisVersion("com.eaglesakura:simple-utils", "1.+")
+                scope = 'compile'
+            }
+            dependency {
+                groupId = 'com.eaglesakura'
+                artifactId = 'android-simple-utils'
+                version = dependenceisVersion("com.eaglesakura:android-simple-utils", "1.+")
+                scope = 'compile'
+            }
+            dependency {
+                groupId = 'com.eaglesakura'
+                artifactId = 'android-text-kvs'
+                version = dependenceisVersion("com.eaglesakura:android-text-kvs", "1.+")
+                scope = 'compile'
+            }
+            dependency {
+                groupId = 'com.eaglesakura'
+                artifactId = 'android-thread'
+                version = dependenceisVersion("com.eaglesakura:android-thread", "1.+")
+                scope = 'compile'
+            }
+            dependency {
+                groupId = 'com.eaglesakura'
+                artifactId = 'android-net'
+                version = dependenceisVersion("com.eaglesakura:android-net", "1.+")
+                scope = 'compile'
+            }
             dependency {
                 groupId = 'com.eaglesakura'
                 artifactId = 'margarineknife'
