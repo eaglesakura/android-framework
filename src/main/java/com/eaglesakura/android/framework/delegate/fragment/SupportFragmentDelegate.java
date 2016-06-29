@@ -165,10 +165,7 @@ public class SupportFragmentDelegate {
         if (mInjectionLayoutId != 0) {
             mView = event.getInflater().inflate(mInjectionLayoutId, event.getContainer(), false);
             MargarineKnife.from(mView).to(mCompat).bind();
-            // getView対策で、１クッション置いて実行する
-            UIHandler.postUI(() -> {
-                onAfterViews();
-            });
+            onAfterViews(mView);
         }
     }
 
@@ -291,10 +288,13 @@ public class SupportFragmentDelegate {
 
     /**
      * View構築が完了した
+     *
+     * このメソッドはonCreateView()内部で呼び出される。そのため、まだgetView()をすることはできない。
+     * viewを参照する必要があるのなら、引数のfragmentViewを使用する。
      */
     @CallSuper
     @UiThread
-    protected void onAfterViews() {
+    protected void onAfterViews(View fragmentView) {
         if (!mInitializedViews) {
             mCompat.onAfterViews(this, SupportFragmentCompat.FLAG_AFTERVIEW_INITIALIZE);
             mInitializedViews = true;

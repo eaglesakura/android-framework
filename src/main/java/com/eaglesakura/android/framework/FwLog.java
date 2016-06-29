@@ -55,6 +55,13 @@ public class FwLog {
         LogUtil.out(tag, fmt, args);
     }
 
+    public static void debug(String fmt, Object... args) {
+        String tag = "Fw.Debug";
+
+        LogUtil.setLogger(tag, sAppLogger);
+        LogUtil.out(tag, fmt, args);
+    }
+
     public static void google(String fmt, Object... args) {
         String tag = "Fw.Google";
 
