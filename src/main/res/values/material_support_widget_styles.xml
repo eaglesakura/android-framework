@@ -12,6 +12,17 @@
         <item name="android:padding">@dimen/EsMaterial.Button.Margin</item>
     </style>
 
+    <style name="EsMaterial.Theme.RootLayout" parent="EsMaterial.Base">
+        <item name="android:layout_marginTop">@dimen/EsMaterial.Margin.KeyLine1Vertical</item>
+        <item name="android:layout_marginBottom">@dimen/EsMaterial.Margin.KeyLine1Vertical
+        </item>
+        <item name="android:layout_marginLeft">@dimen/EsMaterial.Margin.KeyLine1Horizontal
+        </item>
+        <item name="android:layout_marginRight">@dimen/EsMaterial.Margin.KeyLine1Horizontal
+        </item>
+        <item name="android:padding">@dimen/EsMaterial.Button.Margin</item>
+    </style>
+
     <style name="EsMaterial.Theme.Switch" parent="EsMaterial.Theme.Widget">
     </style>
 
