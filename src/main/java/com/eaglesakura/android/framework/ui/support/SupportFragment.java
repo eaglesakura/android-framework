@@ -209,7 +209,8 @@ public abstract class SupportFragment extends Fragment implements SupportFragmen
      * 処理順を整列するため、非同期・直列処理されたあと、アプリがフォアグラウンドのタイミングでコールバックされる。
      */
     public <T> RxTaskBuilder<T> asyncUI(RxTask.Async<T> background) {
-        return mLifecycleDelegate.asyncUI(background);
+        return mLifecycleDelegate.asyncUI(background)
+                .cancelSignal((Fragment) this);
     }
 
     /**
