@@ -33,14 +33,11 @@ public class MaterialAlertDialog extends MaterialDialogBase {
     public void setPositiveButton(CharSequence button, final OnClickListener positiveListener) {
         new AQuery(root)
                 .id(R.id.EsMaterial_Dialog_BasicButtons_Positive).text(button).visible()
-                .clicked(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (positiveListener != null) {
-                            positiveListener.onClick(MaterialAlertDialog.this, -1);
-                        }
-                        dismiss();
+                .clicked(v -> {
+                    if (positiveListener != null) {
+                        positiveListener.onClick(MaterialAlertDialog.this, -1);
                     }
+                    dismiss();
                 })
                 .id(R.id.EsMaterial_Dialog_BasicButtons_Root).visible()
         ;

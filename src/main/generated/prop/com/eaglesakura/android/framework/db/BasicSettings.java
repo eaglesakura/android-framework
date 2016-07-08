@@ -17,22 +17,11 @@ public class BasicSettings extends BasePropertiesDatabase {
 
     protected void _initialize() {
 
-        addProperty("BasicSettings.gcmToken", "");
         addProperty("BasicSettings.lastBootedAppVersionCode", "0");
         addProperty("BasicSettings.lastBootedAppVersionName", "");
-        addProperty("BasicSettings.loginGoogleClientApi", "false");
-        addProperty("BasicSettings.loginGoogleAccount", "");
 
         load();
 
-    }
-
-    public void setGcmToken(String set) {
-        setProperty("BasicSettings.gcmToken", set);
-    }
-
-    public String getGcmToken() {
-        return getStringProperty("BasicSettings.gcmToken");
     }
 
     public void setLastBootedAppVersionCode(int set) {
@@ -50,21 +39,4 @@ public class BasicSettings extends BasePropertiesDatabase {
     public String getLastBootedAppVersionName() {
         return getStringProperty("BasicSettings.lastBootedAppVersionName");
     }
-
-    public void setLoginGoogleClientApi(boolean set) {
-        setProperty("BasicSettings.loginGoogleClientApi", set);
-    }
-
-    public boolean getLoginGoogleClientApi() {
-        return getBooleanProperty("BasicSettings.loginGoogleClientApi");
-    }
-
-    public void setLoginGoogleAccount(String set) {
-        setProperty("BasicSettings.loginGoogleAccount", set);
-    }
-
-    public String getLoginGoogleAccount() {
-        return getStringProperty("BasicSettings.loginGoogleAccount");
-    }
-
 }

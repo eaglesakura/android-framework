@@ -48,6 +48,9 @@
         <item name="esmNavigationDrawerTextColor">@color/EsMaterial.Grey.700</item>
         <item name="esmSeparatorBarColor">@color/EsMaterial.Grey.300</item>
         <item name="esmWindowBackgroundColorDark">@color/EsMaterial.Grey.300</item>
+
+        <!-- Progress -->
+        <item name="spbStyle">@style/EsMaterial.Theme.Progress</item>
     </style>
 
 
