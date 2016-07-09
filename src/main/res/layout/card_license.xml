@@ -7,7 +7,7 @@
 
     <android.support.v7.widget.CardView
             android:id="@+id/eglibrary.License.Item.Root"
-            style="@style/EsMaterial.Theme.CardView.Light.NoHorizontalMargin"
+            style="@style/EsMaterial.Widget.CardView.Light.NoHorizontalMargin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="2dp"

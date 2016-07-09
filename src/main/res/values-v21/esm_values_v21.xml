@@ -2,7 +2,7 @@
 <resources>
 
     <!-- before Lollipop -->
-    <style name="EsMaterial.Theme.CardView" parent="CardView.Light">
+    <style name="EsMaterial.Widget.CardView" parent="CardView.Light">
         <item name="android:foreground">?android:attr/selectableItemBackground</item>
     </style>
 </resources>

@@ -69,7 +69,7 @@
         <item name="color">@color/EsMaterial.Teal.50</item>
     </style>
 
-    <style name="EsMaterial.Widget.Button" parent="EsMaterial.Theme.Widget">
+    <style name="EsMaterial.Widget.Button" parent="EsMaterial.Widget">
         <item name="android:height">@dimen/EsMaterial.Button.MinHeight</item>
         <item name="android:minWidth">@dimen/EsMaterial.Button.MinWidth</item>
         <item name="android:gravity">center</item>

@@ -220,6 +220,28 @@ public abstract class SupportFragment extends Fragment implements SupportFragmen
         return mLifecycleDelegate.async(subscribe, observe, background);
     }
 
+    /**
+     * 無限ループでFragmentのモニタリングを行う処理を開始する。
+     *
+     * 新たなスレッドを作成する。
+     * null以外を返却した場合、モニタリングを終了する。
+     *
+     * @param target          処理が持続する条件
+     * @param monitorCallback モニタリング処理
+     * @param callbackSpanMs  コールバックチェックを行うスパン
+     */
+    public <T> RxTaskBuilder<T> asyncMonitor(ObserveTarget target, RxTask.Async<T> monitorCallback, long callbackSpanMs) {
+        return async(SubscribeTarget.NewThread, target, (RxTask<T> task) -> {
+
+            T result = null;
+            while ((result = monitorCallback.call(task)) == null) {
+                task.waitTime(callbackSpanMs);
+            }
+
+            return result;
+        }).cancelSignal(this);
+    }
+
     @NonNull
     @Override
     public Fragment getFragment(SupportFragmentDelegate self) {

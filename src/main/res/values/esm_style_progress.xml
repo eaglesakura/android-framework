@@ -2,7 +2,7 @@
 <resources>
 
     <dimen name="EsMaterial.Progress.MinWidth">240dp</dimen>
-    <dimen name="EsMaterial.Progress.BarHeight">3dp</dimen>
+    <dimen name="EsMaterial.Progress.BarHeight">2dp</dimen>
     <color name="EsMaterial.Progress.Background">#7F000000</color>
 
     <integer-array name="EsMaterial_Widget_Progress_ColorTable">

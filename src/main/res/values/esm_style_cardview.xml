@@ -5,13 +5,13 @@
     <color name="EsMaterial.CardView.Light.Press">#8FD0D0D0</color>
 
     <!-- before Kitkat -->
-    <style name="EsMaterial.Theme.CardView" parent="CardView.Light">
+    <style name="EsMaterial.Widget.CardView" parent="CardView.Light">
         <item name="android:foreground">@drawable/esm_cardview_light_foreground</item>
     </style>
 
     <dimen name="EsWidget.CardView.Margin.Vertical.Small">3dp</dimen>
 
-    <style name="EsMaterial.Theme.CardView.Light" parent="EsMaterial.Theme.CardView">
+    <style name="EsMaterial.Widget.CardView.Light" parent="EsMaterial.Widget.CardView">
         <item name="android:layout_marginLeft">@dimen/EsMaterial.Margin.KeyLine1Horizontal</item>
         <item name="android:layout_marginTop">@dimen/EsWidget.CardView.Margin.Vertical.Small</item>
         <item name="android:layout_marginRight">@dimen/EsMaterial.Margin.KeyLine1Horizontal</item>
@@ -19,7 +19,7 @@
         <item name="android:minHeight">@dimen/EsMaterial.Button.MinHeight</item>
     </style>
 
-    <style name="EsMaterial.Theme.CardView.Light.NoHorizontalMargin" parent="EsMaterial.Theme.CardView.Light">
+    <style name="EsMaterial.Widget.CardView.Light.NoHorizontalMargin" parent="EsMaterial.Widget.CardView.Light">
         <item name="android:layout_marginLeft">@dimen/EsMaterial.Button.Margin</item>
         <item name="android:layout_marginRight">@dimen/EsMaterial.Button.Margin</item>
     </style>
