@@ -1,17 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <inset
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:insetLeft="@dimen/EsMaterial.Button.ExternalMarginHorizontal"
         android:insetTop="@dimen/EsMaterial.Button.ExternalMarginVertical"
         android:insetRight="@dimen/EsMaterial.Button.ExternalMarginHorizontal"
-        android:insetBottom="@dimen/EsMaterial.Button.ExternalMarginVertical"
-        xmlns:android="http://schemas.android.com/apk/res/android">
+        android:insetBottom="@dimen/EsMaterial.Button.ExternalMarginVertical">
     <layer-list android:paddingMode="stack">
-        <item>
-            <shape android:shape="rectangle">
-                <solid android:color="@color/EsMaterial.Button.Shadow"/>
-                <corners android:radius="@dimen/EsMaterial.Button.ShadowRadius"/>
-            </shape>
-        </item>
         <item>
             <selector>
                 <item android:state_enabled="false">
