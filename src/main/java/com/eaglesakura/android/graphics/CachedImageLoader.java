@@ -1,6 +1,5 @@
 package com.eaglesakura.android.graphics;
 
-import com.eaglesakura.android.framework.R;
 import com.eaglesakura.android.graphics.loader.DrawableImageLoader;
 import com.eaglesakura.android.graphics.loader.FileImageLoader;
 import com.eaglesakura.android.graphics.loader.ImageLoader;
@@ -15,7 +14,6 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
-import android.widget.ImageView;
 
 import java.io.File;
 import java.io.IOException;

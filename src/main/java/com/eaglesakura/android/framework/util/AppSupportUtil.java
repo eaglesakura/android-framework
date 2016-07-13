@@ -13,6 +13,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.v4.content.LocalBroadcastManager;
+import android.view.View;
+import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -74,5 +76,13 @@ public class AppSupportUtil {
                 return task.isCanceled() || (mTimer.end() > timeout);
             }
         };
+    }
+
+    public static <T extends View> T findViewByChildAt(View root, int... indices) {
+        for (int index : indices) {
+            root = ((ViewGroup) root).getChildAt(index);
+        }
+
+        return (T) root;
     }
 }

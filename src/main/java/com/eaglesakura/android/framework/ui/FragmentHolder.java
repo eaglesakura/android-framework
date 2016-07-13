@@ -1,5 +1,7 @@
 package com.eaglesakura.android.framework.ui;
 
+import com.eaglesakura.android.framework.delegate.lifecycle.FragmentLifecycleDelegate;
+import com.eaglesakura.android.rx.event.OnCreateEvent;
 import com.eaglesakura.lambda.Action1;
 import com.eaglesakura.util.ReflectionUtil;
 
@@ -60,7 +62,11 @@ public abstract class FragmentHolder<T extends Fragment> {
             }
 
             if (mFragment != null) {
-                transaction.add(mHolderId, mFragment, mFragmentTag).commit();
+                if (mHolderId == 0) {
+                    transaction.add(mFragment, mFragmentTag).commit();
+                } else {
+                    transaction.add(mHolderId, mFragment, mFragmentTag).commit();
+                }
             }
         }
     }
@@ -136,6 +142,20 @@ public abstract class FragmentHolder<T extends Fragment> {
                 .commit();
 
         mFragment = null;
+    }
+
+    public FragmentHolder<T> bind(FragmentLifecycleDelegate delegate) {
+        delegate.getSubscription().getObservable().subscribe(it -> {
+            switch (it.getState()) {
+                case OnCreated:
+                    onCreate(((OnCreateEvent) it).getBundle());
+                    return;
+                case OnResumed:
+                    onResume();
+                    return;
+            }
+        });
+        return this;
     }
 
     public static <T extends Fragment> FragmentHolder<T> newStub(@NonNull Fragment parent, @IdRes int holderId, @NonNull String tag) {

@@ -8,6 +8,7 @@ import android.app.Dialog;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.UiThread;
+import android.widget.PopupWindow;
 
 import java.lang.ref.WeakReference;
 import java.util.Iterator;
@@ -18,15 +19,65 @@ public abstract class UiLifecycleDelegate extends LifecycleDelegate {
     /**
      * 監視対象とするDialog
      */
-    private List<WeakReference<Dialog>> mAutoDismissDialogs = new LinkedList<>();
+    private List<AutoDismissObject> mAutoDismissDialogs = new LinkedList<>();
+
+    /**
+     * ライフサイクルに合わせて自動的に開放するオブジェクト
+     */
+    public interface AutoDismissObject {
+        /**
+         * 開放処理を行う
+         */
+        void dismiss();
+
+        /**
+         * オブジェクトが生存している
+         */
+        boolean exist();
+    }
 
     @UiThread
     public <T extends Dialog> T addAutoDismiss(@NonNull T dialog) {
         compactAutoDismissDialogs();
         if (dialog != null) {
-            mAutoDismissDialogs.add(new WeakReference<>(dialog));
+            mAutoDismissDialogs.add(new AutoDismissObject() {
+                @Override
+                public void dismiss() {
+                    DialogUtil.dismiss(dialog);
+                }
+
+                @Override
+                public boolean exist() {
+                    return dialog.isShowing();
+                }
+            });
         }
         return dialog;
+    }
+
+    @UiThread
+    public <T extends PopupWindow> T addAutoDismiss(@NonNull T window) {
+        compactAutoDismissDialogs();
+        if (window != null) {
+            mAutoDismissDialogs.add(new AutoDismissObject() {
+                @Override
+                public void dismiss() {
+                    try {
+                        if (window.isShowing()) {
+                            window.dismiss();
+                        }
+                    } catch (Exception e) {
+
+                    }
+                }
+
+                @Override
+                public boolean exist() {
+                    return window.isShowing();
+                }
+            });
+        }
+        return window;
     }
 
     /**
@@ -42,11 +93,10 @@ public abstract class UiLifecycleDelegate extends LifecycleDelegate {
      */
     @UiThread
     public void compactAutoDismissDialogs() {
-        Iterator<WeakReference<Dialog>> iterator = mAutoDismissDialogs.iterator();
+        Iterator<AutoDismissObject> iterator = mAutoDismissDialogs.iterator();
         while (iterator.hasNext()) {
-            WeakReference<Dialog> next = iterator.next();
-            Dialog dialog = next.get();
-            if (dialog == null) {
+            AutoDismissObject next = iterator.next();
+            if (next == null) {
                 iterator.remove();
             }
         }
@@ -67,12 +117,12 @@ public abstract class UiLifecycleDelegate extends LifecycleDelegate {
     @CallSuper
     @UiThread
     protected void onDestroy() {
-        Iterator<WeakReference<Dialog>> iterator = mAutoDismissDialogs.iterator();
+        Iterator<AutoDismissObject> iterator = mAutoDismissDialogs.iterator();
         while (iterator.hasNext()) {
-            Dialog dialog = iterator.next().get();
-            if (dialog != null) {
-                FwLog.widget("AutoDismiss :: %s", dialog.getClass());
-                DialogUtil.dismiss(dialog);
+            AutoDismissObject obj = iterator.next();
+            if (obj != null) {
+                FwLog.widget("AutoDismiss :: %s", obj.getClass());
+                obj.dismiss();
             }
         }
         mAutoDismissDialogs.clear();
