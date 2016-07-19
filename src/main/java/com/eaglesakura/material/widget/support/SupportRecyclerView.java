@@ -1,11 +1,10 @@
 package com.eaglesakura.material.widget.support;
 
-import com.eaglesakura.android.framework.FwLog;
 import com.eaglesakura.android.framework.R;
+import com.eaglesakura.android.framework.util.AppSupportUtil;
 import com.eaglesakura.util.StringUtil;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.LayoutRes;
@@ -32,39 +31,29 @@ public class SupportRecyclerView extends FrameLayout {
 
     public SupportRecyclerView(Context context) {
         super(context);
-        initialize(context, null, 0, 0);
+        init(context, null, 0, 0);
     }
 
     public SupportRecyclerView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initialize(context, attrs, 0, 0);
+        init(context, attrs, 0, 0);
     }
 
     public SupportRecyclerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        initialize(context, attrs, defStyleAttr, 0);
+        init(context, attrs, defStyleAttr, 0);
     }
 
     @TargetApi(21)
     public SupportRecyclerView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        initialize(context, attrs, defStyleAttr, defStyleRes);
+        init(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    private void initialize(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        if (isInEditMode()) {
-            return;
-        }
+    private void init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        View view = LayoutInflater.from(context).inflate(R.layout.esm_support_recyclerview, null);
 
-        LayoutInflater inflater;
-        if (context instanceof Activity) {
-            inflater = ((Activity) context).getLayoutInflater();
-        } else {
-            inflater = LayoutInflater.from(context);
-        }
-        View view = inflater.inflate(R.layout.esm_support_recyclerview, null);
-
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.EsMaterial_SupportRecyclerView_Content);
+        mRecyclerView = AppSupportUtil.findViewByChildAt(view, 0);
         {
             // RecyclerViewにデフォルト状態を指定する
             mRecyclerView.setTag(R.id.SupportRecyclerView_RecyclerView, this);
@@ -72,24 +61,23 @@ public class SupportRecyclerView extends FrameLayout {
             mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         }
-        mEmptyViewRoot = (FrameLayout) view.findViewById(R.id.EsMaterial_SupportRecyclerView_Empty);
-        mProgress = view.findViewById(R.id.EsMaterial_SupportRecyclerView_Loading);
+        mProgress = AppSupportUtil.findViewByChildAt(view, 1);
+        mEmptyViewRoot = AppSupportUtil.findViewByChildAt(view, 2);
 
         LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         addView(view, layoutParams);
 
-        if (attrs != null) {
-            TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.SupportRecyclerView);
-            String emptyText = typedArray.getString(R.styleable.SupportRecyclerView_esmEmptyText);
-            FwLog.widget("SupportRecyclerView_emptyText(%s)", emptyText);
-
-            if (!StringUtil.isEmpty(emptyText)) {
-                // empty
-                AppCompatTextView tv = new AppCompatTextView(context, attrs, defStyleAttr);
-                tv.setText(emptyText);
-                tv.setGravity(Gravity.CENTER);
-                setEmptyView(tv);
-            }
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.SupportRecyclerView);
+        if (!typedArray.getBoolean(R.styleable.SupportRecyclerView_esmProgressVisible, true)) {
+            mProgress.setVisibility(View.GONE);
+        }
+        String emptyText = typedArray.getString(R.styleable.SupportRecyclerView_esmEmptyText);
+        if (!StringUtil.isEmpty(emptyText)) {
+            // empty
+            AppCompatTextView tv = new AppCompatTextView(context, attrs, defStyleAttr);
+            tv.setText(emptyText);
+            tv.setGravity(Gravity.CENTER);
+            setEmptyView(tv);
         }
     }
 

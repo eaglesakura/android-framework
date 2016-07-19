@@ -24,6 +24,10 @@ public abstract class ContentHolderActivity extends SupportActivity implements C
         return mContentHolderDelegate.getContentFragment();
     }
 
+    public <T extends Fragment> T getContentFragment(Class<T> clazz) {
+        return (T) mContentHolderDelegate.getContentFragment();
+    }
+
     @NonNull
     @Override
     public FragmentManager getFragmentManager(@NonNull ContentHolderActivityDelegate self) {

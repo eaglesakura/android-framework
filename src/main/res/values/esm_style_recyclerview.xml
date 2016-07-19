@@ -5,6 +5,7 @@
     <item name="CardAdapter.DataBinding" type="id"/>
     <declare-styleable name="SupportRecyclerView">
         <attr name="esmEmptyText" format="string"/>
+        <attr name="esmProgressVisible" format="boolean"/>
     </declare-styleable>
 
     <integer name="CardAdapter.Insert.Duration">50</integer>
