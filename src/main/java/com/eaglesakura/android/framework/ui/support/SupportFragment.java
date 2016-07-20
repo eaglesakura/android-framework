@@ -1,7 +1,7 @@
 package com.eaglesakura.android.framework.ui.support;
 
-import com.eaglesakura.android.framework.delegate.lifecycle.FragmentLifecycleDelegate;
 import com.eaglesakura.android.framework.delegate.fragment.SupportFragmentDelegate;
+import com.eaglesakura.android.framework.delegate.lifecycle.FragmentLifecycleDelegate;
 import com.eaglesakura.android.garnet.Garnet;
 import com.eaglesakura.android.rx.LifecycleState;
 import com.eaglesakura.android.rx.ObserveTarget;

@@ -1,7 +1,6 @@
 package com.eaglesakura.android.framework.delegate.lifecycle;
 
 import com.eaglesakura.android.framework.FwLog;
-import com.eaglesakura.android.framework.delegate.lifecycle.LifecycleDelegate;
 import com.eaglesakura.android.util.DialogUtil;
 
 import android.app.Dialog;
@@ -10,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.UiThread;
 import android.widget.PopupWindow;
 
-import java.lang.ref.WeakReference;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;

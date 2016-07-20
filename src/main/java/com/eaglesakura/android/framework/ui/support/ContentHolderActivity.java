@@ -3,7 +3,6 @@ package com.eaglesakura.android.framework.ui.support;
 import com.eaglesakura.android.framework.delegate.activity.ContentHolderActivityDelegate;
 
 import android.app.Activity;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

@@ -2,7 +2,6 @@ package com.eaglesakura.material.widget.support;
 
 import com.eaglesakura.android.device.display.DisplayInfo;
 import com.eaglesakura.android.framework.delegate.lifecycle.FragmentLifecycleDelegate;
-import com.eaglesakura.android.margarine.MargarineKnife;
 import com.eaglesakura.android.thread.ui.UIHandler;
 import com.eaglesakura.lambda.Action1;
 

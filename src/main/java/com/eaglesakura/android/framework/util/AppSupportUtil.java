@@ -17,9 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -74,6 +72,21 @@ public class AppSupportUtil {
             @Override
             public boolean isCanceled() throws Throwable {
                 return task.isCanceled() || (mTimer.end() > timeout);
+            }
+        };
+    }
+
+    /**
+     * タイムアウト時間を指定してキャンセルコールバックを生成する
+     */
+    public static CancelCallback asCancelCallback(long time, TimeUnit unit) {
+        final long timeout = unit.toMillis(time);
+        return new CancelCallback() {
+            Timer mTimer = new Timer();
+
+            @Override
+            public boolean isCanceled() throws Throwable {
+                return (mTimer.end() > timeout);
             }
         };
     }

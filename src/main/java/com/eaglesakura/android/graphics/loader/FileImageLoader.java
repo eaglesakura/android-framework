@@ -10,7 +10,6 @@ import android.support.annotation.NonNull;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStream;
 
 public class FileImageLoader extends ImageLoader<FileImageLoader> {
 

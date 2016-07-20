@@ -1,13 +1,13 @@
 package com.eaglesakura.android.framework.ui.support;
 
+import com.eaglesakura.android.aquery.AbstractAQuery;
+import com.eaglesakura.material.widget.support.SupportRecyclerView;
+
 import android.app.Activity;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.TextView;
-
-import com.eaglesakura.android.aquery.AbstractAQuery;
-import com.eaglesakura.material.widget.support.SupportRecyclerView;
 
 /**
  * eglibrary Framework用に拡張したAQuery

@@ -2,7 +2,6 @@ package com.eaglesakura.material.widget;
 
 import com.eaglesakura.android.framework.R;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;

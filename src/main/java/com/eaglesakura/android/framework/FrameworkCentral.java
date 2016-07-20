@@ -11,7 +11,6 @@ import com.eaglesakura.android.rx.RxTaskBuilder;
 import com.eaglesakura.android.rx.SubscribeTarget;
 import com.eaglesakura.android.rx.SubscriptionController;
 import com.eaglesakura.android.rx.event.LifecycleEventImpl;
-import com.eaglesakura.android.thread.ui.UIHandler;
 import com.eaglesakura.android.util.ContextUtil;
 
 import android.app.Activity;
@@ -100,6 +99,7 @@ public class FrameworkCentral {
                     );
                     FwLog.system("==   Display [%d x %d] pix", displayInfo.getWidthPixel(), displayInfo.getHeightPixel());
                     FwLog.system("==   Display [%.1f x %.1f] dp", displayInfo.getWidthDp(), displayInfo.getHeightDp());
+                    FwLog.system("==   res/values-%s", displayInfo.getDpi().name());
                     FwLog.system("==   res/values-sw%ddp", displayInfo.getSmallestWidthDp());
                 }
                 FwLog.system("========= Runtime Information =========");

@@ -1,7 +1,6 @@
 package com.eaglesakura.android.framework.ui.message;
 
 import com.eaglesakura.android.framework.FwLog;
-import com.eaglesakura.util.LogUtil;
 import com.eaglesakura.util.StringUtil;
 
 import android.content.BroadcastReceiver;

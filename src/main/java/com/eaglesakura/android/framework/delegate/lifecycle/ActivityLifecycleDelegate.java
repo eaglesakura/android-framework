@@ -7,7 +7,6 @@ import com.eaglesakura.android.rx.event.OnRestoreEvent;
 import com.eaglesakura.android.rx.event.OnSaveEvent;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.UiThread;
 
