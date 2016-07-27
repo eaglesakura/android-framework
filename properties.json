@@ -1,7 +1,8 @@
 {
   "classesOutputPath": "src/main/gen/java",
-  "configOutputPath": "src/main/gen/assets/framework",
+  "configOutputPath": "src/main/res/raw",
   "packageName": "com.eaglesakura.android.framework.gen.props",
+  "configName": "esm_system_properties.json",
   "groups": [
     {
       "name": "SystemSettings",

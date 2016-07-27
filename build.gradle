@@ -69,9 +69,6 @@ android {
             java.srcDirs += [
                     "src/main/gen/java",
             ]
-            assets.srcDirs += [
-                    "src/main/gen/assets"
-            ]
         }
     }
 

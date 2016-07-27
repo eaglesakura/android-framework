@@ -114,7 +114,7 @@ public class FrameworkCentral {
         @SuppressLint("NewApi")
         void loadSettings() {
 
-            try (InputStream is = mApplication.getAssets().open("framework/properties.json")) {
+            try (InputStream is = mApplication.getResources().openRawResource(R.raw.esm_system_properties)) {
                 PropertyStore store = new TextDatabasePropertyStore(mApplication, "framework.db")
                         .loadProperties(JSON.decode(is, PropertySource.class));
 
