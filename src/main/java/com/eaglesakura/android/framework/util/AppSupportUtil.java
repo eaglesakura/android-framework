@@ -1,21 +1,28 @@
 package com.eaglesakura.android.framework.util;
 
 import com.eaglesakura.android.framework.ui.message.LocalMessageReceiver;
+import com.eaglesakura.android.property.model.PropertySource;
 import com.eaglesakura.android.rx.BackgroundTask;
 import com.eaglesakura.android.util.PermissionUtil;
+import com.eaglesakura.json.JSON;
 import com.eaglesakura.lambda.CancelCallback;
 import com.eaglesakura.util.CollectionUtil;
 import com.eaglesakura.util.Timer;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.support.annotation.RawRes;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -97,5 +104,17 @@ public class AppSupportUtil {
         }
 
         return (T) root;
+    }
+
+    /**
+     * Prop Sourceを読みだす
+     */
+    @SuppressLint("NewApi")
+    public static PropertySource loadPropertySource(Context context, @RawRes int resId) {
+        try (InputStream is = context.getResources().openRawResource(resId)) {
+            return JSON.decode(is, PropertySource.class);
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 }

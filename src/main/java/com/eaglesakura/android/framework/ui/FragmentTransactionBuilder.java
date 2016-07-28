@@ -39,6 +39,14 @@ public class FragmentTransactionBuilder {
         Fade,
 
         /**
+         * カスタマイズされたフェード
+         *
+         * MEMO: 通常のフェードはクロスフェードのため、背景が透ける場合がある。
+         * それを避けたい場合、こちらのフェードを使用する
+         */
+        CustomFade,
+
+        /**
          * アニメーションなし
          */
         None,
@@ -119,6 +127,10 @@ public class FragmentTransactionBuilder {
             case Fade:
                 transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
                 return this;
+            case CustomFade:
+                enter = R.anim.fragment_fade_enter;
+                exit = R.anim.fragment_fade_exit;
+                break;
             case TranslateHorizontal:
                 enter = R.anim.fragment_horizontal_enter;
                 exit = R.anim.fragment_horizontal_exit;
@@ -130,6 +142,10 @@ public class FragmentTransactionBuilder {
 
         if (popAnimation != null) {
             switch (popAnimation) {
+                case CustomFade:
+                    popEnter = R.anim.fragment_fade_popenter;
+                    popExit = R.anim.fragment_fade_popexit;
+                    break;
                 case TranslateHorizontal:
                     popEnter = R.anim.fragment_horizontal_popenter;
                     popExit = R.anim.fragment_horizontal_popexit;

@@ -64,6 +64,7 @@
 
     <!-- Rippleエフェクト共通 -->
     <integer name="EsMaterial.Ripple.Duration">350</integer>
+    <integer name="EsMaterial.Fade.Duration">100</integer>
 
     <!-- Widget共通 -->
     <style name="EsMaterial.Widget" parent="EsMaterial.Theme">
