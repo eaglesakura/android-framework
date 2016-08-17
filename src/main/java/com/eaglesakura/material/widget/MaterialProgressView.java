@@ -2,7 +2,6 @@ package com.eaglesakura.material.widget;
 
 import com.eaglesakura.android.aquery.AQuery;
 import com.eaglesakura.android.framework.R;
-import com.eaglesakura.android.util.ContextUtil;
 
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
@@ -35,8 +34,7 @@ public class MaterialProgressView extends FrameLayout {
     }
 
     void init(Context context, AttributeSet attrs, int defStyleAttr) {
-        LayoutInflater inflater = ContextUtil.getInflater(context);
-        View view = inflater.inflate(R.layout.esm_view_material_progress, null);
+        View view = LayoutInflater.from(context).inflate(R.layout.esm_view_material_progress, null);
 
         TypedArray typedArray = context.obtainStyledAttributes(attrs, new int[]{
                 R.attr.esmText,
