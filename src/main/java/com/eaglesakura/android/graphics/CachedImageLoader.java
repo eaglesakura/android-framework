@@ -11,6 +11,7 @@ import com.eaglesakura.lambda.CancelCallback;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
@@ -44,6 +45,24 @@ public class CachedImageLoader {
         mContext = context.getApplicationContext();
         mImageCache = new ImageCacheManager(imageCacheNum);
         mErrorCache = new ImageCacheManager(errorCacheNum);
+    }
+
+
+    @NonNull
+    public Context getContext() {
+        return mContext;
+    }
+
+    public ImageCacheManager getErrorCache() {
+        return mErrorCache;
+    }
+
+    public ImageCacheManager getImageCache() {
+        return mImageCache;
+    }
+
+    public <T extends ImageLoader> Builder newImage(ImageLoader<T> loader) {
+        return new Builder(loader);
     }
 
     /**
@@ -92,6 +111,17 @@ public class CachedImageLoader {
          */
         public Builder errorImage(@DrawableRes int drawableId, boolean cached) {
             mErrorLoader = new DrawableImageLoader(mContext, drawableId, mErrorCache);
+            if (cached) {
+                mErrorLoader.cache();
+            }
+            return this;
+        }
+
+        /**
+         * エラー時の代替画像を指定する
+         */
+        public Builder errorTintImage(@DrawableRes int drawableId, @ColorInt int tintColor, boolean cached) {
+            mErrorLoader = new DrawableImageLoader(mContext, drawableId, mErrorCache).tint(tintColor);
             if (cached) {
                 mErrorLoader.cache();
             }
