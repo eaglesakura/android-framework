@@ -1,6 +1,6 @@
 package com.eaglesakura.android.framework.ui;
 
-import com.eaglesakura.android.framework.delegate.lifecycle.FragmentLifecycleDelegate;
+import com.eaglesakura.android.framework.delegate.lifecycle.LifecycleDelegate;
 import com.eaglesakura.android.rx.event.OnCreateEvent;
 import com.eaglesakura.lambda.Action1;
 import com.eaglesakura.util.ReflectionUtil;
@@ -144,7 +144,7 @@ public abstract class FragmentHolder<T extends Fragment> {
         mFragment = null;
     }
 
-    public FragmentHolder<T> bind(FragmentLifecycleDelegate delegate) {
+    public FragmentHolder<T> bind(LifecycleDelegate delegate) {
         delegate.getCallbackQueue().getObservable().subscribe(it -> {
             switch (it.getState()) {
                 case OnCreated:
