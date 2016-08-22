@@ -32,10 +32,42 @@ public abstract class UiLifecycleDelegate extends LifecycleDelegate {
          * オブジェクトが生存している
          */
         boolean exist();
+
+        /**
+         * 管理タグを取得する
+         */
+        Object getTag();
+
+        Object getObject();
+    }
+
+    /**
+     * 指定したタグのオブジェクトを取得する
+     */
+    public Object getAutoDismissObject(@NonNull Object tag) {
+        compactAutoDismissDialogs();
+        for (AutoDismissObject obj : mAutoDismissDialogs) {
+            if (tag.equals(obj.getTag())) {
+                return obj.getObject();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 指定したタグのオブジェクトを取得する
+     */
+    public boolean hasAutoDismissObject(@NonNull Object tag) {
+        return getAutoDismissObject(tag) != null;
     }
 
     @UiThread
     public <T extends Dialog> T addAutoDismiss(@NonNull T dialog) {
+        return addAutoDismiss(dialog, null);
+    }
+
+    @UiThread
+    public <T extends Dialog> T addAutoDismiss(@NonNull T dialog, Object tag) {
         compactAutoDismissDialogs();
         if (dialog != null) {
             mAutoDismissDialogs.add(new AutoDismissObject() {
@@ -48,6 +80,16 @@ public abstract class UiLifecycleDelegate extends LifecycleDelegate {
                 public boolean exist() {
                     return dialog.isShowing();
                 }
+
+                @Override
+                public Object getTag() {
+                    return tag;
+                }
+
+                @Override
+                public Object getObject() {
+                    return dialog;
+                }
             });
         }
         return dialog;
@@ -55,6 +97,11 @@ public abstract class UiLifecycleDelegate extends LifecycleDelegate {
 
     @UiThread
     public <T extends PopupWindow> T addAutoDismiss(@NonNull T window) {
+        return addAutoDismiss(window, null);
+    }
+
+    @UiThread
+    public <T extends PopupWindow> T addAutoDismiss(@NonNull T window, Object tag) {
         compactAutoDismissDialogs();
         if (window != null) {
             mAutoDismissDialogs.add(new AutoDismissObject() {
@@ -72,6 +119,16 @@ public abstract class UiLifecycleDelegate extends LifecycleDelegate {
                 @Override
                 public boolean exist() {
                     return window.isShowing();
+                }
+
+                @Override
+                public Object getTag() {
+                    return tag;
+                }
+
+                @Override
+                public Object getObject() {
+                    return window;
                 }
             });
         }
