@@ -151,7 +151,7 @@ public abstract class UiLifecycleDelegate extends LifecycleDelegate {
         Iterator<AutoDismissObject> iterator = mAutoDismissDialogs.iterator();
         while (iterator.hasNext()) {
             AutoDismissObject next = iterator.next();
-            if (next == null) {
+            if (next == null || !next.exist()) {
                 iterator.remove();
             }
         }

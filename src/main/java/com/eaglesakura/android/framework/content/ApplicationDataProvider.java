@@ -1,5 +1,6 @@
 package com.eaglesakura.android.framework.content;
 
+import android.annotation.SuppressLint;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
@@ -86,13 +87,15 @@ public abstract class ApplicationDataProvider extends ContentProvider {
      * @param command  実行コマンド
      * @param argments 実行引数
      */
+    @SuppressLint("NewApi")
     @Nullable
     public static byte[] query(@NonNull Context context, @NonNull Uri uri, @NonNull String command, @Nullable String[] argments) {
-        Cursor cursor = context.getContentResolver().query(uri, null, command, argments, null);
-        if (cursor != null) {
-            return ByteArrayCursor.toByteArray(cursor);
-        } else {
-            return null;
+        try (Cursor cursor = context.getContentResolver().query(uri, null, command, argments, null)) {
+            if (cursor != null) {
+                return ByteArrayCursor.toByteArray(cursor);
+            } else {
+                return null;
+            }
         }
     }
 
