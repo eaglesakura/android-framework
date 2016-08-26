@@ -43,14 +43,9 @@ public abstract class MaterialInputDialog extends MaterialAlertDialog {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (validateInputText(inputText, validateText)) {
-                    // OKを表示する
-//                    findViewById(R.id.EsMaterial_Dialog_BasicButtons_Positive).setVisibility(View.VISIBLE);
-                    validateText.setVisibility(View.GONE);
+                    onValidateSuccess();
                 } else {
-                    // OKをdisable
-//                    findViewById(R.id.EsMaterial_Dialog_BasicButtons_Positive).setVisibility(View.INVISIBLE);
-                    validateText.setVisibility(View.VISIBLE);
-
+                    onValidateFailed();
                 }
             }
 
@@ -69,6 +64,18 @@ public abstract class MaterialInputDialog extends MaterialAlertDialog {
         setNegativeButton(R.string.EsMaterial_Dialog_Cancel, null);
 
         setDialogContent(content);
+    }
+
+    protected void onValidateSuccess() {                    // OKを表示する
+//                    findViewById(R.id.EsMaterial_Dialog_BasicButtons_Positive).setVisibility(View.VISIBLE);
+        validateText.setVisibility(View.GONE);
+
+    }
+
+    protected void onValidateFailed() {
+        // OKをdisable
+//                    findViewById(R.id.EsMaterial_Dialog_BasicButtons_Positive).setVisibility(View.INVISIBLE);
+        validateText.setVisibility(View.VISIBLE);
     }
 
     @Override
