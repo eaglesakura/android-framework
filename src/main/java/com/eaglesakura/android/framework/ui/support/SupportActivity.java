@@ -12,11 +12,15 @@ import com.eaglesakura.android.rx.ObserveTarget;
 import com.eaglesakura.android.rx.SubscribeTarget;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.UiThread;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.PopupWindow;
 
 /**
  *
@@ -107,6 +111,26 @@ public abstract class SupportActivity extends AppCompatActivity implements Suppo
             return;
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @UiThread
+    public <T extends Dialog> T addAutoDismiss(@NonNull T dialog) {
+        return mLifecycleDelegate.addAutoDismiss(dialog);
+    }
+
+    @UiThread
+    public <T extends Dialog> T addAutoDismiss(@NonNull T dialog, Object tag) {
+        return mLifecycleDelegate.addAutoDismiss(dialog, tag);
+    }
+
+    @UiThread
+    public <T extends PopupWindow> T addAutoDismiss(@NonNull T window) {
+        return mLifecycleDelegate.addAutoDismiss(window);
+    }
+
+    @UiThread
+    public <T extends PopupWindow> T addAutoDismiss(@NonNull T window, Object tag) {
+        return mLifecycleDelegate.addAutoDismiss(window, tag);
     }
 
     /**

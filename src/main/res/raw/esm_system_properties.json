@@ -1,1 +1,1 @@
-{"groups":[{"properties":[{"value":"0","name":"lastBootedAppVersionCode","type":"int"},{"value":"","name":"lastBootedAppVersionName","type":"String"}],"name":"SystemSettings"}]}
+{"groups":[{"properties":[{"value":"0","name":"lastBootedAppVersionCode","type":"int"},{"value":"","name":"lastBootedAppVersionName","type":"String"},{"value":"","name":"installUniqueId","type":"String"}],"name":"SystemSettings"}]}

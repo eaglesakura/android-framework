@@ -16,6 +16,8 @@ import com.eaglesakura.android.rx.PendingCallbackQueue;
 import com.eaglesakura.android.rx.event.LifecycleEventImpl;
 import com.eaglesakura.android.util.ContextUtil;
 import com.eaglesakura.json.JSON;
+import com.eaglesakura.util.RandomUtil;
+import com.eaglesakura.util.StringUtil;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -49,6 +51,11 @@ public class FrameworkCentral {
         @NonNull
         SystemSettings mSettings;
 
+        /**
+         * 初回起動時に確定するID
+         */
+        @NonNull
+        String mInstallUniqueId;
 
         @NonNull
         final BehaviorSubject<LifecycleEvent> mSubject = BehaviorSubject.create(new LifecycleEventImpl(LifecycleState.NewObject));
@@ -126,12 +133,18 @@ public class FrameworkCentral {
             // 設定を読み出す
             final String oldVersionName = mSettings.getLastBootedAppVersionName();
             final String versionName = ContextUtil.getVersionName(mApplication);
+            mInstallUniqueId = mSettings.getInstallUniqueId();
+            if (StringUtil.isEmpty(mInstallUniqueId)) {
+                mInstallUniqueId = RandomUtil.randString();
+                mSettings.setInstallUniqueId(mInstallUniqueId);
+            }
 
             final int oldVersionCode = mSettings.getLastBootedAppVersionCode();
             final int versionCode = ContextUtil.getVersionCode(mApplication);
 
-            FwLog.system("VersionCode [%d] -> [%d]", oldVersionCode, versionCode);
-            FwLog.system("VersionName [%s] -> [%s]", oldVersionName, versionName);
+            FwLog.system("Install Unique ID [%s]", mInstallUniqueId);
+            FwLog.system("VersionCode       [%d] -> [%d]", oldVersionCode, versionCode);
+            FwLog.system("VersionName       [%s] -> [%s]", oldVersionName, versionName);
 
             mSettings.setLastBootedAppVersionCode(versionCode);
             mSettings.setLastBootedAppVersionName(versionName);
@@ -245,6 +258,14 @@ public class FrameworkCentral {
 
     public static Application getApplication() {
         return sImpl.mApplication;
+    }
+
+    /**
+     * インストール（初回起動時）に確定するUIDを取得する
+     */
+    @NonNull
+    public static String getUniqueId() {
+        return sImpl.mInstallUniqueId;
     }
 
     /**

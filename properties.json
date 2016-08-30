@@ -18,6 +18,12 @@
           "type": "String",
           "name": "lastBootedAppVersionName",
           "value": ""
+        },
+        {
+          "comment": "初回起動時に確定するランダム識別子, データリセットすると変更される。",
+          "type": "String",
+          "name": "installUniqueId",
+          "value": ""
         }
       ]
     }
