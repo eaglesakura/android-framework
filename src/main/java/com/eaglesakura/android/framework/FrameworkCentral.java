@@ -298,11 +298,26 @@ public class FrameworkCentral {
      * @return 成功したらtrue
      */
     public static boolean requestDeploygateInstall() {
-        try {
-            Class<?> clazz = Class.forName("com.deploygate.sdk.DeployGate");
-            Method installMethod = clazz.getMethod("install", Application.class);
+        return requestDeploygateInstall(true);
+    }
 
-            installMethod.invoke(clazz, getApplication());
+    /**
+     * Deploygateのインストールを行う。
+     * <br>
+     * dependenciesが設定されていない場合、このメソッドはfalseを返す
+     * <br>
+     * debugCompile 'com.deploygate:sdk:3.1'
+     *
+     * @return 成功したらtrue
+     */
+    public static boolean requestDeploygateInstall(boolean forceApply) {
+        try {
+            Class<?> DeployGateCallback = Class.forName("com.deploygate.sdk.DeployGateCallback");
+            Class<?> DeployGate = Class.forName("com.deploygate.sdk.DeployGate");
+
+            Method installMethod = DeployGate.getMethod("install", Application.class, DeployGateCallback, boolean.class);
+
+            installMethod.invoke(DeployGate, getApplication(), null, forceApply);
             FwLog.system("install success Deploygate");
             return true;
         } catch (Exception e) {
