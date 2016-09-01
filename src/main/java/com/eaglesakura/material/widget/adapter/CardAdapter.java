@@ -7,6 +7,7 @@ import com.eaglesakura.material.widget.support.SupportRecyclerView;
 import com.eaglesakura.util.Util;
 
 import android.content.Context;
+import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
@@ -110,6 +111,16 @@ public abstract class CardAdapter<T> extends RecyclerView.Adapter<CardAdapter.Ca
             }
 
             return mCard;
+        }
+
+        @NonNull
+        public <Binding extends android.databinding.ViewDataBinding> Binding getBinding(Class<Binding> clazz) {
+            return DataBindingUtil.getBinding(getCard());
+        }
+
+        @NonNull
+        public <Binding extends android.databinding.ViewDataBinding> Binding getBinding() {
+            return DataBindingUtil.getBinding(getCard());
         }
 
         @NonNull
