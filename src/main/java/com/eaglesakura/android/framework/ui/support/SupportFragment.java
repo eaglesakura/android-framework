@@ -98,6 +98,11 @@ public abstract class SupportFragment extends Fragment implements SupportFragmen
         return mFragmentDelegate.getParentOrThrow(clazz);
     }
 
+    @NonNull
+    public <T> List<T> listInterfaces(@NonNull Class<T> clazz) {
+        return mFragmentDelegate.listInterfaces(clazz);
+    }
+
     /**
      * ActionBarを取得する
      */

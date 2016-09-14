@@ -3,10 +3,12 @@ package com.eaglesakura.android.framework.delegate.activity;
 import com.eaglesakura.android.framework.R;
 import com.eaglesakura.android.framework.delegate.lifecycle.ActivityLifecycleDelegate;
 import com.eaglesakura.android.framework.util.AppSupportUtil;
+import com.eaglesakura.android.framework.util.FragmentUtil;
 import com.eaglesakura.android.oari.ActivityResult;
 import com.eaglesakura.android.rx.event.OnRestoreEvent;
 import com.eaglesakura.android.rx.event.OnSaveEvent;
 import com.eaglesakura.android.saver.LightSaver;
+import com.eaglesakura.util.ReflectionUtil;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -20,8 +22,13 @@ import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -162,4 +169,21 @@ public class SupportActivityDelegate {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         AppSupportUtil.onRequestPermissionsResult(getActivity(), requestCode, permissions, grantResults);
     }
+
+    /**
+     * 指定したインターフェースを実装しているクラス全てをeachで実行する
+     *
+     * 自分自身もインターフェースを実装している場合もコールバックを行う
+     *
+     * @param clazz 検索するインターフェース
+     */
+    @NonNull
+    public <T> List<T> listInterfaces(@NonNull Class<T> clazz) {
+        List<T> result = new ArrayList<>();
+        for (Fragment frag : FragmentUtil.listFragments(((AppCompatActivity) getActivity()).getSupportFragmentManager(), fragment -> ReflectionUtil.instanceOf(fragment, clazz))) {
+            result.add((T) frag);
+        }
+        return result;
+    }
+
 }

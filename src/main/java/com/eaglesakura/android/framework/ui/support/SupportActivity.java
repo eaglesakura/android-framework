@@ -22,6 +22,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.PopupWindow;
 
+import java.util.List;
+
 /**
  *
  */
@@ -131,6 +133,11 @@ public abstract class SupportActivity extends AppCompatActivity implements Suppo
     @UiThread
     public <T extends PopupWindow> T addAutoDismiss(@NonNull T window, Object tag) {
         return mLifecycleDelegate.addAutoDismiss(window, tag);
+    }
+
+    @NonNull
+    public <T> List<T> listInterfaces(@NonNull Class<T> clazz) {
+        return mActivityDelegate.listInterfaces(clazz);
     }
 
     /**

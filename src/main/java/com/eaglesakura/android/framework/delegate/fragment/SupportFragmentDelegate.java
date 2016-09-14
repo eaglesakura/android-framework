@@ -2,6 +2,7 @@ package com.eaglesakura.android.framework.delegate.fragment;
 
 import com.eaglesakura.android.framework.delegate.lifecycle.FragmentLifecycleDelegate;
 import com.eaglesakura.android.framework.util.AppSupportUtil;
+import com.eaglesakura.android.framework.util.FragmentUtil;
 import com.eaglesakura.android.garnet.Garnet;
 import com.eaglesakura.android.margarine.MargarineKnife;
 import com.eaglesakura.android.oari.ActivityResult;
@@ -30,10 +31,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.InternalSupportFragmentUtil;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -259,16 +262,38 @@ public class SupportFragmentDelegate {
     }
 
     /**
+     * 指定したインターフェースを実装しているクラス全てをeachで実行する
+     *
+     * 自分自身もインターフェースを実装している場合もコールバックを行う
+     *
+     * @param clazz 検索するインターフェース
+     */
+    @NonNull
+    public <T> List<T> listInterfaces(@NonNull Class<T> clazz) {
+        List<T> result = new ArrayList<>();
+        for (Fragment frag : FragmentUtil.listFragments(getActivity(AppCompatActivity.class).getSupportFragmentManager(), fragment -> ReflectionUtil.instanceOf(fragment, clazz))) {
+            result.add((T) frag);
+        }
+        return result;
+    }
+
+    /**
      * 親クラスを特定のインターフェースに変換する
      *
-     * 変換できない場合、このメソッドはnullを返却する
+     * 変換できない場合、このメソッドはnullを返却する。
+     * 親Fragmentを辿り、対応しているFragmentを検索する。
      */
     @NonNull
     public <T> T getParentOrThrow(@NonNull Class<T> clazz) {
         Fragment fragment = getParentFragment();
         Activity activity = getActivity();
-        if (ReflectionUtil.instanceOf(fragment, clazz)) {
-            return (T) fragment;
+
+        while (fragment != null) {
+            if (ReflectionUtil.instanceOf(fragment, clazz)) {
+                return (T) fragment;
+            }
+
+            fragment = fragment.getParentFragment();
         }
 
         if (ReflectionUtil.instanceOf(activity, clazz)) {

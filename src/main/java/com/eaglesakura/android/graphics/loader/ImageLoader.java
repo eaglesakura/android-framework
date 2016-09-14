@@ -1,5 +1,6 @@
 package com.eaglesakura.android.graphics.loader;
 
+import com.eaglesakura.android.framework.FwLog;
 import com.eaglesakura.android.graphics.ImageCacheManager;
 import com.eaglesakura.android.util.ImageUtil;
 import com.eaglesakura.lambda.CancelCallback;
@@ -95,6 +96,7 @@ public abstract class ImageLoader<T extends ImageLoader> {
             String cacheId = getCacheId();
             Drawable cache = mImageManager.getCache(cacheId);
             if (cache != null) {
+                FwLog.image("Cache Image id[%s]", cacheId);
                 return cache;
             }
 
