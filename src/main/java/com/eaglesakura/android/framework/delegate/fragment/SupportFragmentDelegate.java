@@ -26,6 +26,7 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.MenuRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.Size;
 import android.support.annotation.UiThread;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -272,9 +273,40 @@ public class SupportFragmentDelegate {
     public <T> List<T> listInterfaces(@NonNull Class<T> clazz) {
         List<T> result = new ArrayList<>();
         for (Fragment frag : FragmentUtil.listFragments(getActivity(AppCompatActivity.class).getSupportFragmentManager(), fragment -> ReflectionUtil.instanceOf(fragment, clazz))) {
-            result.add((T) frag);
+            result.add((T) ((Object) frag));
         }
+
+        if (ReflectionUtil.instanceOf(getActivity(), clazz)) {
+            result.add((T) ((Object) getActivity()));
+        }
+
         return result;
+    }
+
+    /**
+     * 指定されたインターフェースを列挙する。
+     *
+     * インターフェースが見つからない場合、例外を投げる。
+     */
+    @NonNull
+    @Size(min = 1)
+    public <T> List<T> listInterfacesOrThrow(@NonNull Class<T> clazz) {
+        List<T> result = listInterfaces(clazz);
+        if (result.isEmpty()) {
+            throw new IllegalStateException(clazz.getName());
+        }
+
+        return result;
+    }
+
+    /**
+     * 指定されたインターフェースを検索し、最初に見つかったものを返す。
+     * インターフェースが見つからない場合、例外を投げる。
+     *
+     * @param clazz 検索対象
+     */
+    public <T> T findInterfaceOrThrow(@NonNull Class<T> clazz) {
+        return listInterfacesOrThrow(clazz).get(0);
     }
 
     /**
