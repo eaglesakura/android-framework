@@ -1,5 +1,9 @@
 package com.eaglesakura.android.framework.delegate.fragment;
 
+import com.eaglesakura.android.framework.FwLog;
+import com.eaglesakura.android.framework.ui.support.SupportFragment;
+import com.eaglesakura.android.rx.LifecycleState;
+
 import android.support.annotation.IdRes;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
@@ -103,6 +107,21 @@ public class SupportFragmentPager {
         return "android:switcher:" + mContainerId + ":" + index;
     }
 
+    private void compactCaches() {
+        for (PagerFragmentHolder holder : mFragments) {
+            if (holder.mCacheFragment instanceof SupportFragment) {
+                SupportFragment cacheFragment = (SupportFragment) holder.mCacheFragment;
+                LifecycleState lifecycleState = cacheFragment.getLifecycleState();
+
+                if (lifecycleState.ordinal() >= LifecycleState.OnDestroyed.ordinal()) {
+                    // 廃棄済みのため、キャッシュを削除すべき
+                    FwLog.system("ViewPager FragmentCacheClean[%s] lifecycle[%s]", cacheFragment.toString(), lifecycleState.toString());
+                    holder.mCacheFragment = null;
+                }
+            }
+        }
+    }
+
     private class PagerFragmentHolder {
         /**
          * キャッシュが無い場合に生成させる
@@ -129,12 +148,16 @@ public class SupportFragmentPager {
                 mCacheFragment = addedFragment;
             }
 
+            // キャッシュクリーンを行う
+            compactCaches();
+
             if (mCacheFragment == null) {
                 // キャッシュにも無いならば、生成させる
                 mCacheFragment = mCreator.newInstance(SupportFragmentPager.this);
                 if (mCacheFragment == null) {
                     throw new IllegalStateException();
                 }
+                FwLog.system("ViewPager Create TabFragment[%s]", mCacheFragment.toString());
             }
             return mCacheFragment;
         }
