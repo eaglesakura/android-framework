@@ -24,7 +24,7 @@ buildscript {
         maven { url "http://eaglesakura.github.io/maven/" }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.0-rc2'
+        classpath 'com.android.tools.build:gradle:2.2.0'
         classpath "com.eaglesakura:plugin-android-dbgenerator:2.1.162"
         classpath 'me.tatarka:gradle-retrolambda:3.2.5' // support Lambda
     }

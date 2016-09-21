@@ -9,6 +9,7 @@ import com.eaglesakura.android.rx.CallbackTime;
 import com.eaglesakura.android.rx.ExecuteTarget;
 import com.eaglesakura.android.rx.LifecycleState;
 import com.eaglesakura.android.rx.ObserveTarget;
+import com.eaglesakura.android.rx.PendingCallbackQueue;
 import com.eaglesakura.android.rx.SubscribeTarget;
 
 import android.app.Activity;
@@ -178,6 +179,10 @@ public abstract class SupportActivity extends AppCompatActivity implements Suppo
     @Deprecated
     public <T> BackgroundTaskBuilder<T> async(SubscribeTarget subscribe, ObserveTarget observe, BackgroundTask.Async<T> background) {
         return mLifecycleDelegate.async(subscribe, observe, background);
+    }
+
+    public PendingCallbackQueue getCallbackQueue() {
+        return mLifecycleDelegate.getCallbackQueue();
     }
 
     @Override
