@@ -12,10 +12,12 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
+import android.view.View;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,12 +39,22 @@ public class DialogBuilder<T> {
      */
     protected Action2<Integer, T> mSelector;
 
+    protected Integer mLayoutWidth;
+
+    protected Integer mLayoutHeight;
+
     public DialogBuilder(AlertDialog.Builder builder) {
         mBuilder = builder;
     }
 
     public DialogBuilder title(@StringRes int titleId) {
         mBuilder.setTitle(titleId);
+        return this;
+    }
+
+    public DialogBuilder layout(int width, int height) {
+        mLayoutWidth = width;
+        mLayoutHeight = height;
         return this;
     }
 
@@ -59,6 +71,11 @@ public class DialogBuilder<T> {
         if (mBuilder.getContext() instanceof Activity) {
             ContextUtil.closeIME((Activity) mBuilder.getContext());
         }
+
+        if (CollectionUtil.allNotNull(mLayoutWidth, mLayoutHeight)) {
+            dialog.getWindow().setLayout(mLayoutWidth, mLayoutHeight);
+        }
+
         return dialog;
     }
 
@@ -91,6 +108,22 @@ public class DialogBuilder<T> {
     }
 
     /**
+     * 表示用のViewを指定する
+     */
+    public DialogBuilder view(@LayoutRes int resId) {
+        mBuilder.setView(resId);
+        return this;
+    }
+
+    /**
+     * 表示用のViewを指定する
+     */
+    public DialogBuilder view(View contentView) {
+        mBuilder.setView(contentView);
+        return this;
+    }
+
+    /**
      * 選択時のアクションを設定する
      */
     public DialogBuilder selected(Action2<Integer, T> action) {
@@ -116,6 +149,15 @@ public class DialogBuilder<T> {
     public DialogBuilder cancelable(boolean cancel) {
         mBuilder.setCancelable(cancel);
         return this;
+    }
+
+    /**
+     * 独自のコンテンツを用いてBuilderを生成する
+     */
+    public static DialogBuilder newCustomContent(Context context, String title, View contentView) {
+        DialogBuilder builder = new DialogBuilder(new AlertDialog.Builder(context));
+        builder.mBuilder.setTitle(title);
+        return builder.view(contentView);
     }
 
     public static DialogBuilder newInformation(Context context, String message) {

@@ -3,8 +3,10 @@ package com.eaglesakura.android.framework.util;
 import com.eaglesakura.android.framework.ui.message.LocalMessageReceiver;
 import com.eaglesakura.android.property.model.PropertySource;
 import com.eaglesakura.android.rx.BackgroundTask;
+import com.eaglesakura.android.rx.error.TaskCanceledException;
 import com.eaglesakura.android.util.PermissionUtil;
 import com.eaglesakura.json.JSON;
+import com.eaglesakura.lambda.CallbackUtils;
 import com.eaglesakura.lambda.CancelCallback;
 import com.eaglesakura.util.CollectionUtil;
 import com.eaglesakura.util.Timer;
@@ -115,6 +117,12 @@ public class AppSupportUtil {
             return JSON.decode(is, PropertySource.class);
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
+        }
+    }
+
+    public static void assertNotCanceled(CancelCallback cancelCallback) throws TaskCanceledException {
+        if (CallbackUtils.isCanceled(cancelCallback)) {
+            throw new TaskCanceledException();
         }
     }
 }
