@@ -189,4 +189,9 @@ public abstract class SupportActivity extends AppCompatActivity implements Suppo
     public Activity getActivity(SupportActivityDelegate self) {
         return this;
     }
+
+    @NonNull
+    public Intent newResultIntent() {
+        return mActivityDelegate.newResultIntent();
+    }
 }

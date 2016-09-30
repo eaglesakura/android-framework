@@ -17,6 +17,7 @@ import android.content.res.TypedArray;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
@@ -62,6 +63,11 @@ public class SupportActivityDelegate {
     @UiThread
     protected void onCreate() {
         edgeColorToPrimaryColor();
+
+        if (getIntent().getBundleExtra(EXTRA_CARRY_OVER_DATA) != null) {
+            // 持ち越しデータがある場合、先行してデータ設定しておく
+            getActivity().setResult(Activity.RESULT_CANCELED, newResultIntent());
+        }
     }
 
     @CallSuper
@@ -186,4 +192,34 @@ public class SupportActivityDelegate {
         return result;
     }
 
+    /**
+     * 呼び出し元のActivityにそのまま返却されるBundleデータ
+     */
+    public static final String EXTRA_CARRY_OVER_DATA = "fw.EXTRA_CARRY_OVER_DATA";
+
+    /**
+     * 値を返却するためのIntentを生成する
+     */
+    @NonNull
+    public Intent newResultIntent() {
+        Intent intent = getIntent();
+        Intent result = new Intent();
+
+        Bundle carryOver = intent.getBundleExtra(EXTRA_CARRY_OVER_DATA);
+        if (carryOver != null) {
+            result.putExtra(EXTRA_CARRY_OVER_DATA, carryOver);
+        }
+        return result;
+    }
+
+    /**
+     * 持ち越したデータを取得する
+     */
+    public static Bundle getCarryOverData(Intent resultIntentData) {
+        if (resultIntentData != null) {
+            return resultIntentData.getBundleExtra(EXTRA_CARRY_OVER_DATA);
+        } else {
+            return null;
+        }
+    }
 }

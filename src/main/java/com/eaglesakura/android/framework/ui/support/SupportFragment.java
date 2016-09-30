@@ -234,6 +234,11 @@ public abstract class SupportFragment extends Fragment implements SupportFragmen
         return mFragmentDelegate.requestRuntimePermission(type);
     }
 
+    /**
+     * Permissionの取得を開始する。
+     *
+     * OSによるハンドリングを開始した場合はtrue
+     */
     public boolean requestRuntimePermission(List<PermissionUtil.PermissionType> types) {
         return mFragmentDelegate.requestRuntimePermission(types);
     }
@@ -316,5 +321,9 @@ public abstract class SupportFragment extends Fragment implements SupportFragmen
     @Override
     public Garnet.Builder newInjectionBuilder(SupportFragmentDelegate self, Context context) {
         return Garnet.create(this).depend(Context.class, context);
+    }
+
+    public void startActivityForResultWithCarryData(Intent intent, int requestCode, Bundle carryState) {
+        mFragmentDelegate.startActivityForResultWithCarryData(intent, requestCode, carryState);
     }
 }

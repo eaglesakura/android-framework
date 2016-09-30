@@ -1,5 +1,6 @@
 package com.eaglesakura.android.framework.delegate.fragment;
 
+import com.eaglesakura.android.framework.delegate.activity.SupportActivityDelegate;
 import com.eaglesakura.android.framework.delegate.lifecycle.FragmentLifecycleDelegate;
 import com.eaglesakura.android.framework.util.AppSupportUtil;
 import com.eaglesakura.android.framework.util.FragmentUtil;
@@ -512,5 +513,14 @@ public class SupportFragmentDelegate {
             }
         }
         return requestRuntimePermission(CollectionUtil.asArray(permissions, new String[permissions.size()]));
+    }
+
+    /**
+     * 持ち越しデータを含めて、Activityを開始する。
+     * 持ち越しデータはonActivityResultで再度返却される。
+     */
+    public void startActivityForResultWithCarryData(Intent intent, int requestCode, Bundle carryState) {
+        intent.putExtra(SupportActivityDelegate.EXTRA_CARRY_OVER_DATA, carryState);
+        startActivityForResult(intent, requestCode);
     }
 }

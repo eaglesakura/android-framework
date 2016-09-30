@@ -3,6 +3,7 @@ package com.eaglesakura.android.framework.util;
 import com.eaglesakura.android.framework.ui.message.LocalMessageReceiver;
 import com.eaglesakura.android.property.model.PropertySource;
 import com.eaglesakura.android.rx.BackgroundTask;
+import com.eaglesakura.android.rx.PendingCallbackQueue;
 import com.eaglesakura.android.rx.error.TaskCanceledException;
 import com.eaglesakura.android.util.PermissionUtil;
 import com.eaglesakura.json.JSON;
@@ -68,6 +69,10 @@ public class AppSupportUtil {
 
     public static CancelCallback asCancelCallback(BackgroundTask task) {
         return () -> task.isCanceled();
+    }
+
+    public static CancelCallback asCancelCallback(PendingCallbackQueue.CancelCallback cancelCallback) {
+        return () -> cancelCallback.isCanceled();
     }
 
     /**
