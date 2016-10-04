@@ -1,5 +1,6 @@
 package com.eaglesakura.material.widget;
 
+import com.eaglesakura.android.framework.FwLog;
 import com.eaglesakura.android.framework.R;
 import com.eaglesakura.android.framework.delegate.lifecycle.UiLifecycleDelegate;
 import com.eaglesakura.android.util.ContextUtil;
@@ -7,6 +8,8 @@ import com.eaglesakura.lambda.Action0;
 import com.eaglesakura.lambda.Action2;
 import com.eaglesakura.lambda.ResultAction1;
 import com.eaglesakura.util.CollectionUtil;
+
+import org.jetbrains.annotations.NotNull;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -92,6 +95,25 @@ public class DialogBuilder<T> {
     }
 
     /**
+     * 同一タグのダイアログが存在しないならば、ダイアログを表示する
+     */
+    @Nullable
+    public Dialog showOnce(@NonNull UiLifecycleDelegate delegate, @NotNull Object tag) {
+
+        if (delegate.hasAutoDismissObject(tag)) {
+            FwLog.system("cancel dialog boot[%s]", tag.toString());
+            return null;
+        }
+
+        AlertDialog dialog = mBuilder.show();
+
+        if (delegate != null) {
+            delegate.addAutoDismiss(dialog, tag);
+        }
+        return dialog;
+    }
+
+    /**
      * インターフェースをラップする
      */
     protected DialogInterface.OnClickListener wrap(@Nullable Action0 action) {
@@ -133,6 +155,11 @@ public class DialogBuilder<T> {
 
     public DialogBuilder positiveButton(@StringRes int textId, Action0 action) {
         mBuilder.setPositiveButton(textId, wrap(action));
+        return this;
+    }
+
+    public DialogBuilder positiveButton(@NonNull String text, Action0 action) {
+        mBuilder.setPositiveButton(text, wrap(action));
         return this;
     }
 
