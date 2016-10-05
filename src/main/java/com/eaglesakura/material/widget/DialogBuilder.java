@@ -178,6 +178,17 @@ public class DialogBuilder<T> {
         return this;
     }
 
+    public DialogBuilder<T> canceled(Action0 action) {
+        mBuilder.setOnCancelListener(dialog -> {
+            try {
+                action.action();
+            } catch (Throwable e) {
+                throw new RuntimeException(e);
+            }
+        });
+        return this;
+    }
+
     /**
      * 独自のコンテンツを用いてBuilderを生成する
      */
