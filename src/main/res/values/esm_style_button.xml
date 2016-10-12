@@ -5,6 +5,8 @@
 
     <dimen name="EsMaterial.Button.ShadowRadius">2dp</dimen>
     <dimen name="EsMaterial.Button.Margin">6dp</dimen>
+    <dimen name="EsMaterial.Widget.Margin">6dp</dimen>
+    <dimen name="EsMaterial.Notification.MinHeight">64dp</dimen>
     <dimen name="EsMaterial.Button.ExternalMarginHorizontal">4dp</dimen>
     <dimen name="EsMaterial.Button.ExternalMarginVertical">6dp</dimen>
     <dimen name="EsMaterial.Button.InternalMarginHorizontal">8dp</dimen>
