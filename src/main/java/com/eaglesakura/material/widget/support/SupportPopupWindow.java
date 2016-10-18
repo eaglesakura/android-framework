@@ -8,7 +8,6 @@ import com.eaglesakura.lambda.Action1;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.support.v4.widget.PopupWindowCompat;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +24,8 @@ public class SupportPopupWindow {
     int mDummyHeight;
 
     protected boolean isWorkaroundMode() {
-        return Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1;
+//        return Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1;
+        return true;
     }
 
     public SupportPopupWindow(Context context) {
