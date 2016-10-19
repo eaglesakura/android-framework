@@ -2,6 +2,8 @@ package com.eaglesakura.android.framework.delegate.fragment;
 
 import com.eaglesakura.android.framework.delegate.activity.SupportActivityDelegate;
 import com.eaglesakura.android.framework.delegate.lifecycle.FragmentLifecycleDelegate;
+import com.eaglesakura.android.framework.ui.support.annotation.FragmentLayout;
+import com.eaglesakura.android.framework.ui.support.annotation.FragmentMenu;
 import com.eaglesakura.android.framework.util.AppSupportUtil;
 import com.eaglesakura.android.framework.util.FragmentUtil;
 import com.eaglesakura.android.garnet.Garnet;
@@ -14,9 +16,11 @@ import com.eaglesakura.android.rx.event.OnViewCreateEvent;
 import com.eaglesakura.android.saver.BundleState;
 import com.eaglesakura.android.saver.LightSaver;
 import com.eaglesakura.android.thread.ui.UIHandler;
+import com.eaglesakura.android.util.ContextUtil;
 import com.eaglesakura.android.util.PermissionUtil;
 import com.eaglesakura.util.CollectionUtil;
 import com.eaglesakura.util.ReflectionUtil;
+import com.eaglesakura.util.StringUtil;
 
 import android.app.Activity;
 import android.content.Context;
@@ -144,6 +148,32 @@ public class SupportFragmentDelegate {
                     break;
             }
         });
+
+        // InjectionIdを設定する
+        {
+            FragmentLayout layout = mCompat.getClass().getAnnotation(FragmentLayout.class);
+            if (layout != null) {
+                mInjectionLayoutId = layout.value();
+                if (mInjectionLayoutId == 0 && !StringUtil.isEmpty(layout.resName())) {
+                    mInjectionLayoutId = ContextUtil.getLayoutFromName(getFragment().getContext(), layout.resName());
+                }
+            }
+        }
+
+        // MenuIdを設定する
+        {
+            FragmentMenu menu = mCompat.getClass().getAnnotation(FragmentMenu.class);
+            if (menu != null) {
+                mInjectionOptionMenuId = menu.value();
+                if (mInjectionOptionMenuId == 0 && !StringUtil.isEmpty(menu.resName())) {
+                    mInjectionOptionMenuId = ContextUtil.getMenuFromName(getFragment().getContext(), menu.resName());
+                }
+            }
+
+            if (mInjectionOptionMenuId != 0) {
+                mCompat.getFragment(this).setHasOptionsMenu(true);
+            }
+        }
     }
 
     /**
