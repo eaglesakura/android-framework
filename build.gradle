@@ -155,9 +155,10 @@ dependencies {
     compile 'com.github.castorflex.smoothprogressbar:library:1.1.0'
 
     /**
-     * Runtime Event Bus
+     * Runtime Event Bus & Optional
      */
     compile 'com.squareup:otto:1.3.8'
+    compile 'com.eccyan:rxjava-optional:1.1.2'
 }
 
 /**
@@ -339,6 +340,12 @@ uploadArchives {
                 groupId = 'com.eaglesakura'
                 artifactId = 'android-command-service'
                 version = dependenceisVersion("com.eaglesakura:android-command-service", "1.+")
+                scope = 'compile'
+            }
+            dependency {
+                groupId = 'com.squareup'
+                artifactId = 'otto'
+                version = "1.3.8"
                 scope = 'compile'
             }
         }
