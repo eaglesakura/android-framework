@@ -12,7 +12,10 @@ import com.eaglesakura.android.util.AndroidThreadUtil;
 import com.eaglesakura.lambda.Action1;
 import com.eaglesakura.lambda.CancelCallback;
 import com.eaglesakura.util.Util;
+import com.squareup.otto.AnnotatedHandlerFinder2;
 import com.squareup.otto.Bus;
+import com.squareup.otto.Bus2;
+import com.squareup.otto.ThreadEnforcer;
 
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -29,26 +32,40 @@ import static com.eaglesakura.android.framework.util.AppSupportUtil.assertNotCan
  * データハンドリングは必ずUIスレッドで行われる。
  * Nullを許容するため、DataBusそれ自体をpostする。
  * Subscribe側は、DataBusをextendsしたクラスを引数にしてデータを受け取る
- *
  * ex. void onModified(ExampleDataBus bus){}
+ *
+ * 非同期処理でmodifiedされた場合にはキャッシュに一度データが保存され、通知の直前に上書きされる。
  */
 public abstract class DataBus<DataType> {
     @Nullable
     Handler mHandler = UIHandler.getInstance();
 
     @NonNull
-    final Bus mBus = new Bus() {
+    final Bus mBus = new Bus2(ThreadEnforcer.ANY, Bus.DEFAULT_IDENTIFIER, AnnotatedHandlerFinder2.newInstance()) {
         @Override
         public void post(Object event) {
             if (mHandler == null || AndroidThreadUtil.isHandlerThread(mHandler)) {
                 // ハンドラ設定がない、もしくは所属しているハンドラのスレッドであればすぐさま実行
+                commitData();
                 super.post(event);
             } else {
-                mHandler.post(() -> super.post(event));
+                mHandler.post(() -> {
+                    commitData();
+                    super.post(event);
+                });
             }
         }
     };
 
+    /**
+     * 次にSetされるべきデータ
+     */
+    @Nullable
+    DataType mRequestData;
+
+    /**
+     * データバス
+     */
     @Nullable
     DataType mData;
 
@@ -110,11 +127,18 @@ public abstract class DataBus<DataType> {
         return getData() != null;
     }
 
+    private synchronized void commitData() {
+        mData = mRequestData;
+        mRequestData = null;
+    }
+
     /**
      * オブジェクトの変更通知を行なう
      */
     public void modified(DataType data) {
-        mData = data;
+        synchronized (this) {
+            mRequestData = data;
+        }
         mBus.post(this);
     }
 
@@ -122,7 +146,10 @@ public abstract class DataBus<DataType> {
      * オブジェクトに変更があったことを通知する
      */
     public void modified() {
-        mBus.post(mData);
+        synchronized (this) {
+            mRequestData = mData;
+        }
+        mBus.post(this);
     }
 
     /**
@@ -185,8 +212,7 @@ public abstract class DataBus<DataType> {
         for (DataBus it : bus) {
             list.add(it);
         }
-
-        await(cancelCallback, bus);
+        await(cancelCallback, list);
     }
 
     /**
