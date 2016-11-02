@@ -57,10 +57,11 @@ import java.util.Set;
  * <br>
  * ただし、複数のonActivityResultがハンドリングされる恐れが有るため、RequestCodeの重複には十分に注意すること
  */
+@SuppressWarnings("WeakerAccess")
 public class SupportFragmentDelegate {
 
     public interface SupportFragmentCompat {
-        int FLAG_AFTERVIEW_INITIALIZE = 0x01 << 0;
+        int FLAG_AFTERVIEW_INITIALIZE = 0x01;
         int FLAG_AFTERVIEW_RESTORE = 0x01 << 1;
 
         @NonNull
@@ -69,13 +70,6 @@ public class SupportFragmentDelegate {
 
         @NonNull
         ActionBar getActionBar();
-
-        /**
-         * BackstackIndexが確定した
-         *
-         * SupportFragmentDelegate.setBackStackIndex(int)を呼び出す
-         */
-        void setBackStackIndex(int index);
 
         /**
          * Viewバインドが完了した
@@ -99,14 +93,17 @@ public class SupportFragmentDelegate {
          */
         @Nullable
         Garnet.Builder newInjectionBuilder(SupportFragmentDelegate self, Context context);
+
+        /**
+         * Bundle保存用のBuilderを生成する
+         */
+        @Nullable
+        LightSaver.Builder newBundleBuilder(SupportFragmentDelegate self, Bundle bundle, Context context);
     }
 
-    static final int BACKSTACK_NONE = 0xFEFEFEFE;
 
     @NonNull
     private SupportFragmentCompat mCompat;
-
-    private int mBackStackIndex = BACKSTACK_NONE;
 
     /**
      * 既に依存構築済であればtrue
@@ -114,20 +111,20 @@ public class SupportFragmentDelegate {
     private boolean mInjectedInstance = false;
 
     @BundleState
-    boolean mInitializedViews = false;
+    private boolean mInitializedViews = false;
 
     @BundleState
     @LayoutRes
-    int mInjectionLayoutId;
+    private int mInjectionLayoutId;
 
     @BundleState
     @MenuRes
-    int mInjectionOptionMenuId;
+    private int mInjectionOptionMenuId;
 
     /**
      * Fragment用のView
      */
-    View mView;
+    private View mView;
 
     public SupportFragmentDelegate(@NonNull SupportFragmentCompat compat, @NonNull FragmentLifecycleDelegate lifecycle) {
         mCompat = compat;
@@ -189,6 +186,7 @@ public class SupportFragmentDelegate {
     /**
      * パース対象のMenuIdを指定する
      */
+    @SuppressWarnings("unused")
     public void setOptionMenuId(@MenuRes int injectionOptionMenuId) {
         mInjectionOptionMenuId = injectionOptionMenuId;
         getFragment().setHasOptionsMenu(true);
@@ -220,9 +218,7 @@ public class SupportFragmentDelegate {
         if (mInjectionOptionMenuId != 0) {
             inflater.inflate(mInjectionOptionMenuId, menu);
             MargarineKnife.bindMenu(menu, mCompat);
-            UIHandler.postUI(() -> {
-                mCompat.onAfterBindMenu(this, menu);
-            });
+            UIHandler.postUI(() -> mCompat.onAfterBindMenu(this, menu));
         }
     }
 
@@ -261,18 +257,22 @@ public class SupportFragmentDelegate {
         return mView;
     }
 
+    @SuppressWarnings("unchecked")
     @CallSuper
-    public <T extends Activity> T getActivity(@NonNull Class<T> clazz) {
+    public <T extends Activity> T getActivity(@SuppressWarnings("unused") @NonNull Class<T> clazz) {
         return (T) getActivity();
     }
 
+    @SuppressWarnings("unchecked")
     @Nullable
-    public <T extends View> T findViewById(Class<T> clazz, int id) {
+    public <T extends View> T findViewById(@SuppressWarnings("unused") Class<T> clazz, int id) {
+        //noinspection ConstantConditions
         return (T) getFragment().getView().findViewById(id);
     }
 
+    @SuppressWarnings("unchecked")
     @Nullable
-    public <T extends View> T findViewByIdFromActivity(Class<T> clazz, int id) {
+    public <T extends View> T findViewByIdFromActivity(@SuppressWarnings("unused") Class<T> clazz, int id) {
         return (T) getActivity().findViewById(id);
     }
 
@@ -281,6 +281,7 @@ public class SupportFragmentDelegate {
      *
      * 変換できない場合、このメソッドはnullを返却する
      */
+    @SuppressWarnings("unchecked")
     @Nullable
     public <T> T getParent(@NonNull Class<T> clazz) {
         Fragment fragment = getParentFragment();
@@ -303,6 +304,7 @@ public class SupportFragmentDelegate {
      *
      * @param clazz 検索するインターフェース
      */
+    @SuppressWarnings("unchecked")
     @NonNull
     public <T> List<T> listInterfaces(@NonNull Class<T> clazz) {
         List<T> result = new ArrayList<>();
@@ -372,6 +374,7 @@ public class SupportFragmentDelegate {
     /**
      * ActionBarを取得する
      */
+    @SuppressWarnings("unused")
     @Nullable
     public ActionBar getActionBar() {
         return mCompat.getActionBar();
@@ -385,7 +388,7 @@ public class SupportFragmentDelegate {
      */
     @CallSuper
     @UiThread
-    protected void onAfterViews(View fragmentView) {
+    protected void onAfterViews(@SuppressWarnings("unused") View fragmentView) {
         if (!mInitializedViews) {
             mCompat.onAfterViews(this, SupportFragmentCompat.FLAG_AFTERVIEW_INITIALIZE);
             mInitializedViews = true;
@@ -405,6 +408,7 @@ public class SupportFragmentDelegate {
                 // リストオブジェクト
                 // 通常Object
                 if (annotation.parentOnly()) {
+                    //noinspection ArraysAsListWithZeroOrOneArgument
                     value = Arrays.asList(getParent(field.getType()));
                 } else if (annotation.childrenOnly()) {
                     value = FragmentUtil.listFragments(getChildFragmentManager(), it -> ReflectionUtil.instanceOf(it, field.getType()));
@@ -442,9 +446,7 @@ public class SupportFragmentDelegate {
                 builder = Garnet.create(mCompat);
             }
             builder.depend(Context.class, event.getContext()).inject();
-            UIHandler.postUI(() -> {
-                mCompat.onAfterInjection(this);
-            });
+            UIHandler.postUI(() -> mCompat.onAfterInjection(this));
 
             // バインド対象のインターフェースを検索する
             for (Field field : ReflectionUtil.listAnnotationFields(mCompat.getClass(), BindInterface.class)) {
@@ -466,73 +468,35 @@ public class SupportFragmentDelegate {
     @CallSuper
     @UiThread
     protected void onSaveInstanceState(OnSaveEvent event) {
-        LightSaver.create(event.getBundle())
-                .target(mCompat).save()
-                .target(this).save();
-    }
 
-    /**
-     * backstack idを指定する
-     */
-    public void setBackStackIndex(int backStackIndex) {
-        this.mBackStackIndex = backStackIndex;
-    }
-
-    /**
-     * Backstackを持つならばtrue
-     */
-    boolean hasBackstackIndex() {
-        return mBackStackIndex != BACKSTACK_NONE;
-    }
-
-    public int getBackStackIndex() {
-        return mBackStackIndex;
-    }
-
-    /**
-     * バックスタックが一致したらtrue
-     */
-    public boolean isCurrentBackstack() {
-        Fragment parentFragment = getParentFragment();
-        if (parentFragment == null) {
-            return mBackStackIndex == getFragment().getFragmentManager().getBackStackEntryCount();
-        } else {
-            return mBackStackIndex == parentFragment.getFragmentManager().getBackStackEntryCount();
+        LightSaver.Builder builder = mCompat.newBundleBuilder(this, event.getBundle(), getFragment().getContext());
+        if (builder == null) {
+            builder = LightSaver.create(event.getBundle());
         }
+
+        builder.target(mCompat).save()
+                .target(this).save();
     }
 
     /**
      * 自身のFragmentから排除する
      *
-     * @param withBackStack backstack階層も含めて排除する場合はtrue
+     * @param withBackStack この引数は現在使用されていない
      */
-    public void detatchSelf(final boolean withBackStack) {
+    @Deprecated
+    public void detatchSelf(boolean withBackStack) {
         UIHandler.postUIorRun(() -> {
-            if (withBackStack && hasBackstackIndex()) {
-                getFragmentManager().popBackStack(mBackStackIndex, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            } else {
-                getFragmentManager().beginTransaction().remove(getFragment()).commit();
-            }
+            getFragmentManager().beginTransaction().remove(getFragment()).commit();
         });
     }
 
-    protected boolean hasChildBackStack() {
-        return getChildFragmentManager().getBackStackEntryCount() > 0;
-    }
-
     /**
-     * 戻るボタンのハンドリングを行う
-     *
-     * @return ハンドリングを行えたらtrue
+     * 自身のFragmentから排除する
      */
-    public boolean handleBackButton() {
-        if (hasChildBackStack()) {
-            // backStackを解放する
-            getChildFragmentManager().popBackStack();
-            return true;
-        } else {
-            return false;
-        }
+    public void detatchSelf() {
+        UIHandler.postUIorRun(() -> {
+            getFragmentManager().beginTransaction().remove(getFragment()).commit();
+        });
     }
 
     public void startActivityForResult(Intent intent, int requestCode) {

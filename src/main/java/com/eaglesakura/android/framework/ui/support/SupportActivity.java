@@ -8,9 +8,7 @@ import com.eaglesakura.android.rx.BackgroundTaskBuilder;
 import com.eaglesakura.android.rx.CallbackTime;
 import com.eaglesakura.android.rx.ExecuteTarget;
 import com.eaglesakura.android.rx.LifecycleState;
-import com.eaglesakura.android.rx.ObserveTarget;
 import com.eaglesakura.android.rx.PendingCallbackQueue;
-import com.eaglesakura.android.rx.SubscribeTarget;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -170,15 +168,6 @@ public abstract class SupportActivity extends AppCompatActivity implements Suppo
      */
     public <T> BackgroundTaskBuilder<T> async(ExecuteTarget execute, CallbackTime time, BackgroundTask.Async<T> background) {
         return mLifecycleDelegate.async(execute, time, background);
-    }
-
-
-    /**
-     * 規定のスレッドとタイミングで非同期処理を行う
-     */
-    @Deprecated
-    public <T> BackgroundTaskBuilder<T> async(SubscribeTarget subscribe, ObserveTarget observe, BackgroundTask.Async<T> background) {
-        return mLifecycleDelegate.async(subscribe, observe, background);
     }
 
     public PendingCallbackQueue getCallbackQueue() {

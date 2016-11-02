@@ -14,8 +14,9 @@
  * 2.24.5.x : support library 24.1.+に対応
  * 2.25.0.x : API Level 25(Android 7.1)対応
  * 2.25.1.x : Event Bus導入
+ * 2.25.2.x : SupportFragment構造変更
  */
-def ARTIFACT_VERSION = "2.25.1"
+def ARTIFACT_VERSION = "2.25.2"
 def ARTIFACT_NAME = file(".").absoluteFile.name
 def ARTIFACT_INSTALL_TARGET = getArtifactInstallTarget()
 

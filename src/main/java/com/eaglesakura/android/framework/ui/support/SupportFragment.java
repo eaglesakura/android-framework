@@ -8,9 +8,8 @@ import com.eaglesakura.android.rx.BackgroundTaskBuilder;
 import com.eaglesakura.android.rx.CallbackTime;
 import com.eaglesakura.android.rx.ExecuteTarget;
 import com.eaglesakura.android.rx.LifecycleState;
-import com.eaglesakura.android.rx.ObserveTarget;
 import com.eaglesakura.android.rx.PendingCallbackQueue;
-import com.eaglesakura.android.rx.SubscribeTarget;
+import com.eaglesakura.android.saver.LightSaver;
 import com.eaglesakura.android.util.PermissionUtil;
 
 import android.app.Activity;
@@ -24,6 +23,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.Size;
 import android.support.annotation.UiThread;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.InternalSupportFragmentUtil;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -117,6 +117,7 @@ public abstract class SupportFragment extends Fragment implements SupportFragmen
     /**
      * ActionBarを取得する
      */
+    @NonNull
     @Override
     public ActionBar getActionBar() {
         Activity activity = getActivity();
@@ -141,6 +142,7 @@ public abstract class SupportFragment extends Fragment implements SupportFragmen
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        InternalSupportFragmentUtil.onCreate(this, savedInstanceState);
         super.onCreate(savedInstanceState);
         mLifecycleDelegate.onCreate(savedInstanceState);
     }
@@ -275,46 +277,10 @@ public abstract class SupportFragment extends Fragment implements SupportFragmen
         return mLifecycleDelegate.async(execute, time, background);
     }
 
-
-    /**
-     * 規定のスレッドとタイミングで非同期処理を行う
-     */
-    @Deprecated
-    public <T> BackgroundTaskBuilder<T> async(SubscribeTarget subscribe, ObserveTarget observe, BackgroundTask.Async<T> background) {
-        return mLifecycleDelegate.async(subscribe, observe, background);
-    }
-
-    /**
-     * 無限ループでFragmentのモニタリングを行う処理を開始する。
-     *
-     * 新たなスレッドを作成する。
-     * null以外を返却した場合、モニタリングを終了する。
-     *
-     * @param callbackTime    処理が持続する条件
-     * @param monitorCallback モニタリング処理
-     * @param callbackSpanMs  コールバックチェックを行うスパン
-     */
-    public <T> BackgroundTaskBuilder<T> asyncMonitor(CallbackTime callbackTime, BackgroundTask.Async<T> monitorCallback, long callbackSpanMs) {
-        return async(ExecuteTarget.NewThread, callbackTime, (BackgroundTask<T> task) -> {
-
-            T result = null;
-            while ((result = monitorCallback.call(task)) == null) {
-                task.waitTime(callbackSpanMs);
-            }
-
-            return result;
-        }).cancelSignal(this);
-    }
-
     @NonNull
     @Override
     public Fragment getFragment(SupportFragmentDelegate self) {
         return this;
-    }
-
-    @Override
-    public void setBackStackIndex(int index) {
-        mFragmentDelegate.setBackStackIndex(index);
     }
 
     @Nullable
@@ -323,7 +289,15 @@ public abstract class SupportFragment extends Fragment implements SupportFragmen
         return Garnet.create(this).depend(Context.class, context);
     }
 
+    @Nullable
+    @Override
+    public LightSaver.Builder newBundleBuilder(SupportFragmentDelegate self, Bundle bundle, Context context) {
+        return LightSaver.create(bundle);
+    }
+
     public void startActivityForResultWithCarryData(Intent intent, int requestCode, Bundle carryState) {
         mFragmentDelegate.startActivityForResultWithCarryData(intent, requestCode, carryState);
     }
+
+
 }

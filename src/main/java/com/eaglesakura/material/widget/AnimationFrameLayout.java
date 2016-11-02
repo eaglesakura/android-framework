@@ -8,21 +8,21 @@ import android.widget.FrameLayout;
 /**
  * Animation動作を行うためのFrameLayout
  */
-public class AnimationFragmeLayout extends FrameLayout {
-    public AnimationFragmeLayout(Context context) {
+public class AnimationFrameLayout extends FrameLayout {
+    public AnimationFrameLayout(Context context) {
         super(context);
     }
 
-    public AnimationFragmeLayout(Context context, AttributeSet attrs) {
+    public AnimationFrameLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public AnimationFragmeLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public AnimationFrameLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @SuppressLint("all")
-    public AnimationFragmeLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public AnimationFrameLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
@@ -36,6 +36,7 @@ public class AnimationFragmeLayout extends FrameLayout {
     @SuppressLint("all")
     public void setXFraction(float xFraction) {
         final int width = getWidth();
+        //noinspection ResourceType
         setX((width > 0) ? (xFraction * width) : -9999);
     }
 }

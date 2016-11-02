@@ -4,6 +4,7 @@ import com.eaglesakura.android.graphics.loader.DrawableImageLoader;
 import com.eaglesakura.android.graphics.loader.FileImageLoader;
 import com.eaglesakura.android.graphics.loader.ImageLoader;
 import com.eaglesakura.android.graphics.loader.NetworkImageLoader;
+import com.eaglesakura.android.graphics.loader.UriImageLoader;
 import com.eaglesakura.android.net.NetworkConnector;
 import com.eaglesakura.android.net.request.ConnectRequest;
 import com.eaglesakura.android.net.request.SimpleHttpRequest;
@@ -11,6 +12,7 @@ import com.eaglesakura.lambda.CancelCallback;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IntRange;
@@ -68,12 +70,23 @@ public class CachedImageLoader {
     /**
      * ファイルからのローダーを生成する
      */
-    public Builder newImage(File src, boolean onNemoryCache) {
+    public Builder newImage(File src, boolean onMemoryCache) {
         FileImageLoader loader = new FileImageLoader(mContext, mImageCache, src);
-        if (onNemoryCache) {
+        if (onMemoryCache) {
             loader.cache();
         }
 
+        return new Builder(loader);
+    }
+
+    /**
+     * ファイルからのローダーを生成する
+     */
+    public Builder newImage(Uri src, boolean onMemoryCache) {
+        UriImageLoader loader = new UriImageLoader(mContext, mImageCache, src);
+        if (onMemoryCache) {
+            loader.cache();
+        }
         return new Builder(loader);
     }
 

@@ -1,8 +1,6 @@
 package com.eaglesakura.android.framework.ui;
 
 import com.eaglesakura.android.framework.R;
-import com.eaglesakura.android.framework.delegate.fragment.SupportFragmentDelegate;
-import com.eaglesakura.android.framework.ui.support.SupportFragment;
 import com.eaglesakura.util.StringUtil;
 
 import android.app.Activity;
@@ -214,11 +212,6 @@ public class FragmentTransactionBuilder {
      * 内容のコミットを行う
      */
     public void commit() {
-        int backStackId = transaction.commit();
-        for (Fragment frag : fragments) {
-            if (frag instanceof SupportFragmentDelegate.SupportFragmentCompat) {
-                ((SupportFragment) frag).setBackStackIndex(backStackId);
-            }
-        }
+        transaction.commit();
     }
 }
