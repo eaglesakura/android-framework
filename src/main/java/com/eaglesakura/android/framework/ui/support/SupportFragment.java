@@ -23,6 +23,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.Size;
 import android.support.annotation.UiThread;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.InternalSupportFragmentUtil;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -141,6 +142,7 @@ public abstract class SupportFragment extends Fragment implements SupportFragmen
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        InternalSupportFragmentUtil.onCreate(this, savedInstanceState);
         super.onCreate(savedInstanceState);
         mLifecycleDelegate.onCreate(savedInstanceState);
     }
