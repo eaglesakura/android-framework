@@ -1,5 +1,6 @@
 package com.eaglesakura.android.framework.delegate.fragment;
 
+import com.eaglesakura.android.framework.FrameworkCentral;
 import com.eaglesakura.android.framework.delegate.activity.SupportActivityDelegate;
 import com.eaglesakura.android.framework.delegate.lifecycle.FragmentLifecycleDelegate;
 import com.eaglesakura.android.framework.ui.support.annotation.BindInterface;
@@ -149,13 +150,19 @@ public class SupportFragmentDelegate {
             }
         });
 
+        Context context = FrameworkCentral.getApplication();
+
         // InjectionIdを設定する
         {
             FragmentLayout layout = mCompat.getClass().getAnnotation(FragmentLayout.class);
             if (layout != null) {
                 mInjectionLayoutId = layout.value();
                 if (mInjectionLayoutId == 0 && !StringUtil.isEmpty(layout.resName())) {
-                    mInjectionLayoutId = ContextUtil.getLayoutFromName(getFragment().getContext(), layout.resName());
+                    mInjectionLayoutId = ContextUtil.getLayoutFromName(context, layout.resName());
+                }
+
+                if (mInjectionLayoutId == 0) {
+                    throw new IllegalArgumentException("R.id." + layout.resName() + " / Not found.");
                 }
             }
         }
@@ -166,7 +173,11 @@ public class SupportFragmentDelegate {
             if (menu != null) {
                 mInjectionOptionMenuId = menu.value();
                 if (mInjectionOptionMenuId == 0 && !StringUtil.isEmpty(menu.resName())) {
-                    mInjectionOptionMenuId = ContextUtil.getMenuFromName(getFragment().getContext(), menu.resName());
+                    mInjectionOptionMenuId = ContextUtil.getMenuFromName(context, menu.resName());
+                }
+
+                if (mInjectionOptionMenuId == 0) {
+                    throw new IllegalArgumentException("R.menu." + menu.resName() + " / Not found.");
                 }
             }
 

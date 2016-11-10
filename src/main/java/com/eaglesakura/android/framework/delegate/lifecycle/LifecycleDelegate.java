@@ -11,6 +11,9 @@ import com.eaglesakura.android.rx.PendingCallbackQueue;
 import com.eaglesakura.android.rx.SubscribeTarget;
 import com.eaglesakura.android.rx.event.LifecycleEventImpl;
 
+import rx.Subscriber;
+import rx.Subscription;
+import rx.functions.Action1;
 import rx.subjects.BehaviorSubject;
 
 public abstract class LifecycleDelegate {
@@ -32,6 +35,14 @@ public abstract class LifecycleDelegate {
 
     public PendingCallbackQueue getCallbackQueue() {
         return mCallbackQueue;
+    }
+
+    public Subscription subscribe(Action1<? super LifecycleEvent> onNext) {
+        return mLifecycleSubject.subscribe(onNext);
+    }
+
+    public Subscription unsafeSubscribe(Subscriber<? super LifecycleEvent> subscriber) {
+        return mLifecycleSubject.unsafeSubscribe(subscriber);
     }
 
     /**

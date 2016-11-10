@@ -1,12 +1,11 @@
 package com.eaglesakura.material.widget.support;
 
-import com.eaglesakura.android.aquery.AQuery;
-import com.eaglesakura.android.framework.R;
 import com.eaglesakura.android.framework.delegate.fragment.SupportFragmentDelegate;
 import com.eaglesakura.android.framework.ui.progress.ProgressStackManager;
 import com.eaglesakura.android.framework.ui.progress.ProgressToken;
 import com.eaglesakura.android.framework.ui.support.SupportFragment;
 import com.eaglesakura.android.framework.ui.support.annotation.FragmentLayout;
+import com.eaglesakura.android.margarine.Bind;
 import com.eaglesakura.material.widget.MaterialProgressView;
 
 import android.support.annotation.IdRes;
@@ -21,6 +20,9 @@ import android.view.View;
  */
 @FragmentLayout(resName = "esm_progress")
 public class SupportProgressFragment extends SupportFragment {
+
+    @Bind(resName = "Item.Progress")
+    MaterialProgressView mProgress;
 
     public SupportProgressFragment() {
         mProgressStackManager.setListener(mStackManagerListener);
@@ -51,41 +53,35 @@ public class SupportProgressFragment extends SupportFragment {
     private ProgressStackManager.Listener mStackManagerListener = new ProgressStackManager.Listener() {
         @Override
         public void onProgressStarted(@NonNull ProgressStackManager self, @NonNull ProgressToken token) {
-            AQuery q = new AQuery(getView());
-            q.id(R.id.Item_Progress)
-                    .ifPresent(MaterialProgressView.class, it -> {
-                        it.setText(token.getMessage());
-                        it.setVisibility(View.VISIBLE);
-                    });
+            mProgress.setText(token.getMessage());
+            mProgress.setVisibility(View.VISIBLE);
         }
 
         @Override
         public void onProgressTopChanged(@NonNull ProgressStackManager self, @NonNull ProgressToken topToken) {
-            AQuery q = new AQuery(getView());
-            q.id(R.id.Item_Progress)
-                    .ifPresent(MaterialProgressView.class, it -> {
-                        it.setText(topToken.getMessage());
-                        it.setVisibility(View.VISIBLE);
-                    });
+            mProgress.setText(topToken.getMessage());
+            mProgress.setVisibility(View.VISIBLE);
         }
 
         @Override
         public void onProgressFinished(@NonNull ProgressStackManager self) {
-            AQuery q = new AQuery(getView());
-            q.id(R.id.Item_Progress)
-                    .ifPresent(MaterialProgressView.class, it -> {
-                        it.setVisibility(View.INVISIBLE);
-                    });
+            mProgress.setVisibility(View.INVISIBLE);
         }
     };
 
     /**
      * Fragmentを付与する
      */
-    public static void attach(AppCompatActivity activity, @IdRes int containerId) {
-        FragmentTransaction transaction = activity.getSupportFragmentManager().beginTransaction();
+    public static FragmentTransaction attach(FragmentTransaction transaction, @IdRes int containerId) {
         transaction.add(containerId, new SupportProgressFragment(), SupportProgressFragment.class.getName());
-        transaction.commit();
+        return transaction;
+    }
+
+    /**
+     * Fragmentを付与する
+     */
+    public static void attach(AppCompatActivity activity, @IdRes int containerId) {
+        attach(activity.getSupportFragmentManager().beginTransaction(), containerId).commit();
     }
 
     /**

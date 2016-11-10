@@ -7,7 +7,10 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
+import android.support.graphics.drawable.VectorDrawableCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 
 public class ResourceUtil {
     @ColorInt
@@ -21,5 +24,19 @@ public class ResourceUtil {
             return null;
         }
         return ResourcesCompat.getDrawable(context.getResources(), drawableId, context.getTheme());
+    }
+
+    @NonNull
+    public static VectorDrawableCompat vectorDrawable(@NonNull Context context, @DrawableRes int drawableId) {
+        return vectorDrawable(context, drawableId, 0);
+    }
+
+    @NonNull
+    public static VectorDrawableCompat vectorDrawable(@NonNull Context context, @DrawableRes int drawableId, @ColorRes int colorId) {
+        VectorDrawableCompat drawableCompat = VectorDrawableCompat.create(context.getResources(), drawableId, context.getTheme());
+        if (colorId != 0) {
+            DrawableCompat.setTint(drawableCompat, ContextCompat.getColor(context, colorId));
+        }
+        return drawableCompat;
     }
 }
