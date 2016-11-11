@@ -23,7 +23,11 @@ public class ResourceUtil {
         if (drawableId == 0) {
             return null;
         }
-        return ResourcesCompat.getDrawable(context.getResources(), drawableId, context.getTheme());
+        try {
+            return ResourcesCompat.getDrawable(context.getResources(), drawableId, context.getTheme());
+        } catch (Exception e) {
+            return vectorDrawable(context, drawableId);
+        }
     }
 
     @NonNull
