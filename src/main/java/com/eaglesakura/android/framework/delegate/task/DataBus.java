@@ -42,26 +42,7 @@ public abstract class DataBus<DataType> {
 
     @NonNull
     final Bus mBus = new Bus2(ThreadEnforcer.ANY, Bus.DEFAULT_IDENTIFIER, AnnotatedHandlerFinder2.newInstance()) {
-        @Override
-        public void post(Object event) {
-            if (mHandler == null || AndroidThreadUtil.isHandlerThread(mHandler)) {
-                // ハンドラ設定がない、もしくは所属しているハンドラのスレッドであればすぐさま実行
-                commitData();
-                super.post(event);
-            } else {
-                mHandler.post(() -> {
-                    commitData();
-                    super.post(event);
-                });
-            }
-        }
     };
-
-    /**
-     * 次にSetされるべきデータ
-     */
-    @Nullable
-    DataType mRequestData;
 
     /**
      * データバス
@@ -127,29 +108,21 @@ public abstract class DataBus<DataType> {
         return getData() != null;
     }
 
-    private synchronized void commitData() {
-        mData = mRequestData;
-        mRequestData = null;
-    }
-
     /**
      * オブジェクトの変更通知を行なう
      */
     public void modified(DataType data) {
-        synchronized (this) {
-            mRequestData = data;
-        }
-        mBus.post(this);
+        AndroidThreadUtil.postOrRun(mHandler, () -> {
+            mData = data;
+            mBus.post(this);
+        });
     }
 
     /**
      * オブジェクトに変更があったことを通知する
      */
     public void modified() {
-        synchronized (this) {
-            mRequestData = mData;
-        }
-        mBus.post(this);
+        modified(mData);
     }
 
     /**

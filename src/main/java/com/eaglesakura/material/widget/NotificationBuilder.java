@@ -14,6 +14,7 @@ import android.os.Build;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
+import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
 /**
@@ -22,11 +23,11 @@ import android.widget.RemoteViews;
 public class NotificationBuilder {
     final Context mContext;
 
-    Notification.Builder mBuilder;
+    NotificationCompat.Builder mBuilder;
 
     NotificationBuilder(Context context) {
         mContext = context;
-        mBuilder = new Notification.Builder(mContext);
+        mBuilder = new NotificationCompat.Builder(mContext);
         mBuilder.setWhen(System.currentTimeMillis());
     }
 
