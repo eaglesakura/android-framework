@@ -1,6 +1,7 @@
 package com.eaglesakura.material.widget;
 
 import com.eaglesakura.android.framework.R;
+import com.eaglesakura.util.StringUtil;
 
 import android.support.annotation.IdRes;
 import android.support.annotation.StringRes;
@@ -66,9 +67,13 @@ public class ToolbarBuilder {
 
     public ToolbarBuilder build() {
         mRoot.setSupportActionBar(mToolbar);
-        mRoot.setTitle(mTitle);
 
         ActionBar actionBar = mRoot.getSupportActionBar();
+
+        if (!StringUtil.isEmpty(mTitle)) {
+            actionBar.setTitle(mTitle);
+            actionBar.setDisplayShowTitleEnabled(true);
+        }
 
         if (mDrawerLayout != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
