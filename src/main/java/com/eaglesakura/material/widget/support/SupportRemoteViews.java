@@ -53,7 +53,11 @@ public class SupportRemoteViews {
      * 管理しているリソースを削除する
      */
     public void dispose() {
-        mContext.unregisterReceiver(mInternalReceiver);
+        try {
+            mContext.unregisterReceiver(mInternalReceiver);
+        } catch (Exception e) {
+
+        }
     }
 
     public interface OnRemoteViewClickListener {

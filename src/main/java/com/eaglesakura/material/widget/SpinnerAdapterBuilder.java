@@ -153,7 +153,7 @@ public class SpinnerAdapterBuilder<T> {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
                 try {
-                    mSelectedAction.action(position, (T) mItems.get(position));
+                    mSelectedAction.action(position, (T) mSpinner.getAdapter().getItem(position));
                 } catch (Throwable e) {
                     throw new RuntimeException(e);
                 }
