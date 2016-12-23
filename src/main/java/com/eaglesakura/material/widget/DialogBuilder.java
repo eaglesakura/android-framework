@@ -53,6 +53,12 @@ public class DialogBuilder<T> {
         mBuilder = builder;
     }
 
+
+    public DialogBuilder title(String title) {
+        mBuilder.setTitle(title);
+        return this;
+    }
+
     public DialogBuilder title(@StringRes int titleId) {
         mBuilder.setTitle(titleId);
         return this;

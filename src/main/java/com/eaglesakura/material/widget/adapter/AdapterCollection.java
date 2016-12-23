@@ -1,5 +1,6 @@
 package com.eaglesakura.material.widget.adapter;
 
+import com.eaglesakura.lambda.Matcher1;
 import com.eaglesakura.util.Util;
 
 import android.support.annotation.IntRange;
@@ -87,6 +88,48 @@ public class AdapterCollection<T> {
      */
     public void setComparator(@NonNull Comparator<T> comparator) {
         mComparator = comparator;
+    }
+
+    /**
+     * Matcherに一致するアイテムを削除する
+     */
+    public void remove(Matcher1<T> matcher) {
+        try {
+            List<Integer> indices = new ArrayList<>();
+            for (int i = 0; i < size(); ++i) {
+                if (matcher.match(mItems.get(i))) {
+                    indices.add(i);
+                }
+            }
+
+            if (indices.isEmpty()) {
+                return;
+            }
+
+            // 指定したインデックスのアイテムを排除する
+            for (int i = (indices.size() - 1); i >= 0; --i) {
+                remove(i);
+            }
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 指定した条件に一致するアイテムを検索する
+     */
+    @Nullable
+    public T find(Matcher1<T> matcher) {
+        try {
+            for (T item : getItems()) {
+                if (matcher.match(item)) {
+                    return item;
+                }
+            }
+            return null;
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

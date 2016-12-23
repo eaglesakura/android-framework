@@ -2,6 +2,7 @@ package com.eaglesakura.android.framework.util;
 
 import com.eaglesakura.lambda.Matcher1;
 import com.eaglesakura.util.CollectionUtil;
+import com.eaglesakura.util.ReflectionUtil;
 
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -40,6 +41,39 @@ public class FragmentUtil {
                     // 子Fragmentを足し込む
                     if (frag != null) {
                         result.addAll(listFragments(frag.getChildFragmentManager(), matcher));
+                    }
+                }
+            }
+            return result;
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Error e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 指定したインターフェースに合致するFragmentを全て列挙する。
+     *
+     * このメソッドはChildFragmentを再帰的に検索する
+     */
+    @NonNull
+    public static <T> List<T> listInterfaces(FragmentManager fragmentManager, Class<? extends T> checkInterface) {
+        List<T> result = new ArrayList<>();
+
+        try {
+            List<Fragment> fragments = fragmentManager.getFragments();
+            if (!CollectionUtil.isEmpty(fragments)) {
+                for (Fragment frag : fragments) {
+                    if (ReflectionUtil.instanceOf(frag, checkInterface)) {
+                        result.add((T) frag);
+                    }
+
+                    // 子Fragmentを足し込む
+                    if (frag != null) {
+                        result.addAll(listInterfaces(frag.getChildFragmentManager(), checkInterface));
                     }
                 }
             }
