@@ -77,19 +77,24 @@
         <item name="android:gravity">center</item>
     </style>
 
-    <style name="EsMaterial.Widget.FlatButton.Blue" parent="EsMaterial.Widget.Button">
-        <item name="android:background">@drawable/esm_button_transparent</item>
+    <style name="EsMaterial.Widget.FlatButton.Red" parent="EsMaterial.Widget.Button">
+        <item name="android:background">@drawable/esm_button_red</item>
         <item name="android:textColor">@color/esm_button_blue</item>
     </style>
 
+    <style name="EsMaterial.Widget.FlatButton.Blue" parent="EsMaterial.Widget.Button">
+        <item name="android:background">@drawable/esm_button_blue</item>
+        <item name="android:textColor">@color/EsMaterial.Blue.50</item>
+    </style>
+
     <style name="EsMaterial.Widget.FlatButton.LightGreen" parent="EsMaterial.Widget.Button">
-        <item name="android:background">@drawable/esm_button_transparent</item>
-        <item name="android:textColor">@color/esm_button_lightgreen</item>
+        <item name="android:background">@drawable/esm_button_lightgreen</item>
+        <item name="android:textColor">@color/EsMaterial.LightGreen.50</item>
     </style>
 
     <style name="EsMaterial.Widget.FlatButton.Teal" parent="EsMaterial.Widget.Button">
         <item name="android:background">@drawable/esm_button_transparent</item>
-        <item name="android:textColor">@color/esm_button_teal</item>
+        <item name="android:textColor">@color/EsMaterial.Teal.50</item>
     </style>
 
     <style name="EsMaterial.Widget.FlatButton.Green" parent="EsMaterial.Widget.Button">
