@@ -41,8 +41,11 @@ public class SupportRemoteViews {
      * プロセスが生きていることが前提となるため、Service+Foreground等の組み合わせが前提となる。
      */
     public SupportRemoteViews setOnClickListener(int viewId, OnRemoteViewClickListener listener) {
-        PendingIntent intent = PendingIntent.getBroadcast(mContext, 0x00,
-                new Intent(mInternalAction).putExtra(EXTRA_VIEW_ID, viewId),
+        Intent rawIntent = new Intent(mInternalAction)
+                .putExtra(EXTRA_VIEW_ID, viewId)
+                .setPackage(mContext.getPackageName());
+        PendingIntent intent = PendingIntent.getBroadcast(mContext, viewId,
+                rawIntent,
                 0x00);
         mRemoteViews.setOnClickPendingIntent(viewId, intent);
         mListenerMap.put(viewId, listener);

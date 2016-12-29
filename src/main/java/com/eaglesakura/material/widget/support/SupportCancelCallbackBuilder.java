@@ -156,6 +156,7 @@ public class SupportCancelCallbackBuilder {
 
     public class CancelChecker implements
             CancelCallback,
+            BackgroundTask.Signal,
             PendingCallbackQueue.CancelCallback,
             NetworkConnector.CancelCallback {
 
@@ -163,6 +164,11 @@ public class SupportCancelCallbackBuilder {
 
         CancelChecker(CancelCallback cancelCallback) {
             mCancelCallback = cancelCallback;
+        }
+
+        @Override
+        public boolean is(BackgroundTask task) {
+            return CallbackUtils.isCanceled(mCancelCallback);
         }
 
         @Override
