@@ -1,8 +1,11 @@
 package com.eaglesakura.material.widget;
 
+import com.eaglesakura.android.aquery.AQuery;
 import com.eaglesakura.android.framework.FwLog;
 import com.eaglesakura.android.framework.R;
 import com.eaglesakura.android.framework.delegate.lifecycle.UiLifecycleDelegate;
+import com.eaglesakura.android.framework.ui.progress.DialogToken;
+import com.eaglesakura.android.thread.ui.UIHandler;
 import com.eaglesakura.android.util.ContextUtil;
 import com.eaglesakura.lambda.Action0;
 import com.eaglesakura.lambda.Action2;
@@ -20,9 +23,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -232,6 +237,18 @@ public class DialogBuilder<T> {
         return builder.view(contentView);
     }
 
+    /**
+     * Progress表記を行う
+     *
+     * @param message 表示メッセージ
+     */
+    public static DialogBuilder newProgress(Context context, String message) {
+        View content = LayoutInflater.from(context).inflate(R.layout.esm_dialog_material_progress, null, false);
+        new AQuery(content).id(R.id.EsMaterial_Progress_Text).text(message);
+        DialogBuilder builder = new DialogBuilder(new AlertDialog.Builder(context));
+        return builder.view(content);
+    }
+
     public static DialogBuilder newInformation(Context context, String message) {
         DialogBuilder builder = new DialogBuilder(new AlertDialog.Builder(context));
         builder.mBuilder.setTitle(R.string.EsMaterial_Title_Common_Information);
@@ -285,4 +302,43 @@ public class DialogBuilder<T> {
         return builder;
     }
 
+    static class DialogTokenImpl implements DialogToken {
+        DialogBuilder mBuilder;
+
+        Dialog mDialog;
+
+        public DialogTokenImpl(DialogBuilder builder) {
+            mBuilder = builder;
+        }
+
+        @Override
+        public boolean isCanceled() throws Throwable {
+            return mDialog != null && !mDialog.isShowing();
+        }
+
+        Dialog show(UiLifecycleDelegate delegate) {
+            mDialog = UIHandler.await(() -> mBuilder.show(delegate));
+            return mDialog;
+        }
+
+        @Override
+        public void close() throws IOException {
+            UIHandler.await(() -> {
+                try {
+                    mDialog.dismiss();
+                } catch (Throwable e) {
+                }
+                return 0;
+            });
+        }
+    }
+
+    /**
+     * try-with-resourceで使用するダイアログとして表示を行う
+     */
+    public static DialogToken showAsToken(DialogBuilder builder, UiLifecycleDelegate delegate) {
+        DialogTokenImpl impl = new DialogTokenImpl(builder);
+        impl.show(delegate);
+        return impl;
+    }
 }

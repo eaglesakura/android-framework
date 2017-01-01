@@ -9,6 +9,10 @@ import android.support.annotation.StringRes;
 import java.io.Closeable;
 import java.io.IOException;
 
+/**
+ * 複数処理を並列で行い、かつProgress表記を行う場合に参照カウンタを利用して処理を表記する。
+ * 参照カウンタが0になった時点でロックを解除する。
+ */
 public abstract class ProgressToken implements Closeable {
     /**
      * 処理タグ

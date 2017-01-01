@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             android:orientation="vertical"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent">
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_margin="@dimen/EsMaterial.Widget.Margin"
+            android:layout_height="@dimen/EsMaterial.Button.MinHeight"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+
+        <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/EsMaterial.Progress.Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="@dimen/EsMaterial.Margin.KeyLine1Vertical"
+                android:layout_marginLeft="@dimen/EsMaterial.Margin.KeyLine1Horizontal"
+                android:layout_marginRight="@dimen/EsMaterial.Margin.KeyLine1Horizontal"
+                android:layout_marginTop="@dimen/EsMaterial.Margin.KeyLine1Vertical"
+                android:text="@string/EsMaterial.Word.Common.DataLoad"/>
+
+        <fr.castorflex.android.smoothprogressbar.SmoothProgressBar
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/EsMaterial.Progress.BarHeight"
+                app:spb_color="@color/EsMaterial.LightGreen.400"
+                app:spb_interpolator="spb_interpolator_decelerate"
+                android:indeterminate="true"/>
+    </LinearLayout>
+</FrameLayout>
