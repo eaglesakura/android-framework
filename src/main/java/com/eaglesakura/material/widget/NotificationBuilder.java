@@ -1,6 +1,7 @@
 package com.eaglesakura.material.widget;
 
 import com.eaglesakura.android.util.ImageUtil;
+import com.eaglesakura.android.util.ResourceUtil;
 import com.eaglesakura.material.widget.support.SupportNotification;
 
 import android.annotation.SuppressLint;
@@ -10,6 +11,8 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
@@ -32,7 +35,15 @@ public class NotificationBuilder {
     }
 
     public NotificationBuilder icon(@DrawableRes int resId) {
-        Bitmap image = ImageUtil.decode(mContext, resId);
+        Bitmap image;
+        {
+            Drawable drawable = ResourceUtil.drawable(mContext, resId);
+            if (drawable instanceof BitmapDrawable) {
+                image = ((BitmapDrawable) drawable).getBitmap();
+            } else {
+                image = ImageUtil.toBitmap(drawable, Math.max(drawable.getMinimumWidth(), drawable.getMinimumHeight()));
+            }
+        }
         mBuilder.setLargeIcon(image);
         mBuilder.setSmallIcon(resId);
         return this;
