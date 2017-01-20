@@ -1,233 +1,38 @@
 package com.eaglesakura.android.framework.ui.license;
 
-import com.eaglesakura.android.aquery.AQuery;
-import com.eaglesakura.android.framework.FwLog;
 import com.eaglesakura.android.framework.R;
 import com.eaglesakura.android.framework.ui.support.SupportActivity;
-import com.eaglesakura.android.rx.BackgroundTask;
-import com.eaglesakura.android.thread.ui.UIHandler;
-import com.eaglesakura.android.util.ViewUtil;
-import com.eaglesakura.material.widget.MaterialLicenseDialog;
-import com.eaglesakura.material.widget.support.SupportRecyclerView;
-import com.eaglesakura.util.CollectionUtil;
-import com.eaglesakura.util.IOUtil;
-import com.eaglesakura.util.LogUtil;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.view.ViewGroup;
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 各種ライブラリのLicenseを自動で表示するためのActivity
- * <br>
- * AndroidManifest.xmlに下記を追加する
- * <pre>
- * android:name="com.eaglesakura.android.framework.ui.license.LicenseViewActivity"
- * android:theme="@style/EsMaterial.Theme.Grey.NoActionBar"
- * android:screenOrientation="portrait"
- * </pre>
  */
-public class LicenseViewActivity extends SupportActivity {
-    /**
-     * 読み込んだライセンス一覧
-     */
-    List<LicenseItem> licenseList = new ArrayList<>();
-
-    List<String> ignoreFiles = new ArrayList<>();
-
-    SupportRecyclerView listRoot;
-
-    RecyclerView licenseListView;
-
-    RecyclerView.Adapter<ItemViewHolder> adapter;
+public class LicenseViewActivity extends SupportActivity implements LicenseListFragment.Callback {
+    static final String TAG_LICENSE_CONTENT = "TAG_LICENSE_CONTENT";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_license_view);
+        setContentView(R.layout.esm_license_activity);
+        setSupportActionBar(((Toolbar) findViewById(R.id.EsMaterial_Toolbar)));
 
-
-        String[] ignoreFiles = getResources().getStringArray(R.array.EsMaterial_Widget_Licenses_IgnoreFiles);
-        if (!CollectionUtil.isEmpty(ignoreFiles)) {
-            this.ignoreFiles = CollectionUtil.asList(ignoreFiles);
-        }
-        setSupportActionBar((Toolbar) findViewById(R.id.EsMaterial_Toolbar));
-        setTitle(R.string.EsMaterial_Widget_License_Title);
-
-        listRoot = (SupportRecyclerView) findViewById(R.id.eglibrary_License_List);
-        licenseListView = listRoot.getRecyclerView();
-
-        // Licenseが読み込まれて無ければ読み込む
-        if (licenseList.isEmpty()) {
-            loadLicenseList();
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.Content_Holder_Root, new LicenseListFragment(), TAG_LICENSE_CONTENT)
+                    .commit();
         }
     }
 
     /**
-     * 全てのLicenseを読み込む
+     * 詳細画面を開く
      */
-    void loadLicenseList() {
-        asyncUI((BackgroundTask<List<LicenseItem>> task) -> {
-            List<LicenseItem> licenses = new ArrayList<>();
-            final String LICENSE_PATH = "license";
-            String[] files = getAssets().list(LICENSE_PATH);
-            for (String file : files) {
-                if (isFinishing()) {
-                    return licenses;
-                }
-
-                // 拡張子が一致して、かつignoreリストに含まれていなければ登録する
-                if (file.endsWith(".license") && ignoreFiles.indexOf(file) < 0) {
-                    FwLog.widget("load license(%s)", file);
-                    // １行目にOSSの表示名が格納されている
-                    final LicenseItem item = newLicense(LICENSE_PATH + "/" + file);
-                    if (item != null) {
-                        licenses.add(item);
-                    }
-                }
-            }
-            return licenses;
-        }).completed((licenses, task) -> {
-            addLicenses(licenses);
-        }).failed((err, task) -> {
-            onLoadFailed();
-        }).start();
-    }
-
-    void addLicenses(List<LicenseItem> newItems) {
-        licenseList = newItems;
-
-        // アダプタを作成
-        adapter = new RecyclerView.Adapter<ItemViewHolder>() {
-            @Override
-            public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                return new ItemViewHolder(parent);
-            }
-
-            @Override
-            public void onBindViewHolder(final ItemViewHolder holder, final int position) {
-                FwLog.widget("onBindViewHolder pos(%d) title(%s) bind(%s)", position, licenseList.get(position).title, holder.toString());
-                UIHandler.postUI(() -> {
-                    holder.bind(position);
-                });
-                ViewUtil.matchCardWidth(holder.itemView);
-            }
-
-            @Override
-            public int getItemCount() {
-                return licenseList.size();
-            }
-        };
-        licenseListView.setItemAnimator(new DefaultItemAnimator());
-        licenseListView.setLayoutManager(new LinearLayoutManager(this));
-        licenseListView.setHasFixedSize(false);
-        licenseListView.setAdapter(adapter);
-
-        listRoot.setProgressVisibly(false, licenseList.size());
-    }
-
-    /**
-     * Licenseを追加する
-     */
-    LicenseItem newLicense(String assetsPath) {
-        InputStream is = null;
-        try {
-            is = getAssets().open(assetsPath);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-            String line = reader.readLine();
-            FwLog.widget("OSS(%s)", line);
-
-            return new LicenseItem(line, assetsPath);
-        } catch (Exception e) {
-            LogUtil.log(e);
-            return null;
-        } finally {
-            IOUtil.close(is);
-        }
-    }
-
-    /**
-     * 読み込みに失敗した
-     */
-    void onLoadFailed() {
-        listRoot.setProgressVisibly(false, licenseList.size());
-    }
-
-    class LicenseItem {
-        final String title;
-
-        final String path;
-
-        public LicenseItem(String title, String path) {
-            this.title = title;
-            this.path = path;
-        }
-    }
-
-    class ItemViewHolder extends RecyclerView.ViewHolder {
-        LicenseItem item;
-
-        public ItemViewHolder(ViewGroup parent) {
-//            super(getLayoutInflater().inflate(R.layout.card_license, parent, false));
-            super(View.inflate(LicenseViewActivity.this, R.layout.card_license, null));
-        }
-
-        void bind(int position) {
-            item = licenseList.get(position);
-            ViewUtil.matchCardWidth(itemView);
-
-            AQuery q = new AQuery(itemView);
-            q.id(R.id.eglibrary_License_Item_Name).text("").text(item.title);
-            q.id(R.id.eglibrary_License_Item_Root).clicked(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    loadLicense(item);
-                }
-            });
-        }
-    }
-
-    /**
-     * ライセンスの読み込みと表示を行う
-     */
-    void loadLicense(final LicenseItem item) {
-        {
-            AQuery q = new AQuery(this);
-            q.id(R.id.eglibrary_License_Loading).visible();
-        }
-
-        asyncUI((BackgroundTask<String> task) -> {
-            InputStream is = null;
-            try {
-                is = getAssets().open(item.path);
-                String text = IOUtil.toString(is, false);
-                text = text.substring(text.indexOf("\n") + 1);
-
-                return text;
-            } finally {
-                IOUtil.close(is);
-            }
-        }).completed((it, task) -> {
-            MaterialLicenseDialog dialog = new MaterialLicenseDialog(LicenseViewActivity.this);
-            dialog.setTitle(item.title);
-            dialog.setLicense(it);
-            dialog.show();
-        }).finalized(it -> {
-            AQuery q = new AQuery(LicenseViewActivity.this);
-            q.id(R.id.eglibrary_License_Loading).gone();
-        }).start();
+    @Override
+    public void requestDetail(LicenseListFragment self, LicenseListFragment.LicenseItem item) {
+        LicenseDetailActivity.startContent(this, item.getTitle(), item.getText());
     }
 
     /**
@@ -236,5 +41,4 @@ public class LicenseViewActivity extends SupportActivity {
     public static void startContent(Context context) {
         context.startActivity(new Intent(context, LicenseViewActivity.class));
     }
-
 }

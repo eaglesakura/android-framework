@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.RecyclerView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:context=".ui.license.LicenseViewActivity"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:background="?esmWindowBackgroundColorDark"
+        android:layout_width="match_parent"
+        android:paddingTop="@dimen/EsMaterial.Margin.KeyLine1Vertical"
+        android:paddingBottom="@dimen/EsMaterial.Margin.KeyLine1Vertical"
+        android:id="@+id/eglibrary.Content.List"
+        android:layout_height="match_parent">
+</android.support.v7.widget.RecyclerView>

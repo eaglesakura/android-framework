@@ -66,6 +66,8 @@
     <integer name="EsMaterial.Ripple.Duration">350</integer>
     <integer name="EsMaterial.Fade.Duration">100</integer>
 
+    <integer name="EsMaterial.Animate.Duration">400</integer>
+
     <!-- Widget共通 -->
     <style name="EsMaterial.Widget" parent="EsMaterial.Theme">
         <item name="android:layout_marginTop">@dimen/EsMaterial.Button.ExternalMarginVertical</item>
@@ -89,4 +91,23 @@
         <item name="android:padding">@dimen/EsMaterial.Button.Margin</item>
     </style>
 
+    <!--
+        アプリ標準スタイルテンプレート
+     -->
+    <style name="EsMaterial.Theme.License" parent="EsMaterial.Theme">
+        <item name="colorPrimaryDark">@color/EsMaterial.Grey.700</item>
+        <item name="colorPrimary">@color/EsMaterial.Grey.600</item>
+        <item name="android:windowAnimationStyle">@style/EsMaterial.Animation.Activity</item>
+    </style>
+
+    <!--
+        AppBar/Toolbar領域設定
+    -->
+    <style name="EsMaterial.Theme.License.AppBarOverlay"
+           parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:textColorPrimary">@color/EsMaterial.Grey.200</item>
+    </style>
+    <style name="EsMaterial.Theme.License.PopupOverlay" parent="ThemeOverlay.AppCompat.Light">
+        <item name="android:textColorPrimary">@color/EsMaterial.Grey.200</item>
+    </style>
 </resources>

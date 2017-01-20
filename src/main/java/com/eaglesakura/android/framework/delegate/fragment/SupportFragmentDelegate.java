@@ -443,7 +443,7 @@ public class SupportFragmentDelegate {
         } catch (Exception e) {
             // null許容しないなら、例外を投げて終了する
             if (!annotation.nullable()) {
-                throw new RuntimeException(e);
+                throw new Error("bind failed :: " + field.getType() + " " + field.getName(), e);
             }
         }
     }
