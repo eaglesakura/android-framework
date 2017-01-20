@@ -369,7 +369,13 @@ uploadArchives {
             dependency {
                 groupId = 'com.github.castorflex.smoothprogressbar'
                 artifactId = 'library'
-                version = "1.1.0"
+                version = dependenceisVersion("com.github.castorflex.smoothprogressbar:library", "1.1.+")
+                scope = 'compile'
+            }
+            dependency {
+                groupId = 'com.github.ksoichiro'
+                artifactId = 'android-observablescrollview'
+                version = dependenceisVersion("com.github.ksoichiro:android-observablescrollview", "1.6.0")
                 scope = 'compile'
             }
         }
